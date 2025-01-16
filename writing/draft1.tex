@@ -1,0 +1,898 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{amsmath, mathtools} 
+\usepackage[table]  {xcolor}
+\usepackage{graphicx}
+\usepackage {tabularx}
+\usepackage{bm}
+\usepackage{amsfonts}
+\usepackage[paper=a4paper,left=25mm,right=25mm,top=20mm,bottom=30mm]{geometry}
+\usepackage{amssymb}
+\usepackage{blindtext}   % Für Beispieltexte
+\usepackage{enumitem}
+\usepackage{biblatex} %Imports biblatex package
+\usepackage{float}
+\usepackage{subfig}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage[colorlinks]{hyperref}
+\usepackage[nameinlink,noabbrev]{cleveref}
+
+\newcommand\colorAutoref[1]{{\hypersetup{linkcolor=black}\autoref{#1}}}
+
+\numberwithin{equation}{section}
+
+\begin{document}
+
+
+\begin{titlepage}
+\begin{figure}[!htp]
+     \hspace*{-1.1cm}
+ \begin{minipage}[r][0.22\paperwidth][l]{0.2\paperwidth}
+\includegraphics[scale = 0.25,angle=90]{TULogo.pdf}    % Das Logo ist natürlich optional
+\end{minipage} \hspace{21cm}
+   \end{figure}
+
+
+\thispagestyle{empty}
+  \sffamily
+
+\begin{center}
+   \begin{Huge}
+   \textbf{Financial Econometrics} \\
+   \end{Huge}
+   \begin{large}
+  Winter 2023-2024\\
+\end{large}
+
+   \vspace{3cm}
+
+\begin{large}
+Volatility spillovers in commodity markets: A large t-vector autoregressive approach
+\end{large}\\
+\color{black}
+  \vspace{1cm}
+\begin{large}
+Thanh Quyen Nguyen\\
+ \today                    
+ \end{large}
+
+   \vspace{3cm}
+\begin{large}
+   Lecturers: Dr. Daniel Neukirchen\\
+\end{large}
+
+  \end{center}
+ \end{titlepage}
+
+\newpage
+
+{
+  \hypersetup{linkcolor=black}
+  \renewcommand{\baselinestretch}{1.5}\normalsize 
+  \tableofcontents
+  \thispagestyle{empty}
+}
+
+
+\newpage
+\setcounter{page}{1}
+\section{Introduction}
+\renewcommand{\baselinestretch}{1.5}\normalsize 
+In spite of the transition to clearer and more sustainable energy sources, natural gas, oil and coal still play an essential role in production and private usage; hence, the price of natural gas, oil and coal is crucial for the economy. Moreover, the ongoing conflict in Ukraine can indeed have a significant impact on energy prices in general. Accurate predictions empower individuals, businesses, and governments to make informed decisions regarding energy consumption, investment strategies, and resource allocation.
+
+It is well-known that prediction is usually performed for returns, not for the price itself. Moreover, volatility clustering, large changes in price cluster together, can have a big influence on forecasting. In this case study, we employ ARMA-GARCH model to take the volatility clustering into account while forecasting natural gas, oil and coal returns. Furthermore, we compare the performance of ARMA-GARCH model with AR(1) model using continuous ranked probability score (CRPS) to see if probabilistic forecasting can help to improve the accuracy of predictions. 
+
+On the other hand, it is obvious that the returns of natural gas, oil and coal relate to each other. For that reason, this case study also applies copula-GARCH to perform multivariate probabilistic forecasts for these financial series. We then use energy score to evaluate the performance of copulas.
+
+Overall, ARMA-GARCH forecasts can capture the volatility clustering feature of financial series. The performance of ARMA-GARCH models is better than AR(1) for gas and oil returns. However, there is no big difference between the performance of ARMA-GARCH and AR(1) for coal. About copula, energy score shows that t-copula has a small advantage in prediction.  
+
+
+ The rest of the report is organized as follows. Section 2 provides an introduction to the data set and some interesting stylized facts about financial series. The idea, assumption, estimation method and forecast procedure of ARMA-GARCH and copula GARCH is presented in section 3. Section 4 is about the empirical result of the models' estimation and prediction performance. Conclusion presents some remarkable findings and limitations.
+
+\section{Data}
+\subsection{Financial Series}
+Financial time series modeling is a complex problem mainly due to the statistical regularities (stylized facts) (Francq, C. and Zakoian, J. M., 2019). Most of the stylized facts are presented in Mandelbrot (1963). Some of the stylized facts that are the most relevant to financial assets' return are as follows
+
+\begin{itemize}
+\item Small autocorrelation for the price return. The is no clear presence of autocorrelation for price return, which is close to a white noise. 
+
+\item Autocorrelations of squared price returns. There are strong autocorrelations between squared returns or absolute returns, which shows that returns is not a strong white noise.
+
+\item Volatility clustering. There are clusters of large absolute returns. Turbulent (high-volatility) sub-periods are followed by quiet (low-volatility) sub-periods. This pattern does not happen periodically. Generally, homoscedasticity, constant variance, does not hold true and stationary assumption is probably violated.
+
+\end{itemize}
+
+Given the stylized facts of financial series, several statistical models are developed to capture not only the value of returns, but also the volatility clusters. ARMA-GARCH, one of the powerful models, will be presented in the following sections.
+
+\subsection{Dataset}
+The report aims to model and forecast the first differences of daily short-term future prices of natural gas, oil and coal. The price data is collected from investing.com, which requires some data manipulation such as filling missing values, taking the first difference, and merging the prices data of natural gas, oil and coal to get the final dataset. Dataset is available daily from 2010-03-16 to 2020-10-27. Although the series have different measure units that natural gas price is in EUR and oil and coal price are in USD, there is no effect on the analysis.  We have 2700 observations for each series in total. In this case study, the first 2500 observations will be used to estimate the models that are employed to make predictions for the last 200 observation for out-of-sample evaluation of the models. 
+
+The natural gas series are shown in \colorAutoref{gas_series}. It seems very likely that the series is stationary with a mean close to zero; however, it is noteworthy that there are periods with extreme values, as well as periods with low volatility. Therefore, it would be beneficial to use a model that allows to measure the differences in variance of series at different periods. We find similar characteristics for the two other series of oil and coal returns, which can be seen in the Appendix.
+
+\vspace{-5mm}
+ \begin{figure}[h!] 
+\includegraphics[scale=1,width=1\linewidth,height=0.4\textheight]{gas_series.pdf}
+%\includegraphics[scale=1]{1.png}
+\vspace*{-23mm}
+\caption{Natural Gas Series}
+\label{gas_series}
+\end{figure}
+
+\section{Methods}
+\subsection{ARMA(p,q)}
+\subsubsection{ARMA(p,q) process}
+A second-order stationary process {$X_t$} is an ARMA(p,q), where p and q are integers, if there exist coefficients $\mu$, $a_1$, ..., $a_p$, $b_1$, ..., $b_q$ such that,
+
+\[ X_t  - \sum_{i=1}^{p} a_i X_{t-i} = \mu + \epsilon_t + \sum_{j=1}^{q} b_j \epsilon_{t-j} ,\forall t \in Z  \]
+where $\epsilon_t$ $\sim$ $WN(0, \sigma^2)$.
+
+The assumption on the white noise innovation term $\epsilon_t$ reduces the generality of the ARMA model (Francq, C. and Zakoian, J. M., 2019). According to the stylized facts of financial time series, the assumption that variance is the same for all $\epsilon_t$ make ARMA(p,q) model inappropriate to model financial series. As large absolute returns is likely to followed by large absolute returns, the conditional heteroscedasticity occurs:
+
+\[ Var(\epsilon_t | \epsilon_{t-1}, \epsilon_{t-2}, ...) \neq const.\]
+
+ The GARCH process that aims to capture the condition heteroscedasticity will be described in detail in next section.
+ 
+ \subsubsection{Autocorrelation and partial autocorrelation function}
+Autocorrelation function (ACF) is a function of the lag j for j = 1, 2, .... In case we have a sample $X_t$, t = 1, 2, ...,n, the $j^{th}$ order empirical autocorrelation $\rho(j)$ can be estimated by 
+
+\[\hat{\rho}(j) = \frac{\widehat{Cov} (X_t, X_{t-j})}{\widehat{Var} (X_t}),\]
+where 
+\[\widehat{Cov} (X_t, X_{t-j}) = \frac{1}{n-1} \sum_{t=j+1}^{n} (X_t - \overline{X}) (X_{t-j} -\overline{X}),\]
+and
+\[\widehat{Var}(X_t) = \frac{1}{n-1} \sum_{t=1}^{n} (X_t - \overline{X})^2, \]
+with $\overline{X}$ is the mean of $X_t$.
+
+The partial autocorrelation function (PACF) of order j  $\pi(j)$ describe the linear relationship between $X_t$ and $X_{t-j}$ that goes beyond the linear influence via $X_{t-1},..., X_{t-(j-1)}$.
+
+The PACF of order j can be defined as the plim of the least squares estimator of the coefficients $c_j$ in the minimization problem given below
+
+\[\min_{c_j} \left\Vert X_t - \sum_{j=1}^{h-1} c_j X_{t-j+h} \right\Vert^2\]
+
+Graphical illustration of ACF and PACF provides a general idea about the pattern of serial dependence in the observed series. ACF can be used to identify the order of MA(q) process, while PACF is helpful in detecting the order of AR(p) process (Peter J.Brockwell and Richard A. Davis, 2002). Although the order p, q of ARMA process can be not clear from ACF and PACF plots, it is still meaningful to compute and visualized ACF and PACF in order to have general information about stochastic process. 
+
+\subsection{GARCH(r,s)}
+In 1986, Bollerslev introduced generalized autoregressive conditionally heteroscedasticity (GARCH). The central idea of theses models is the conditional variance, which is the variance given data in the past. It turns out that one can use GARCH to model variance cluster of financial series as conditional variance in GARCH is a linear function of the squared past values (Francq, C. and Zakoian, J. M., 2019). 
+
+A GARCH process $\epsilon_t$ has two conditional moments as follows
+
+\begin{itemize}
+\item $E(\epsilon_t | \epsilon_u, u < t) = 0, t \in \mathbb{Z}$
+\item There exist constant $\omega, \alpha_i$, i = 1, ..., r, and $\beta_j$, j = 1,..., s such that
+\[\sigma_t^2 = Var(\epsilon_t | \epsilon_u, u < t) = \omega + \sum_{i=1}^{r} \alpha_i \epsilon_{t-i}^2 + \sum_{j=1}^{s} \beta_j \sigma_{t-j}^2, t \in \mathbb{Z}\]
+\end{itemize}
+
+If all $\beta_j = 0$, we have
+
+ \[\sigma_t^2 = Var(\epsilon_t | \epsilon_u, u < t) = \omega + \sum_{i=1}^{r} \alpha_i \epsilon_{t-i}^2, t \in \mathbb{Z},\]
+ and the process becomes an ARCH(r). 
+ 
+ A strong GARCH(r,s) model is given by
+ 
+ \begin{align*}
+ \epsilon_t &= \sigma_t \eta_t \\
+ \sigma_t^2 &=  \omega + \sum_{i=1}^{r} \alpha_i \epsilon_{t-i}^2 + \sum_{j=1}^{s} \beta_j \sigma_{t-j}^2,
+ \end{align*}
+ where the $\alpha_i$ and $\beta_j$ are non-negative constants and $\omega$ is (strictly) positive constant, and $\eta_t \sim$ W.N(0, 1).
+ 
+ Although ARCH can be used to model volatility clustering, there are some disadvantages of ARCH(r) models. First,  a large number of lags needs to be considered in order to capture the volatility clustering, which leads to a large number of parameters issue. Secondly, one needs to assume that positive and negative shocks have the same effects on the volatility. However, in practice it is well-known that financial assets' prices respond differently to positive and negative shocks. These issues can be solved by employing GARCH(r,s) models as GARCH(r,s) actually can be represented by ARCH($\infty$) and it can model the asymmetric effect of positive and negative shocks.
+ 
+ \subsection{ARMA(p,q)-GARCH(r,s)}
+ \subsubsection{Model}
+ As presented in the previous section, ARMA alone is not sufficient to model the financial series. A combination of ARMA and GARCH will be a better model candidate to estimate and produce probabilistic forecast. ARMA(p,q)-GARCH(r,s) models have a form as 
+ 
+ 
+ \begin{equation}
+ \begin{cases}
+ & X_t  = \mu_0 + \sum_{i=1}^{p} a_{0i} X_{t-i}  + \epsilon_t + \sum_{j=1}^{q}b_{0j} \epsilon_{t-j} \\
+ & e_t = \sigma_t \eta_t \\
+ & \sigma_t^2 = \omega_0 + \sum_{i=1}^{r} \alpha_{0i} \epsilon_{t-i}^2 + \sum_{j=1}^{s}\beta_{0j}\sigma_{t-j}^2, \\
+ \end{cases}
+ \end{equation}
+
+ where $\eta_t \sim $ W.N(0,1), $\omega_0 >$ 0, $\alpha_{0i} \geq 0$ (i = 1,..., r), and $\beta_{0j} \geq 0$ (j = 1,..., s), $e_t$ is not directly observed, but actually is the innovation of an observed ARMA process, ($\mu_0 , a_{0i}, b_{0j}, \omega_0, \alpha_{0i}, \beta_{0j}$)' is true value of parameters.
+ 
+\subsubsection{Estimation}
+Quasi-likelihood is applied to estimate ARMA(p,q)-GARCH(r,s) models (Francq, C. and Zakoian, J. M., 2019). The list of parameters that need to be estimated is as follows
+
+\[\varphi = (\upsilon', \theta')',\]
+with $\upsilon = (\mu, a_{1}, ..., a_p, b_1, ..., b_q)'$ is parameters for ARMA(p,q), $\theta = (\omega, \alpha_1, ..., \alpha_r, \beta_1, ..., \beta_s)$ is parameter for GARCH(r,s).
+
+In order to construct likelihood of the model, a distribution for $\eta_t$ has to be specified, which is a standard Gaussian distribution in this case study. Additionally, some initial values must be chosen according to the orders (p, q, r, s) of the model.
+If $r \geq q$, the initial values are 
+
+\[X_0, ..., X_{1-(r-q)-p}, \Tilde{\epsilon}_{-r+q}, ..., \Tilde{\epsilon}_{1-q}, \Tilde{\sigma}_0^2, ..., \Tilde{\sigma}_{1-p}^2 \]
+
+These values of the initial values can depend on the parameters or on the observations. The $\Tilde{\epsilon_t}$, t = -q+r+1,..., n, and $\Tilde{\sigma}^2_t$, t = 1,..., n are recursively determined by
+
+\begin{equation}
+\begin{cases}
+& \Tilde{\epsilon}_t = X_t - \mu - \sum_{i=1}^{p} a_i X_{t-i}  - \sum_{j=1}^{q} b_j \Tilde{\epsilon}_{t-j}\\
+& \Tilde{\sigma}_t^2 = \omega + \sum_{i=1}^{r} \alpha_i \Tilde{\epsilon}_{t-i}^2 + \sum_{j=1}^{s} \beta_j \Tilde{\sigma}_{t-j}^2\\
+\end{cases}
+\end{equation}
+
+The conditional Gaussian quasi-likelihood is as follows
+
+\[L_n(\varphi) = \prod_{t=1}^{n} \frac{1}{\sqrt{2 \pi \Tilde{\sigma}_t^2}} \exp \left (-\frac{\Tilde{\epsilon_t}^2}{2 \Tilde{\sigma}_t^2} \right ), \]
+
+Then, the Gaussian log-likelihood is given by
+\[\Tilde{\textbf{I}}_n(\varphi) = \frac{1}{n} \sum_{t=1}^{n} \Tilde{\textit{l}}_t, \]
+where $\Tilde{\textit{l}}_t = \frac{\Tilde{\epsilon}_t^2}{\Tilde{\sigma}_t^2} + \log \Tilde{\sigma}_t^2$
+The estimation of $\varphi$ is the solution of the equation
+
+\[\hat{\varphi}_n = \arg\min \Tilde{\textbf{I}}_n (\varphi)\]
+
+ Otherwise, the fixed initial values are 
+ 
+ \[X_0, ..., X_{1-(r-q)-p}, \epsilon_{0}, ..., \epsilon_{1-q}, \Tilde{\sigma}_0^2, ..., \Tilde{\sigma}_{1-p}^2\]
+ The estimation process is very similar with the case when $r \geq q$.
+ 
+The order (p, q, r, s) can be determined by using Akaike information criteria, which estimating the amount of information lost by a model. AIC is computed as follows
+
+\[AIC = 2p - 2ln(\hat{L}),\]
+where p is the number of estimated parameters in the model, $\hat{L}$ is log-likelihood. The prefered model is the one with minimum AIC value.
+
+
+ \subsubsection{One-day ahead forecasting}
+ ARMA(p,q)-GARCH(r,s) models produce not only point forecast but also probabilistic prediction. While the point (mean) forecast is from ARMA(p,q) part, GARCH(r,s) plays a role in predicting variance of the series.
+ 
+Assume that ARMA(p,q)-GARCH(r,s) is trained on series $X_t$, t = 1, 2, ..., d with p, q, r, s are determined using AIC. We get the estimated parameters $\hat{\varphi} = (\hat{\upsilon}_d, \hat{\theta}_d)$ as follows
+
+\begin{align*}
+& \hat{\upsilon}_d = (\hat{\mu}, \hat{a}_1, ... , \hat{a}_p, \hat{b}_1, ..., \hat{b}_q)' \\
+& \hat{\theta}_d = (\hat{\omega}, \hat{\alpha}_1, ..., \hat{\alpha}_r, \hat{\beta}_1, ..., \hat{\beta}_s)'\\
+\end{align*}
+
+The forecast for $X_{d+1}$ using the estimated parameters is given by
+
+\begin{equation*}
+\begin{cases}
+
+& \hat{X}_{d+1} = \hat{\mu} + \sum_{i=1}^{p} \hat{a}_i X_{d+1-j}  + \sum_{j=1}^{q} \hat{b}_j \hat{\epsilon}_{d+1-j}\\
+& var(\hat{X}_{d+1}) = var(\hat{\epsilon}_{d+1}) = \hat{\sigma}_{d+1}^2 = \hat{\omega} + \sum_{i=1}^{r} \hat{\alpha}_i \hat{\epsilon}_{d+1-i}^2 + \sum_{j=1}^{s} \hat{\beta}_j \hat{\sigma}_{d+1-j}^2 \\
+\end{cases}
+\end{equation*}
+where $\hat{\epsilon}_{d+1-j}$ is the residuals from fitted model, $\hat{\sigma}_{d+1-j}^2$ is fitted value of variance from model.
+ 
+ The forecast of $X_{d+2}$ follows the same procedure, and can be computed recursively by using $\hat{\epsilon}_{d+1} = X_{d+1} - \hat{X}_{d+1}$. By doing it 200 times, we get the one-period ahead forecasts without fitting model multiple times.
+ 
+ Moreover, we make 0.05-quantile forecast to address the uncertainty in forecast value. Basically, 0.05-quantile forecast indicates that the true value is expected to be lower than the forecast 5\% of the time. 
+ 
+ \subsubsection{Continuous Ranked Probability Score}
+ Continuous Ranked Probability Score (CRPS) is introduced by Székely’s (2003) that is used to evaluate probabilistic forecasts. CRPS is defined in terms of prediction cumulative distribution functions  $F$ as follows
+ 
+ \[CRPS(F,x) = - \int_{-\infty}^{\infty}  (F(y) - \mathbb{I}_{(y \geq x)}) ^2 \,dy\]
+ 
+ CRPS can be written as 
+ 
+ \[CRPS(F, x) =  \frac{1}{2} E_F |X-X'| - E_F |X-x|,\]
+ where $X$ and $X'$ are independent samples of random variable with distribution function $F$, $x$ is the observed value.
+ 
+ CRPS is usually expressed with negative orientation as
+ 
+ \[CRPS^*(F, x) = - CRPS(F, x) = E_F |X-x| - \frac{1}{2} E_F |X-X'|\]
+ 
+ With negative orientation, the $CRPS^*$ results have the same unit as the observations, which is helpful to evaluate the performance of probabilistic models. A lower value of $CRPS^*$ implies a better probabilistic forecast. In case of deterministic forecast, $CRPS^*$ reduces to a point measure that is mean absolute error (MAE) as the second term in $CRPS^*$ becomes zero.
+ 
+ In this report, $CRPS^*$ is estimated by
+ 
+ \[ CRPS^*(F, x) = \frac{1}{m} \sum_{i = 1}^{m} | X_i - x | - \frac{1}{2m^2} \sum_{i = 1}^{m} \sum_{j = 1}^{m} | X_i - X_j |,\]
+ where x is observed value, F denotes forecast distribution given m discrete sample $X_1, ..., X_m$.
+ 
+ \subsection{Copula}
+ \subsubsection{Definition}
+ Copulas play an essential role in modeling dependence of random variables. In order to model the interrelation of several random variables, two ingredients are required: the marginals and the type of interrelation. The general idea is that the marginal distributions (cumulative density function - cdf) are transformed to uniform distributions, then copula will be built based on the uniform ones.
+ 
+ According to Schmidt, T. (2007), a d-dimension copula C: $[0, 1]^d :\rightarrow [0,1]$ is a function which is a cumulative distribution function with uniform marginals
+ 
+ \[C(\textbf{u}) = C(u_1, ..., u_d)\]
+ 
+ A copula needs to fulfill the following properties
+ 
+ \begin{itemize}
+ \item $C( u_1, ..., u_d)$ is increasing in each component $u_i$ as $C(\textbf{u})$ is cdf.
+ \item $C(1, ..., 1, u_i, 1,..., 1) = u_i$ and it must be uniformly distributed.
+ \item With $a_i \leq b_i$, $P(U_1 \in [a_1, b_1], ..., U_d \in [a_d, b_d])$ must be non-negative, which is called rectangle inequality
+ 
+\[\sum_{i_1}^{2}... \sum_{i_d=1}^{2}(-1)^{i_1 + ... + i_d} C(u_{1, i_1}, ..., u_{d, i_d}) \geq 0,\] 
+where $u_{j,1} = a_j$ and $u_{j,2} = b_j$.
+ \end{itemize}
+
+\subsubsection{Probability integral and quantile transformation}
+The main objective of building copulas is to disentangle marginals and dependence structure (Schmidt, T., 2007). Probability integral and quantile transformations are used in order to model copula. 
+
+The probability integral transform states that if $X$ is a continuous random variable with cumulative distribution function $F_X$, then the random variable $Y = F_X(X)$ has a uniform distribution.
+
+\begin{align*}
+F_Y(y) &= P(Y \leq y) \\
+          &= P(F_X(X) \leq y) \\
+          &= P(F_X(X) \leq F_X^{-1}(y)) \\
+          &= F_X(F_X^{-1}(y)) \\
+          &= y.
+\end{align*}
+
+
+
+$F_Y(y) = y$ implies that the $Y = F_X(X)$ is uniformly distributed on [0,1].
+
+There are two approaches that can be used to perform probabilistic integral transformation (PIT), parametric and non-parametric estimation (McNeil et al., 2005). We employ the non-parametric approach in this case study, which is calculated by
+
+\[F_{n}^*(x) = \frac{1}{n+1} \sum_{t=1}^{n} \mathbb{I}_{(X_t \leq x)},\]
+by using the denominator n+1, we can evaluate the copula density at each data point.
+
+On the other hand, uniform distributed variable Y can be transformed back through quantile function of X, which results in the probability distribution function. 
+
+\begin{equation}
+\begin{cases}
+ & Y \sim \text{Uniform(0,1)}\\
+ & X = F_Z^{-1}(Y), \text{$F_Z^{-1}$ is quantile function}
+ \end{cases}
+ \end{equation}
+ Then, 
+ \[  X \sim Z\]
+ 
+ \subsubsection{Sklar's Theorem}
+ There exits a copula C while considering a d-dimensional cdf F with marginals $F_1, ..., F_d$ (Sklar, 1959). The copula is given by
+ 
+ \[F(x_1, ..., x_d) = C(F_1(x_1), ..., F_d(x_d)),\]
+for all $x_i$ in $[-\infty, \infty]$, i = 1, ..., d. If $F_i$ is continuous for all i = 1, ..., d then C is unique. It implies that a multivariate distributions function can be defined using marginals $F_1, ..., F_d$.
+
+Furthermore, according to Schmidt, T. (2007), Sklar's theorem can be written as
+
+\[C(\textbf{u}) = F(F_1^{-1}(u_1), ..., F_d^{-1}(u_d)),\]
+which proves that copula can be extracted directly from a multivariate distribution function. 
+
+\subsubsection{Copula densities}
+
+Based on the definition, a copula is a cumulative distribution function. However, it is quite challenging to interpret the graph of copula's cdf (Schmidt, T., 2007). Therefore, copula density is usually used for graphical illustration. If a copula is sufficiently differentiable, the copula density is given by
+
+\begin{equation*}
+\begin{split}
+c(\textbf{u}) &= \frac{\partial^d C(u_1, ..., u_d)}{\partial u_1... \partial u_d}\\
+		     & = \frac{f(F_1^{-1}(u_1), ..., F_d^{-1}(u_d))}{f_1(F_1^{-1}(u_1))...f_d(F_d^{-1}(u_d))},
+\end{split}
+\end{equation*}
+with $f$ is the joint density, and $f_i$ is the marginal densities.
+
+To sum up, copula density is equal to the ratio of the joint density and the product of all marginal densities. Therefore, copula density is one everywhere if the marginals are independent.
+
+Then, we have joint density as follows
+\[f(x) = c(\textbf{u}) \prod_{i=1}^{d} f_i(x_i)\]
+ 
+ \subsection{Measures of dependence}
+ 
+ \subsubsection{Linear correlation}
+ Correlation is a very popular measure for dependence structure of elliptical distributions; eg, normal distribution or t-distribution. Linear correlation is defined by
+ 
+ \[Corr(X_1, X_2) := \frac{Cov(X_1, X_2)}{\sqrt{Var(X_1).Var(X_2)}}\]
+ 
+ According to Schmidt, T. (2007), a correlation of 0 implies the independence for normal distributions. However, it is not true for t-distribution. It turns out that linear correlation is not sufficient to describe the dependency of random variables.
+ 
+ \subsubsection{Rank correlation}
+ Ranks of given data also provide meaningful information about the ranks of given data rather than on the data itself. Spearman's rho is a well-known measure to capture rank correlation. Moreover, rank correlation relates closely to copulas. Specifically, Spearman's rho is defined as
+ 
+ \[\rho_S := Corr(F_1(X_1), F_2(X_2)),\]
+ where $F_1, F_2$ are cdf of random variables $X_1, X_2$.
+ \subsubsection{Tail dependence}
+ Tail dependence describes the probability that a random variable exceeds a certain threshold given that another random variable has already exceeded that threshold. Tail dependence consists of upper and lower tail dependence. 
+ 
+ Coefficient of upper tail dependence of two random variables $X_1$ and $X_2$ with cdfs $F_i$ (i = 1, 2) is defined as
+ 
+ \[\lambda_u := \lim_{q \nearrow 1} P(X_2 > F_2^{-1}(q)|X_1 > F_1^{-1}(q))\]
+ 
+ Similarly, the coefficient of lower tail dependence is given by
+ 
+  \[\lambda_l := \lim_{q \searrow 0} P(X_2 \leq F_2^{-1}(q)|X_1 \leq F_1^{-1}(q)),\]
+ where $\lambda_u, \lambda_l \in [0,1]$. If $\lambda_u > 0$, $X_1$ and $X_2$ have upper tail dependence, while $\lambda_u = 0$ implies that two random variables are asymptotically independent in the upper tail. The same rules apply for $\lambda_l$.
+  
+ \subsection{Important copulas}
+ \subsubsection{Independence copula}
+ The independence copula is obtained for multivariate independent random variables. The independence copula in general is given by
+ 
+ \[\prod (\textbf{u}) =\prod_{i=1}^{d} u_i\]
+ 
+ However, it is note-worthy that variables are not independent in practice. Therefore, other copulas is more meaningful to model the dependence of variables.
+ 
+ \subsubsection{Gaussian copula}
+ Gaussian copula is used to model the dependence structure of random variables, which can be described by correlation (Schmidt, T., 2007).
+ 
+ Gaussian copula for $d$ normally distributed random variables is obtained as follows
+ 
+ \[C_\Sigma^{Ga}(u_1,..., u_d) = \Phi_\Sigma(\Phi^{-1}(u_1), ..., ) \Phi^{-1}(u_d)),\]
+ where $\Sigma$ is correlation coefficient matrix with 1 on the diagonal and $\rho$ otherwise, $\Phi$ is the cdf of a standard normal distribution, and  $\Phi_\Sigma$ is the d-dimension normal distribution with zero mean and correlation matrix $\Sigma$.
+ 
+ According to Cherubini et al. (2004), Gaussian copulas have density given by
+ 
+ \[c_\Sigma^{Ga}(u_1, ..., u_d) = \frac{1}{|\Sigma|^{1/2}} exp \left(-\frac{1}{2}S^T (\Sigma^{-1} - I) S \right),\]
+ where $S = (\Phi^{-1}(u_1),...,\Phi^{-1}(u_d))^T$, and $|\Sigma|$ is the determinant of $\Sigma$.
+ 
+ In case $\rho = 0$, Gaussian copula is equivalent to the independence copula. Gaussian copula is popular to capture the linear dependency between variables. However, tail dependence could not be modeled using Gaussian copula, which requires another form of copula to cover the shortage.
+ 
+ \subsubsection{T-copula}
+Student copula or t-copula is given by
+ 
+ \[C_{\nu, \Sigma}^t (\textbf{u}) = t_{\nu, \Sigma}(t_\nu^{-1}(u_1), ..., t_\nu^{-1}(u_d)),\]
+ where $\Sigma$ is a correlation matrix, $t_\nu$ is the cdf of one dimensional $t_\nu$ distribution, and $t_{\nu, \Sigma}$ is the cdf of the d-dimension $t_{\nu, \Sigma}$ distribution.
+ 
+ Multivariate t-copula density is stated in Cherubini et al. (2004) as follows
+ 
+ \[ c_{\nu, \Sigma}^t (u_1, ..., u_d) = |\Sigma|^{-1/2} \frac{\Gamma \left(\frac{\nu+d}{2}\right)}{\Gamma \left(\frac{\nu}{2}\right)} \left( \frac{\Gamma \left( \frac{\nu}{2} \right)}{\Gamma \left( \frac{\nu+1}{2} \right)}\right)^d \frac{\left( 1+\frac{1}{\nu} S^T \Sigma^{-1} S\right)^{-\frac{\nu+d}{2}}}{\prod_{j=1}^{d} \left( 1+\frac{S_j^2}{\nu} \right)^{-\frac{\nu+1}{2}}},\]
+ where $S_j = t_\nu^{-1}(u_j)$ , and $|\Sigma|$ is the determinant of $\Sigma$.
+ 
+ Thanks to the heavier tails property of t-distribution, t-copula is able to show the tail dependence. Comparing with the Gaussian copula having the same correlation, the extreme cases, which is observed by looking at the four corners, are much more obvious with t-copula. 
+ 
+ \subsection{Copula-GARCH}
+ 
+ \subsubsection{Model}
+ Marginals distributions, one of the two essential elements for constructing copula, can be modeled by GARCH(r,s) or ARMA(p,q)-GARCH(r,s). In ARMA(p,q)-GARCH(r,s) setup of this report, copulas are applied to extract the dependence structure of innovation or the residual of ARMA(p,q)-GARCH(r,s) for three time series. Each ARMA-GARCH has the following form, which leads to a series $\epsilon_t$.
+ \begin{equation}
+ \begin{cases}
+ & X_t - c_0 = \sum_{i=1}^{p} a_{0i} (X_{t-i} - c_0) + \epsilon_t - \sum_{j=1}^{q}b_{0j} \epsilon_{t-j} \\
+ & \sigma_t^2 = \omega_0 + \sum_{i=1}^{r} \alpha_{0i} \epsilon_{t-i}^2 + \sum_{j=1}^{s}\beta_{0j}\sigma_{t-j}^2, \\
+ & \epsilon_t = \sigma_t \eta_t \\
+ \end{cases}
+ \end{equation}
+ We assume $\eta_t \sim (0,1)$ and $\sigma_t^2$ is the conditional variance of $\epsilon_t$, then $\epsilon_t \sim (0, \sigma_t^2)$. To sum up, three univariate ARMA-GARCH(s) for three financial series to extract three series of residuals, and then copula will be employ to learn about the dependency of these residual series.
+ 
+ According to Lu, X. F. et al. (2014), the copula results may be misleading if the copula form is not appropriate. In order to choose the most suitable copula, AIC is used. The smallest AIC implies the optimal copula function.
+ 
+ \subsubsection{Maximum likelihood estimation}
+ According to Lu, X. F. et al (2014), Sklar's theorem conditioning on the past values can be rewritten as
+ 
+ \[F_{XY|W}(x_t, y_t; \theta|w_{t-1}) = C(F_{X|W}(x_t; \varphi|w_{t-1}), F_{Y|W}(y_t; \gamma|w_{t-1}); \kappa|w_{t-1}),\]
+ where $\theta = (\varphi, \gamma, \kappa)$ represents the set of all parameters of the marginals and copula to be estimated, $w_{t-1}$ is the information set available until time (t-1). The log-likelihood can be obtained as follows
+ 
+ \begin{align*}
+ L_{XY}(\theta) &= L_X(\varphi) + L_Y(\gamma) + L_C(\kappa) \\
+ 		       &= \sum_{t=1}^{T} log(f_X(x_t;\varphi)) + \sum_{t=1}^{T} log(f_Y(y_t;\gamma)) + \sum_{t=1}^{T}log(c(F_X(x_t;\varphi), F_Y(y_t;\gamma);\kappa))
+ \end{align*}
+ 
+ The parameters of copula can be estimated by multi-stage maximum likelihood. First, parameters of univariate marginal distributions are estimated in the first stage by
+ 
+ \[\hat{\varphi} = \text{arg max}_ \varphi \sum_{t=1}^{T} log(f_X(x_t;\varphi))\]
+ 
+  \[\hat{\gamma} = \text{arg max}_ \gamma \sum_{t=1}^{T} log(f_Y(y_t;\gamma))\]
+ 
+ Second, the copula parameters can be estimated by using $\hat{\varphi}$, and $\hat{\gamma}$
+ 
+  \[\hat{\kappa} = \text{arg max}_ \kappa \sum_{t=1}^{T}log(c(F_X(x_t;\varphi), F_Y(y_t;\gamma);\kappa))\]
+  
+  Then, $\hat{\kappa}$ is the optimal parameters for copula.
+ 
+ \subsubsection{Estimation and forecast procedure of copula-GARCH}
+ We expect to have one day-ahead multivariate probabilistic forecasts for the time series by applying copulas-GARCH. In this report, we estimate and evaluate the forecast of copula-GARCH with three copula functions: the independence copula, the Gaussian copula, and the t-copula. The procedure of estimation and prediction is as follows
+
+\textbf{Part A}: Estimation
+
+ \begin{enumerate}
+ \item ARMA(p,q)-GARCH(r,s) models are fitted for financial series, and the margin distributions are estimated for each series using the first d (d=2500) observation in the dataset.
+ \item d residuals are extracted for each series which is used to fit copula, and one-step means and variances forecasts are achieved by following the estimation and prediction procedure of ARMA-GARCH mention above.
+ 	\begin{itemize}
+ 	\item Residuals $\epsilon_{i,d}^{fitted} = X_{i,d} - X_{i,d}^{fitted}$ for i = 1, 2, 3
+ 	\item $\hat{X}_{i,d+j}$ and $\hat{\epsilon}_{i,d+j} = X_{i,d+j} - \hat{X}_{i,d+j}$ for j = 1, ..., 200 and i = 1, 2, 3
+ 	\end{itemize}
+ \item Residuals needs to be standardized, and then transformed to a uniform distribution by applying PIT transformation
+ 	\begin{itemize}
+ 	\item $\epsilon_{i,d}^{standardized} = \frac{\epsilon_{i,d}^{fitted}}{\sigma_{i,d}^{fitted}}$ for i = 1, 2, 3
+ 	\item Standardized residuals are sorted ascendingly, and divided by (d+1) to get uniform distribution in [0,1]
+ 	\end{itemize}
+ \item Fit copulas to the transform residuals and check AIC for copula selection
+ \end{enumerate}
+ 
+ \textbf{Part B}: Forecast
+ 
+ \begin{enumerate}
+ \item Simulate 1000 samples from the joint distribution estimated by copulas.
+ \item Apply appropriate quantile function to get $\epsilon_{X_1, d+1}^{*}, \epsilon_{X_2, d+1}^{*}, \epsilon_{X_3, d+1}^{*}$ 
+ \item Forecasts are obtained by 
+ \begin{equation*}
+ \begin{cases}
+  X_{1, d+1}^{j} &= \hat{X}_{1, d+1} + \epsilon_{X_1, d+1}^* * \hat{\sigma}_{X_1,d+1} \\
+  X_{2, d+1}^{j} &= \hat{X}_{2, d+1} + \epsilon_{X_2, d+1}^* * \hat{\sigma}_{X_2,d+1} \\
+  X_{3, d+1}^{j} &= \hat{X}_{3, d+1} + \epsilon_{X_3, d+1}^* * \hat{\sigma}_{X_3,d+1} \\
+ \end{cases}
+ \text{for j = 1, ..., 1000}
+ \end{equation*}
+ \end{enumerate}
+ 
+ \subsubsection{Energy score}
+ Energy score (ES) is a generalization of CRPS (Gneiting and Raftery, 2007). It is widely used to evaluate multivariate probabilistic forecasts. ES is defined as
+
+\begin{flalign*}
+ES(P,x) = \frac{1}{2} E_P \| \textbf{X} - \textbf{X'} \| ^\beta - E_P \|\textbf{X} - \textbf{x}\|^\beta,
+\end{flalign*}
+where \textbf{X} and \textbf{X'} are independent copies of a random vector with d-dimensional distribution \textit{P}, $\|.\|$ denotes the Euclidean norm (L2). 
+
+In negative orientation, the representation of ES can be written as
+
+\begin{flalign*}
+ES^*(P,x) = E_P \|\textbf{X} - \textbf{x}\|^\beta - \frac{1}{2} E_P \| \textbf{X} - \textbf{X'} \| ^\beta 
+\end{flalign*}
+In practice, $ES^*$ with $\beta = 1$ is more popular since it is easier to interpret that a lower value of $ES^*$ means a better probabilistic forecast. In case d = 1 and $\beta$ = 1, $ES^*$ and $CRPS^*$ are equivalent.
+
+According to scoringRules vignettes, ES with $\beta = 1$ can be estimated by
+
+\begin{flalign*}
+    ES^*(P,x) = \frac{1}{m} \sum_{i = 1}^{m} \| \textbf{X}_i - \textbf{x} \| - \frac{1}{2m^2} \sum_{i = 1}^{m} \sum_{j = 1}^{m} \| \textbf{X}_i - \textbf{X}_j \|,
+\end{flalign*}
+where $\textbf{x} = (x^{(1)},..., x^{(d)})$ is true value, P denotes d-dimensional forecast distribution given m discrete samples $\textbf{X}_1$,..., $\textbf{X}_m$ for P with $\textbf{X}_i = (X_i^{(1)},..., X_i^{(d)})$, $i = 1,..., m$.
+
+\subsection{R Packages}
+Due to the time constraint, we use built-in functions from several packages in R to conduct analysis and build models for this case study. First, several functions from rugarch package (Alexios Galanos, 2022) are used to fit ARMA-GARCH models. Second, copula package (Marius Hofert et al., 2023) is employed to fit copula-GARCH. Finally, CRPS and ES score are computed used the functions from scoringRules package (Fabian Krueger, 2023). 
+
+The built-in functions follow that estimation and computation procedure described in method section.
+\section{Result}
+
+\subsection{Descriptive analysis}
+In the data section, the time series' plots are shown to motivate the application of ARMA-GARCH models. ACF and PACF are also helpful metrics to provide the model’s orders such as p for AR and q for MA to have a general idea about the suitable models. ACF and PACF of the first and second order of natural gas returns can be seen from \colorAutoref{gas_acf}. Although the magnitudes of ACF and PACF of the first and second moment are not in line with the stylized fact that the one for second moment is more pronounced than one of first moment. However, it is note-worthy that the ACF and PACF's pattern is clearer; therefore we use it to set the range for orders of ARMA(p,q)-GARCH(r,s). 
+
+It can be observed from the ACF and PACF of natural gas that among the first five lags, only the first lag is significant. The result is very similar for oil and coal series that only the first 2 lags are significant, which can be seen from Appendix. Therefore, we set a range from 0 to 2 for ARMA(p,q) and from 1 to 3 for GARCH(r,s) in this report. 
+
+\begin{figure}[h!] 
+\includegraphics[scale=1,width=1\linewidth,height=0.5\textheight]{gas_acf.pdf}
+%\includegraphics[scale=1]{1.png}
+\vspace*{-18mm}
+\caption{ACF and PACF of first and second moment of gas series}
+\label{gas_acf}
+\end{figure}
+
+\subsection{ARMA-GARCH models}
+
+\subsubsection{Estimation of ARMA-GARCH}
+Several ARMA-GARCH models with different combinations of orders are fitted to the first 2500 observations by maximum likelihood estimation as mentioned in the method part. The models selected by AIC and estimated parameters are presented in \colorAutoref{arma-garch}. 
+
+According to AIC, ARMA(2,2)-GARCH(1,1) is the optimal model for coal series. In general, all parameters except for $\mu$ are statistically significant for t-test with significance level of 0.05. All parameters of GARCH element satisfy the constrain that they should be bigger than or equal to zero. 
+
+About natural gas and oil series, ARMA(2,1)-GARCH(1,1) and ARMA(0,1)-GARCH(1,1) respectively are the best model based on AIC. The findings are similar to coal series. It is noticeable that  $\alpha_1 + \beta_1$ is are very close to one, but not equal to one for three series, which implies that a large amount of volatility shock today feeds through into tomorrow's volatility (Campbell at al., 1997).
+
+\begin{table}[h!]
+\centering
+\caption{Parameter estimates for three series and statistic test }
+\begin{tabular}{lllllll}
+\hline
+ & \multicolumn{2}{c}{\begin{tabular}[c]{@{}c@{}}Coal \\ ARMA(2,2)-GARCH(1,1)\end{tabular}} & \multicolumn{2}{c}{\begin{tabular}[c]{@{}c@{}}Natural gas\\ ARMA(2,1)-GARCH(1,1)\end{tabular}} & \multicolumn{2}{c}{\begin{tabular}[c]{@{}c@{}}Oil\\ ARMA(0,1)-GARCH(1,1)\end{tabular}} \\ \cline{2-7} 
+Parameter & Value & p-value & Estimate & p-value & Estimate & p-value \\ \hline
+mu & -0.023646 & 0.389136 & -0.000466 & 0.943978 & 0.020956 & 0.474530 \\
+ar1 & 0.654700 & 0.000000 & 0.677686 & 0.000000 & \multicolumn{1}{c}{-} & \multicolumn{1}{c}{-} \\
+ar2 & 0.299865 & 0.000000 & -0.094191 & 0.000074 & \multicolumn{1}{c}{-} & \multicolumn{1}{c}{-} \\
+ma1 & -0.544325 & 0.000000 & -0.609012 & 0.000004 & 0.128400 & 0.000000 \\
+ma2 & -0.379228 & 0.000000 & \multicolumn{1}{c}{-} & \multicolumn{1}{c}{-} & \multicolumn{1}{c}{-} & \multicolumn{1}{c}{-} \\
+omega & 0.014977 & 0.000069 & 0.002450 & 0.018709 & 0.029603 & 0.355930 \\
+alpha1 & 0.012092 & 0.000619 & 0.125227 & 0.000001 & 0.056619 & 0.137030 \\
+beta1 & 0.969562 & 0.000000 & 0.873773 & 0.000000 & 0.923077 & 0.000000 \\ \hline
+ &  &  &  &  &  & 
+\end{tabular}
+\label{arma-garch}
+\end{table}
+
+The estimated conditional variances from natural gas series and it's series is shown in \colorAutoref{gas_convariance}. It is obvious that there is presence of sustained periods of high conditional variances or low conditional variances. The conditional variances from oil and coal series behave exactly the same way, which can be found in the Appendix. One possible explanation for this behavior is the volatility cluster of finance series. It is very well-known that financial returns series have a property that a large changes in prices tend to cluster together, which leads to a higher variance in specific period. Similarly, small returns cluster together, resulting in lower variance in sub-periods. 
+
+\vspace*{-5mm}
+\begin{figure}[H] 
+\includegraphics[scale=1,width=1\linewidth,height=0.45\textheight]{gas_convariance.pdf}
+%\includegraphics[scale=1]{1.png}
+\vspace*{-25mm}
+\caption{Gas Series and Conditional Variance from ARMA(2,1)-GARCH(1,1)}
+\label{gas_convariance}
+\end{figure} 
+
+\subsubsection{One-day ahead forecast with ARMA-GARCH models}
+The models selected by AIC are used to make probabilistic forecasts for three series. The predictions are computed recursively following the procedure mentioned in method part. By assumption, our forecasts follows normal distributions with different variance and mean at different time point. The mean forecast is determined by ARMA(p,q) part, while the variance of the the forecast is computed by GARCH component. 
+
+The probabilistic forecasts for natural gas together with the observed series are shown in \colorAutoref{gas_prob_forecast}. From the graph, we see that the density of the normal distribution clearly has different shape during the period. In the non-volatile period (from January 2020 to May 2020), the forecast density spreads less and has higher peak, which is a result of lower conditional variance. On the other hand, the forecast variance is larger in volatile phase (from May to July 2020 or from September to October 2020), which leads to a more spread of the density curve and lower peak. As a result, the mean prediction is more uncertainty in volatile phase. Moreover, the range of probabilistic forecast is similar to the true value.
+
+\begin{figure}[h!] 
+\includegraphics[scale=1,width=1\linewidth,height=0.4\textheight]{gas_prob_forecast.pdf}
+%\includegraphics[scale=1]{1.png}
+\vspace*{-13mm}
+\caption{Probabilistic forecast for gas series from ARMA(2,1)-GARCH(1,1)}
+\label{gas_prob_forecast}
+\end{figure}
+
+As can be seen from \colorAutoref{oil_prob_forecast}, the probabilistic forecast of oil returns are also different for volatile and non-volatile phases. The oil returns fluctuate significantly from March 2020 to April 2020, forming a volatile period with higher conditional variance. As a result, the forecast curve spreads more and has lower peak. 
+
+
+\begin{figure}[h!] 
+\includegraphics[scale=1,width=1\linewidth,height=0.4\textheight]{oil_prob_forecast.pdf}
+%\includegraphics[scale=1]{1.png}
+\vspace*{-13mm}
+\caption{Probabilistic forecast for oil series from ARMA(0,1)-GARCH(1,1)}
+\label{oil_prob_forecast}
+\end{figure}
+
+
+
+The graphical illustration of probabilistic forecast for coal returns is observed in \colorAutoref{coal_prob_forecast}. Different from the series of other two series from January to October 2020, it is hard to distinguish volatile and non-volatile phase; hence, the probabilistic forecast density looks very similar for the last 200 observations. 
+
+\begin{figure}[h!] 
+\includegraphics[scale=1,width=1\linewidth,height=0.4\textheight]{coal_prob_forecast.pdf}
+%\includegraphics[scale=1]{1.png}
+\vspace*{-13mm}
+\caption{Probabilistic forecast for coal series from ARMA(2,2)-GARCH(1,1)}
+\label{coal_prob_forecast}
+\end{figure}
+
+To sum up, ARMA-GARCH forecast is able to identify the volatile phase with higher accuracy. Furthermore, the range of probabilistic forecast is very close to the observed values. 
+
+\subsubsection{Evaluate the performance of probabilistic forecasts}
+We use CRPS to evaluate the accuracy of the out-of-sample forecast of ARMA-GARCH models. Besides, AR(1) models are run to make a deterministic forecast for the same series in the same period. The performance of AR(1) is measured by MAE at every time point in order to be comparable with CRPS. The evaluation measures of models for natural gas is shown in \colorAutoref{gas_compare}. Although the difference in CRPS of ARMA-GARCH and MAE of AR model is not very big, it is obvious that MAE is higher than CRPS most of the time. Hence, ARMA-GARCH can help to improve the accuracy of the forecast with respect to the distance from the prediction to the observed value. It is note-worthy that both CRPS and MAE is dramatically high in the volatile phases. 
+
+The comparison of the CRPS and MAE for oil has similar findings with oil return that CRPS is mostly lower than MAE. However, it is unclear for coal returns that ARMA-GARCH or AR model performs better. The graphs for model performance of oil and coal can be found in the appendix. With respect to the mean of evaluation measures for the whole period, mean of CRPS is lower than MAE, which implies that ARMA-GARCH have better performance in general.
+
+\vspace{-5mm}
+\begin{figure}[h!] 
+\includegraphics[scale=1,width=1\linewidth,height=0.4\textheight]{gas_compare.pdf}
+%\includegraphics[scale=1]{1.png}
+\vspace*{-23mm}
+\caption{Performance comparison between ARMA(2,1)-GARCH(1,1) and AR(1) for gas}
+\label{gas_compare}
+\end{figure}
+
+\subsubsection{Quantile forecast}
+The 0.05-quantile of gas forecast and its' actual value is illustrated in \colorAutoref{gas_005}. In theory, only 5\% of the observed values could be smaller than the 0.05-quantile forecast. In the case of gas returns, 3\% forecasts (6/200) is below the 0.05-quantile forecast line. Similarly, only 4\% (8/200) and 1.5\% (3/200) of the oil and coal's observations are smaller than 0.05-quantile forecast, which can be seen from appendix.
+
+Based on the result, coal can be the safest asset to invest as the chance that an actual value is smaller than 0.05-quantile forecast is the lowest. However, asset selection depended on only one metric can result in a misleading decision as the 0.05-quantile forecast can be very far from the true value. From our point of view, CRPS can be used together with 0.05-quantile forecast to make decision on investment.
+
+\begin{figure}[h!] 
+\includegraphics[scale=1,width=1\linewidth,height=0.4\textheight]{gas_005.pdf}
+%\includegraphics[scale=1]{1.png}
+\vspace*{-23mm}
+\caption{0.05-quantile forecast for gas series}
+\label{gas_005}
+\end{figure}
+
+\subsection{Copula-GARCH}
+
+\subsubsection{Dependence structures}
+
+The scatter plots for the standardized residuals and PIT-transformed of standardized residuals of natural gas versus coal are shown in \colorAutoref{PITcoalgas}. From the first scatter plot on the left hand side, the linear dependence can be seen easily, while the tail dependence can be noticed from the other scatter plot that there are more points at the upper left and lower right corner. The similar findings on dependencies of gas and oil, or oil and coal can be seen from scatter plots in the appendix.
+
+\begin{figure}[ht!]
+\centering
+\includegraphics[scale=1,width=1\linewidth,height=0.3\textheight]{PITcoalgas.pdf}
+\vspace*{-15mm}
+\caption{Scatter plots of residuals of gas versus coal}
+\label{PITcoalgas}
+\end{figure}
+
+\colorAutoref{dependence-measures} shows the dependence measure for linear, rank, and tail dependence for three residuals series. The dependence between gas and coal is the most pronounced in terms of all dependence measures. The relationship between gas and oil is clear with regard to linear and rank correlation; however, they do not have the strong tail dependence. It turns out the the relationship between coal and oil is small for all measures.
+
+\begin{table}[]
+\centering
+\caption{Dependence measures } \label{dependence-measures}
+\begin{tabular}{lccc}
+\hline
+ & \multicolumn{1}{l}{Linear correlation} & \multicolumn{1}{l}{Rank correlation} & \multicolumn{1}{l}{Tail dependence} \\ \hline
+Coal - Natural gas & 0.175 & 0.221 & 0.152 \\
+Coal - Oil & 0.098 & 0.118 & 0.088 \\
+Natural gas - Oil & 0.143 & 0.163 & 0.080 \\ \hline
+\end{tabular}
+\end{table}
+
+\subsubsection{Copula-GARCH}
+In this case study, we choose to fit independence copula, gaussian copula, and t-copula to three PIT-transformed standardized residuals. Since for the independence copula, we do not have to fit the copula, since the correlation matrix fixed with 1 everywhere; then we have no information about the log likelihood and therefore no AIC is obtained for independence copula as well.
+
+According to the AIC, t-copula is more suitable to model the dependence of the three PIT-transformed standardized residuals. Next, the performance of out-of-sample forecasts of the three copulas will be evaluated.
+
+\begin{table}[h!]
+\centering
+\caption{Gaussian copula and t-copula estimation } \label{copula}
+\begin{tabular}{l|lccc|cccc|}
+\cline{2-9}
+ & \multicolumn{4}{c|}{Gaussian copula} & \multicolumn{4}{c|}{t-copula} \\ \hline
+\multicolumn{1}{|l|}{Correlation matrix} & \multicolumn{1}{l|}{} & Coal & Gas & Oil & \multicolumn{1}{c|}{} & Coal & Gas & Oil \\ \cline{2-9} 
+\multicolumn{1}{|l|}{} & \multicolumn{1}{l|}{Coal} & 1 & 0.226 & 0.119 & \multicolumn{1}{c|}{Coal} & 1 & 0.231 & 0.123 \\
+\multicolumn{1}{|l|}{} & \multicolumn{1}{l|}{Gas} & 0.226 & 1 & 0.161 & \multicolumn{1}{c|}{Gas} & 0.231 & 1 & 0.164 \\
+\multicolumn{1}{|l|}{} & \multicolumn{1}{l|}{Oil} & 0.119 & 0.161 & 1 & \multicolumn{1}{c|}{Oil} & 0.123 & 0.164 & 1 \\ \hline
+\multicolumn{1}{|l|}{Degree of freedom} & \multicolumn{4}{c|}{-} & \multicolumn{4}{c|}{16.865} \\ \hline
+\multicolumn{1}{|l|}{Loglikelihood} & \multicolumn{4}{c|}{106.7} & \multicolumn{4}{c|}{119.4} \\ \hline
+\multicolumn{1}{|l|}{AIC} & \multicolumn{4}{c|}{-207.316} & \multicolumn{4}{c|}{-230.740} \\ \hline
+\end{tabular}
+\end{table}
+
+\subsubsection{Multivariate probabilistic forecasts and the performance}
+The 3-dimensional probabilistic forecast for every out-of-sample observation is conducted by simulation and quantile transformation as described in the method part. Since for each forecast, there will be 1000 samples, then we have 200000 samples for 200 out-of-sample observed values in total. It is challenging to have a graphical illustration for such multiple dimension probabilistic forecasts. The detailed result can be found in the code file. Therefore, the single evaluation metric for multivariate probabilistic forecasts is helpful in this case. 
+
+Energy scores of the three copulas can be seen in \colorAutoref{es_3series}. The ES for the forecast fluctuates from 0 to 10 during the period. It is unclear from the graph which performance is the best. However, by doing a simple count, ES of t-copula is smaller than ES of gaussian copula more often (111 times /200 forecast). Similarly, the 107 out of 200 forecast of t-copula is better than forecast of independence copula based on ES.
+
+\vspace{-5mm}
+\begin{figure}[h!] 
+\includegraphics[scale=1,width=1\linewidth,height=0.4\textheight]{es_3series.pdf}
+%\includegraphics[scale=1]{1.png}
+\vspace*{-23mm}
+\caption{Energy score for different copulas}
+\label{es_3series}
+\end{figure}
+
+
+\newpage
+\section{Conclusion}
+To summarize, this case study focuses on the application of ARMA-GACRH and copula-GARCH on forecasting daily returns of natural gas, oil and coal. First, ARMA-GARCH models are estimated using daily data from Mach 2010 to January 16, 2020, then the estimated models are used to make one-day ahead forecast from January 17, 2020 to October 2020. Second, copula-GARCH is employed to exploit the dependence structure of the three series to make multivariate probabilistic forecasts. About the model selection, AIC is the main criteria to choose the optimal orders for ARMA-GARCH as well as the type of copula. Furthermore, CRPS and ES are obtained to evaluate and compare the performance of different models.
+
+I highlight the three main findings. First, ARMA-GARCH can capture the volatility clustering characteristic of financial series. The performance of ARMA-GARCH prediction is better than AR(1) for gas and oil series with respect to CRPS. There is no clear difference between CRPS of ARMA-GARCH probabilistic forecast and MAE of AR(1) deterministic forecast of coal series as the volatility clustering is not obvious for coal returns. 
+
+Second, 0.05-quantile forecast of ARMA-GARCH performs well that only 3\%, 4\% and 1.5\% actual values of gas, oil and coal respectively is smaller than 0.05 quantile forecasts. Togtether with CRPS, they will become a powerful tool to support the decision on investment. 
+
+Third, according to AIC, t-copula is more suitable to model the dependence structure among three series. The result is confirmed by the performance of out-of-sample forecast although the difference is not very big based on ES. Similarly, the performance of Gaussian copula is better than the independence copula while the  ES gap is small. 
+
+Although ARMA-GARCH is able to model the volatility clustering, there are some possible improvements for these models. We have a very strong assumption that $\eta_t \sim N(0,1)$, while this assumption does not seem to be true in practice. Instead of assuming standard normal distribution for $\eta_t$, allowing a heavy tails or asymmetric distribution can help to improve the accuracy of forecasts. Furthermore, classic GARCH model give equal weight to an impact of positive and negative changes on volatility. Considering other forms of GACRH, such as threshold GARCH or exponential GARCH, can probably help to capture the volatility clustering more properly, resulting in a more accurate forecasts. It is obvious that taking the first difference can cancel the linear trend, however, seasonality is not taken care so far. Finding a way to include seasonality impact can probably improve the performance of forecast models.
+
+Moreover, there are several possible improvement for the multivariate forecast performance. The first thing we can change is about PIT process. According to McNeil et al. (2005), empirical PIT can be poor estimators of the underlying distribution in the tails. In order to keep the useful information of tail dependence, extreme value technique can be applied to do PIT. Secondly, we can also consider the Gumble copula to model the upper tail dependence. Besides, vinecopula can be a big improvement since it allows the dynamic dependence structure over time. 
+
+\newpage
+\begin{thebibliography}{11}
+\bibitem{}
+Bollerslev, T. (1986). Generalized autoregressive conditional heteroskedasticity.  \emph{Journal of Econometrics}, 31. 307-327.
+
+\bibitem{}
+Brockwell, P. J., \& Davis, R. A. (Eds.). (2002). Introduction to time series and forecasting.  \emph{Springer New York}.
+
+
+\bibitem{}
+Campbell, J.Y.,A. W. Lo \& A. C. MacKinlay. (1997). The Econometrics of Financial Markets. \emph{Princeton University Press.}.
+
+\bibitem{}
+Cherubini, U., Luciano, E., \& Vecchiato, W. (2004). Copula methods in finance. \emph{John Wiley \& Sons}.
+
+
+\bibitem{}
+Francq, C., Zakoian, J. M. (2019). GARCH models: structure, statistical inference and financial applications. \emph{ John Wiley \& Sons}.
+
+
+\bibitem{}
+Gneiting, T., Raftery, A. E. (2007). Strictly proper scoring rules, prediction, and estimation. \emph{Journal of the American statistical Association}, 102(477), 359-378.
+
+\bibitem{}
+Lu, X. F., Lai, K. K., Liang, L. (2014). Portfolio value-at-risk estimation in energy futures markets with time-varying copula-GARCH model. \emph{Annals of operations research}, 219(1), 333-357.
+
+\bibitem{}
+Mandelbrot, B. (1963). The variation of certain speculative prices.  \emph{Journal of Business 36}, 394–419.
+
+\bibitem{}
+McNeil, A., R. Frey, \& P. Embrechts (2005). Quantitative Risk Management: Concepts, Techniques and Tools. \emph{Princeton University Press}.
+
+\bibitem{}
+Schmidt, T. (2007). Coping with copulas. Copulas – From theory to application in finance, 3, 1-34.
+
+\bibitem{}
+Sklar, A. (1959). Fonctions de r´epartition `a n dimensions e leurs marges. Publications de l’Institut de Statistique de l’Univiversit´e de Paris 8, 229-231.
+
+\bibitem{}
+Székely, G. J. (2003). E-Statistics: The Energy of Statistical Samples. \emph{Technical Report 2003-16, Bowling Green State and Statistics}. University, Dept. of Mathematics
+
+\bibitem{}
+R Core Team (2023). R: A language and environment for statistical computing. R Foundation for Statistical Computing, Vienna, Austria. \emph{https://www.R-project.org/}.
+
+
+
+\end{thebibliography}
+
+
+
+\newpage
+\section*{Appendix}
+\vspace{-8mm}
+\begin{figure}[H] 
+\includegraphics[scale=1,width=1\linewidth,height=0.3\textheight]{oil_series.pdf}
+%\includegraphics[scale=1]{1.png}
+\vspace*{-23mm}
+\caption{Oil Series}
+\label{oil_series}
+\end{figure}
+\vspace{-12mm}
+\begin{figure}[h!] 
+\includegraphics[scale=1,width=1\linewidth,height=0.3\textheight]{coal_series.pdf}
+%\includegraphics[scale=1]{1.png}
+\vspace*{-23mm}
+\caption{Coal Series}
+\label{coal_series}
+\end{figure}
+
+\begin{figure}[H] 
+\includegraphics[scale=1,width=1\linewidth,height=0.3\textheight]{oil_acf.pdf}
+%\includegraphics[scale=1]{1.png}
+\vspace*{-18mm}
+\caption{ACF and PACF of first and second moment of oil series}
+\label{oil_acf}
+\end{figure}
+
+\begin{figure}[H] 
+\includegraphics[scale=1,width=1\linewidth,height=0.3\textheight]{coal_acf.pdf}
+%\includegraphics[scale=1]{1.png}
+\vspace*{-18mm}
+\caption{ACF and PACF of first and second moment of coal series}
+\label{coal_acf}
+\end{figure}
+
+\begin{figure}[h!] 
+\includegraphics[scale=1,width=1\linewidth,height=0.3\textheight]{oil_convariance.pdf}
+%\includegraphics[scale=1]{1.png}
+\vspace*{-25mm}
+\caption{Oil Series and Conditional Variance from ARMA(0,1)-GARCH(1,1)}
+\label{oil_convariance}
+\end{figure}
+
+\begin{figure}[H] 
+\includegraphics[scale=1,width=1\linewidth,height=0.3\textheight]{coal_convariance.pdf}
+%\includegraphics[scale=1]{1.png}
+\vspace*{-25mm}
+\caption{Coal Series and Conditional Variance from ARMA(2,2)-GARCH(1,1)}
+\label{coal_convariance}
+\end{figure}
+
+\begin{figure}[H] 
+\includegraphics[scale=1,width=1\linewidth,height=0.3\textheight]{oil_compare.pdf}
+%\includegraphics[scale=1]{1.png}
+\vspace*{-23mm}
+\caption{Performance comparison between ARMA(0,1)-GARCH(1,1) and AR(1) for oil}
+\label{oil_compare}
+\end{figure}
+
+\begin{figure}[H] 
+\includegraphics[scale=1,width=1\linewidth,height=0.3\textheight]{coal_compare.pdf}
+%\includegraphics[scale=1]{1.png}
+\vspace*{-23mm}
+\caption{Performance comparison between ARMA(2,2)-GARCH(1,1) and AR(1) for coal}
+\label{coal_compare}
+\end{figure}
+
+ \begin{figure}[H] 
+\includegraphics[scale=1,width=1\linewidth,height=0.3\textheight]{oil_005.pdf}
+%\includegraphics[scale=1]{1.png}
+\vspace*{-23mm}
+\caption{0.05-quantile forecast for oil series}
+\label{oil_005}
+\end{figure}
+
+\begin{figure}[H] 
+\includegraphics[scale=1,width=1\linewidth,height=0.3\textheight]{coal_005.pdf}
+%\includegraphics[scale=1]{1.png}
+\vspace*{-23mm}
+\caption{0.05-quantile forecast for coal series}
+\label{coal_005}
+\end{figure}
+
+
+% PIT COAL OIL 
+\begin{figure}[H]
+\centering
+\includegraphics[scale=1,width=1\linewidth,height=0.3\textheight]{PITcoaloil.pdf}
+\vspace*{-15mm}
+\caption{Scatter plots of residuals of oil versus coal} \label{PITcoaloil}
+\end{figure}
+
+
+% PIT gas oil
+\begin{figure}[H]
+\centering
+\includegraphics[scale=1,width=1\linewidth,height=0.3\textheight]{PITgasoil.pdf}
+\vspace*{-15mm}
+\caption{Scatter plots of residuals of gas versus oil} \label{PITgasoil}
+\end{figure}
+
+
+ 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%\bibliographystyle{apalike}
+%\bibliography{Biblio.bib}
+%\section*{References}
+%\addcontentsline{toc}{section}{References}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\setcounter{equation}{0}
+\renewcommand\theequation{\Alph{section}.\arabic{equation}}	
+\setcounter{table}{0}
+\renewcommand\thetable{\Alph{section}.\arabic{table}}
+\setcounter{figure}{0}
+\renewcommand\thefigure{\Alph{section}.\arabic{figure}}
+
+
+
+
+\end{document}
