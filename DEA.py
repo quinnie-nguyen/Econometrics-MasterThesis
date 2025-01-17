@@ -8,36 +8,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import numpy as np
 
-def compute_pacf(data, nlags):
-    """
-    Calculate Partial Autocorrelation Function (PACF) using Durbin-Levinson recursion.
 
-    Parameters:
-        data (array-like): Time series data.
-        nlags (int): Number of lags for which to calculate PACF.
-
-    Returns:
-        pacf (array): PACF values for lags 0 to nlags.
-    """
-    n = len(data)
-    mean = np.mean(data)
-    data = data - mean  # Demean the data
-
-    # Compute autocorrelations
-    acf = np.correlate(data, data, mode='full') / (n * np.var(data))
-    acf = acf[n-1:]  # Keep only non-negative lags
-
-    pacf = [1]  # PACF(0) is always 1
-    phi_prev = []
-
-    for k in range(1, nlags + 1):
-        # Solve Yule-Walker equations for lag k
-        toeplitz_matrix = np.array([acf[abs(i - j)] for i in range(k) for j in range(k)]).reshape(k, k)
-        rhs = acf[1:k+1]
-        phi_k = np.linalg.solve(toeplitz_matrix, rhs)
-        pacf.append(phi_k[-1])  # Append PACF value for lag k
-
-    return np.array(pacf)
 
 
 if __name__ == '__main__':
@@ -85,6 +56,13 @@ if __name__ == '__main__':
     plt.ylabel('Log Return')
     plt.show()
 
+    fig, axes = plt.subplots(2, 2, figsize=(14, 10), sharey=True)
+    for col, ax in zip(['Jan-16', 'Jan-19', 'Jan-22', 'Jan-24'], axes.flatten()):
+        ax.hist(return_data[col].values, bins = 25)
+        ax.grid(color='grey', linestyle='--', linewidth=0.2)
+        ax.set_title(col, fontsize = 8)
+    plt.show()
+
     # Example DataFrame Structure July
     # Replace with your actual data loading step
     jul = {
@@ -129,64 +107,5 @@ if __name__ == '__main__':
     plt.ylabel('Log Return')
     plt.show()
 
-
-
-
-
-    df = pd.DataFrame(data)
-
-    # Convert Month to a categorical variable to ensure proper ordering
-    month_order = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-    df['Month'] = pd.Categorical(df['Month'], categories=month_order, ordered=True)
-
-    # Calculate average Day-Ahead and Month-Ahead values across years for each month
-    avg_df = df.groupby('Month')[['Day-Ahead', 'Month-Ahead']].mean().reset_index()
-    avg_df['Year'] = 'Average'
-
-    # Append average data for plotting
-    df = pd.concat([df, avg_df], ignore_index=True)
-
-    # Set up the plotting style
-    sns.set(style='whitegrid')
-
-    # Create a grid of two plots: Day-Ahead and Month-Ahead
-    fig, axes = plt.subplots(1, 2, figsize=(14, 6), sharey=True)
-    colors = sns.color_palette('tab10', len(df['Year'].unique()))
-
-    # Plot Day-Ahead data
-    sns.lineplot(
-        data=df,
-        x='Month',
-        y='Day-Ahead',
-        hue='Year',
-        ax=axes[0],
-        palette=colors,
-        linewidth=1
-    )
-    axes[0].set_title('Day-Ahead')
-    axes[0].axhline(0, color='black', linestyle='--', linewidth=0.8)  # Add zero line
-
-    # Plot Month-Ahead data
-    sns.lineplot(
-        data=df,
-        x='Month',
-        y='Month-Ahead',
-        hue='Year',
-        ax=axes[1],
-        palette=colors,
-        linewidth=1
-    )
-    axes[1].set_title('Month-Ahead')
-    axes[1].axhline(0, color='black', linestyle='--', linewidth=0.8)  # Add zero line
-
-    # Adjust legend and layout
-    for ax in axes:
-        ax.legend(title='Year', bbox_to_anchor=(1.05, 1), loc='upper left')
-        ax.set_xlabel('Month')
-        ax.set_ylabel('Value')
-        ax.set_xticklabels(month_order, rotation=45)
-
-    plt.tight_layout()
-    plt.show()
 
 

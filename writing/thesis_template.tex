@@ -116,6 +116,15 @@ This study focuses on analyzing daily prices of NYMEX Henry Hub Natural Gas Futu
 \label{JanVol}
 \end{figure}
 
+\colorAutoref{JanHist} depicts the histogram of January contracts' log returns. The heavy-tailed and skewed returns distribution is caused by some large spikes which can be seen in \colorAutoref{JanVol}. As a result, it justifies the application of EGARCH with skewed-t distribution and HESTON models in this study.
+
+\begin{figure}[h!] 
+\includegraphics[scale=1,width=1\linewidth,height=0.4\textheight]{Jan_returnshist.png}
+\caption{January Futures Contract daily log return histogram}
+\label{JanHist}
+\end{figure}
+
+
 \colorAutoref{JulPrice} and \colorAutoref{JulVol} represent the price and log return time series of July contracts. It is noteworthy that Covid 19 seems to not have effect on prices of July 2019 while the political conflict had a significant influence in price of July 2022 and July 2023. On the other hand, volatility cluster is observed for all July 2016, July 2019, July 2022 and July 2024, which is the most important argument for using time-varying volatility models like EGARCH and HESTON.
 
 \begin{figure}[h!] 
@@ -145,14 +154,14 @@ In this study, I assume Efficient Market Hypothesis (EMH) holds true that prices
 
 \subsubsection{EGARCH (1,1) Model}
 
-The EGARCH(p,q) model, proposed by Nelson et al. (1991), is defined as follows:
+EGARCH captures volatility clustering as the conditional variance (volatility) is represented by a function of past squared returns, absolute returns, and other variables, in a way that accounts for the persistence of volatility over time. The EGARCH(p,q) model, proposed by Nelson et al. (1991), is defined as follows:
 
  \begin{align*}
  &r_t = \ln \left(\frac{S_t}{S_{t-1}}\right) = \mu + \epsilon_t ,\\
  &\epsilon_t = \sigma_t z_t,\\
  &\ln\left(\sigma_t^2\right) = \omega + \sum_{i=1}^p \left\{ \alpha_i \left( |z_{t-i}| - \mathbb{E}[|z_{t-i}|] \right) + \gamma_i z_{t-i} \right\} + \sum_{j=1}^q \beta_j \ln\left(\sigma_{t-j}^2\right)
  \end{align*}
- where $S_t$ is natural gas futures price at time t,  $r_t$ represents the logarithmic returns at time t, $\mu$ is the mean of return, $\sigma_t = Var(\epsilon_t|\epsilon_u, u<t)$ is the conditional variance, $z_t$ is an i.i.d standardized residuals (innovations), $\omega$ is constant term, $\alpha_i$ measures the impact of magnitude of past shocks (symmetric effect), $\gamma_i$ represent the sign effect of $z_t$ (asymmetric effect), $\beta_j$ is coefficient of past conditional variances, p and q are the orders of EGARCH model. Since $\ln(\sigma_t^2)$ can be negative, the positivity of the variance is automatically satisfied; therefore, there is no restrictions for parameters.
+ where $S_t$ is natural gas futures price at time t,  $r_t$ represents the logarithmic returns at time t, $\mu$ is the mean of return, $\sigma_t = Var(\epsilon_t|\epsilon_u, u<t)$ is the conditional variance, $z_t$ is an i.i.d standardized residuals (innovations), $\omega$ is constant term, $\alpha_i$ measures the impact of magnitude of past shocks (symmetric effect), $\gamma_i$ represent the sign effect of $z_t$ (asymmetric effect), $\beta_j$ is coefficient of past conditional variances, p and q are the orders of EGARCH model. The term $\sum_{j=1}^q \beta_j \ln\left(\sigma_{t-j}^2\right)$ captures the persistence of volatility. Specifically, high $\beta$ implies that large volatility in previous period tends to result in large volatility in subsequent periods. Since $\ln(\sigma_t^2)$ can be negative, the positivity of the variance is automatically satisfied; therefore, there is no restrictions for parameters.
  
  This thesis considers EGARCH(1,1) in order to have similar model setting with Heston model. The conditional variance of logarithmic returns under EGARCH(1,1) becomes:
  
@@ -167,7 +176,7 @@ By construction, $\gamma z_t$ and $\alpha (|z_t| - \mathbb{E}[|z_t|])$ have mean
  \end{cases}
  \end{equation}
 
-Additionally, $z_t$ is assumed to be skewed-student-t distributed (SST) with mean 0 and variance 1. As a result, $\epsilon_t \sim SST(0, \sigma_t)$. Berrisch, J., \& Ziel, F. (2022) found that the Student-t distribution is useful in capturing the heavy tails feature of empirical log-return time series. Developed by Fernandez and Steel in 1998, the density of $SST(\sigma, \nu, \delta)$ is defined as follows:
+Additionally, $z_t$ is assumed to be skewed-student-t distributed (SST) with mean 0 and variance 1. As a result, $\epsilon_t \sim SST(0, \sigma_t)$. The Student-t distribution is useful in capturing the heavy tails and skewness feature of empirical log-return time series. Developed by Fernandez and Steel in 1998, the density of $SST(\sigma, \nu, \delta)$ is defined as follows:
 
 
 \begin{align}
@@ -226,11 +235,6 @@ The QML estimated parameters $\hat{\varphi}$ is achieved by maximize the likelih
 
 \[\hat{\varphi} = \arg\min_\varphi \left [ - \ln(L_n(\varphi)) \right] \]
 
-The degree of freedom $\nu$ is determined according to Akaike information criteria (AIC), which provide the information lost by a model and is usually used to decide the order of the model. $\nu$ that minimize the AIC value will be used throughout the modeling and forecasting in this study. AIC can be calculated by
-
-\[\text{AIC } = 2m - 2 \ln(L_n(\varphi))\]
-
-with m is the number of estimated parameters in the model. For my comparative analysis, the order of the model is fixed, EGARCH(1,1), that make EGARCH setting similar to Heston model. Therefore, the number of estimated parameters is fixed and does not play any role in investigating the most suitable degree of freedom $\nu$. 
 
 \subsection{Heston model}
 \subsubsection{Model}
@@ -270,6 +274,8 @@ Consider $\Updelta t = \frac{1}{252}$ where 252 stands for the number of busines
 r_t &= \left( \mu - \frac{1}{2}V_{t-\Updelta t} \right) \Updelta t+ \sqrt{V_{t - \Updelta t}} \sqrt{\Updelta t} \epsilon_t^S \label{eq:3.12} \\ 
 V_t &= \kappa \theta \Updelta t + V_{t- \Updelta t} (1 - \kappa \Updelta t)  + \sqrt{V_{t - \Updelta t}} \sqrt{\Updelta t} \epsilon_t^V \label{eq:3.13}
 \end{align}
+
+\eqref{eq:3.13} shows that volatility squared $V_t$ is a function of $V_{t-\Updelta_t}$ and other parameters. Therefore, HESTON can capture volatility clustering feature of returns. Furthermore, stochastic volatility setup allows random spike or drop in volatility. As a result, it will increase the probability of extreme movements in price, which then causes heavy-tailed distribution of returns because large price changes occurs more frequently in HESTON model than in standard Black-Scholes model. 
 
 After reorganization, it can be seen that
 
@@ -549,6 +555,12 @@ Put simply, it is shown in \colorAutoref{CRPS_graph} that CRPS represents the gr
 \subsection{pseudo code}
 
 \section{Empirical Analysis}
+
+\subsection{CPRS}
+
+\subsection{Statistical Test}
+
+\subsection{Model-based trading performance}
 
 
 \section{Conclusion}

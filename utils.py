@@ -30,5 +30,36 @@ def get_data_by_cnt(month, year, length = 252):
     price = price[['Date', 'CLOSE', 'LOG_RETURN']].iloc[-length:, :]
     return price
 
+def compute_pacf(data, nlags):
+    """
+    Calculate Partial Autocorrelation Function (PACF) using Durbin-Levinson recursion.
+
+    Parameters:
+        data (array-like): Time series data.
+        nlags (int): Number of lags for which to calculate PACF.
+
+    Returns:
+        pacf (array): PACF values for lags 0 to nlags.
+    """
+    n = len(data)
+    mean = numpy.mean(data)
+    data = data - mean  # Demean the data
+
+    # Compute autocorrelations
+    acf = numpy.correlate(data, data, mode='full') / (n * numpy.var(data))
+    acf = acf[n-1:]  # Keep only non-negative lags
+
+    pacf = [1]  # PACF(0) is always 1
+    phi_prev = []
+
+    for k in range(1, nlags + 1):
+        # Solve Yule-Walker equations for lag k
+        toeplitz_matrix = numpy.array([acf[abs(i - j)] for i in range(k) for j in range(k)]).reshape(k, k)
+        rhs = acf[1:k+1]
+        phi_k = numpy.linalg.solve(toeplitz_matrix, rhs)
+        pacf.append(phi_k[-1])  # Append PACF value for lag k
+
+    return numpy.array(pacf)
+
 if __name__ == '__main__':
     data = get_price_data()
