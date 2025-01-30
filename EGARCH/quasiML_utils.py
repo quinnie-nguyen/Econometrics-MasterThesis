@@ -359,11 +359,11 @@ class EGARCH_CNT():
                  plot: str = False, rate = 0.05):
         price_df = pandas.read_csv(fr"D:\TU_DORTMUND\Thesis\Data\price\{contract}.csv")
         self.cnt = contract
-        self.expiry_date = datetime.datetime.strptime(contract, '%b-%y')
         price_df['Date'] = pandas.to_datetime(price_df['Date'])
         price_df = price_df[price_df['Date'].dt.weekday < 5]
         price_df = price_df[['Date', 'CLOSE']]
         price_df.columns = ['Date', 'Price']
+        self.expiry_date = price_df['Date'][-1]#datetime.datetime.strptime(contract, '%b-%y')
         #vol_df = pandas.read_csv(r"C:\temp\gas_vol.csv")
         #vol_df['Unnamed: 0'] = pandas.to_datetime(vol_df['Unnamed: 0'])
         #vol_df = vol_df[vol_df['Unnamed: 0'].dt.weekday < 5]
@@ -394,11 +394,11 @@ class EGARCH_CNT():
         self.egarch_mle()
         self.insample_simulation()
 
-        spot = pandas.read_csv(r'D:\TU_DORTMUND\Thesis\Data\price\Spot_Price.csv')
-        spot['Date'] = pandas.to_datetime(spot['Date'])
-        self.spot = spot
-        self.get_step_till_expiry()
-        self.get_step_till_end()
+        # spot = pandas.read_csv(r'D:\TU_DORTMUND\Thesis\Data\price\Spot_Price.csv')
+        # spot['Date'] = pandas.to_datetime(spot['Date'])
+        # self.spot = spot
+        # self.get_step_till_expiry()
+        # self.get_step_till_end()
 
     def loss(self, params):
         mu = params[0]
@@ -560,7 +560,7 @@ class EGARCH_CNT():
         s0 = self.gas_data[-1]
         simulated_paths, simulated_variances = self.get_paths(s0=s0, nsteps=step, nsim=self.nsim, v0=self.vpast)
         price_simu_outsample = pandas.DataFrame(simulated_paths).T
-        self.terminal_price = self.spot[self.spot['Date'] == self.first_busday_after_expiry]['Close'].values[0]
+        self.terminal_price = self.df['Price'][-1]#self.spot[self.spot['Date'] == self.first_busday_after_expiry]['Close'].values[0]
         #terminal_price = self.df['Price'].iloc[-1]
         self.outsample_crps, fcrps1, acrps1 = pscore(price_simu_outsample.iloc[-1], self.terminal_price).compute()
         print(f"CRPS Out-Sample: {self.outsample_crps}")
@@ -586,14 +586,16 @@ class EGARCH_SST():
                  q: int = 1,
                  o: int = 1,
                  long_run: float = 0.1, dist: str = 'gaussian',
-                 plot: str = False, rate = 0.05):
+                 plot: str = False, rate = 0.05,
+                 fixed_result = None):
         price_df = pandas.read_csv(fr"D:\TU_DORTMUND\Thesis\Data\price\{contract}.csv")
         self.cnt = contract
-        self.expiry_date = datetime.datetime.strptime(contract, '%b-%y')
+        #self.expiry_date = datetime.datetime.strptime(contract, '%b-%y')
         price_df['Date'] = pandas.to_datetime(price_df['Date'])
         price_df = price_df[price_df['Date'].dt.weekday < 5]
         price_df = price_df[['Date', 'CLOSE']]
         price_df.columns = ['Date', 'Price']
+        self.expiry_date = price_df['Date'].iloc[-1]
         #vol_df = pandas.read_csv(r"C:\temp\gas_vol.csv")
         #vol_df['Unnamed: 0'] = pandas.to_datetime(vol_df['Unnamed: 0'])
         #vol_df = vol_df[vol_df['Unnamed: 0'].dt.weekday < 5]
@@ -607,6 +609,7 @@ class EGARCH_SST():
         self.returns = numpy.diff(numpy.log(self.gas_data))  # "Y" is "returns" here
         self.mean_init = numpy.average(self.returns)
         self.var_init = numpy.std(self.returns) ** 2
+        self.fixed_result = fixed_result
         #self.vix_series = self.df.iloc[self.si:self.si + self.estimation_length + 1]['Vol'].to_numpy()
         #self.vixTF = vix
         #if self.vixTF is True:
@@ -622,13 +625,16 @@ class EGARCH_SST():
         self.dist = dist
         self.rate = rate
         self.egarch_mle()
-        self.insample_simulation()
+        if self.result.success == True:
+            self.insample_simulation()
 
-        spot = pandas.read_csv(r'D:\TU_DORTMUND\Thesis\Data\price\Spot_Price.csv')
-        spot['Date'] = pandas.to_datetime(spot['Date'])
-        self.spot = spot
-        self.get_step_till_expiry()
-        self.get_step_till_end()
+            # spot = pandas.read_csv(r'D:\TU_DORTMUND\Thesis\Data\price\Spot_Price.csv')
+            # spot['Date'] = pandas.to_datetime(spot['Date'])
+            # self.spot = spot
+            self.get_step_till_expiry()
+            self.get_step_till_end()
+        else:
+            pass
 
     def loss(self, params):
         mu = params[0]
@@ -706,10 +712,19 @@ class EGARCH_SST():
         return -log_likelihood
 
     def egarch_mle(self):
-
-        self.result = minimize(self.loss, [self.mean_init, self.var_init, 0, 0, 0, 2.1, 1], method="SLSQP",
+        if self.fixed_result is None:
+            self.result = minimize(self.loss, [self.mean_init, self.var_init, 0, 0, 0, 2.1, 1], method="SLSQP",
                                options={'maxiter': 10000})
-        self._params_dict = {'mu': self.result['x'][0],
+            self._params_dict = {'mu': self.result['x'][0],
+                             'omega': self.result['x'][1],
+                             'alpha': self.result['x'][2],
+                             'gamma': self.result['x'][3],
+                             'beta': self.result['x'][4],
+                             'nu': self.result['x'][5],
+                             'delta': self.result['x'][6]}
+        else:
+            self.result = self.fixed_result
+            self._params_dict = {'mu': self.result['x'][0],
                              'omega': self.result['x'][1],
                              'alpha': self.result['x'][2],
                              'gamma': self.result['x'][3],
@@ -768,8 +783,12 @@ class EGARCH_SST():
                                                               v0=None)
         self.price_simu_insample = pandas.DataFrame(simulated_paths).T
         self.vpast = pandas.DataFrame(simulated_variances).iloc[:, -1].mean()
-        self.insample_crps, fcrps, acrps = pscore(self.price_simu_insample.iloc[-1],
+        price_forecast = [x for x in self.price_simu_insample.iloc[-1] if x >0 and x < numpy.inf]
+        if len(price_forecast) > 0:
+            self.insample_crps, fcrps, acrps = pscore(price_forecast,
                                                   self.gas_data[:len(self.gas_data)][-1]).compute()
+        else:
+            self.insample_crps = numpy.nan
         print(f"CRPS In-Sample: {self.insample_crps}")
 
         if self.plot == True:
@@ -786,8 +805,8 @@ class EGARCH_SST():
         return dd
 
     def get_step_till_expiry(self):
-        self.first_busday_after_expiry = self.get_business_day(self.expiry_date)
-        self.steps_needed = numpy.busday_count(self.valdate.date(), self.first_busday_after_expiry.date())
+        #self.first_busday_after_expiry = self.get_business_day(self.expiry_date)
+        self.steps_needed = numpy.busday_count(self.valdate.date(), self.expiry_date.date())
 
     def get_step_till_end(self):
         self.steps_end = numpy.busday_count(self.valdate.date(), self.df['Date'].iloc[-1].date())
@@ -797,16 +816,20 @@ class EGARCH_SST():
         s0 = self.gas_data[-1]
         simulated_paths, simulated_variances = self.get_paths(s0=s0, nsteps=step, nsim=self.nsim, v0=self.vpast)
         price_simu_outsample = pandas.DataFrame(simulated_paths).T
-        self.terminal_price = self.spot[self.spot['Date'] == self.first_busday_after_expiry]['Close'].values[0]
+        self.terminal_price = self.df['Price'].iloc[-1]#self.spot[self.spot['Date'] == self.first_busday_after_expiry]['Close'].values[0]
         #terminal_price = self.df['Price'].iloc[-1]
-        self.outsample_crps, fcrps1, acrps1 = pscore(price_simu_outsample.iloc[-1], self.terminal_price).compute()
+        price_forecast = [x for x in price_simu_outsample.iloc[-1] if x > 0 and x < numpy.inf]
+        if len(price_forecast) > 0:
+            self.outsample_crps, fcrps1, acrps1 = pscore(price_forecast, self.terminal_price).compute()
+        else:
+            self.outsample_crps = numpy.nan
         print(f"CRPS Out-Sample: {self.outsample_crps}")
         return price_simu_outsample, self.outsample_crps
 
     def call_option_price(self, step, moneyness=0.9):
         price_simu, _ = self.outsample_simulation(step)
         self.strike = self.gas_data[-1]*moneyness
-        self.t2e = (self.first_busday_after_expiry - self.valdate).days // 30
+        self.t2e = (self.expiry_date - self.valdate).days // 30
         payoff = numpy.mean([i if i > 0 else 0 for i in list(price_simu.iloc[-1,:] - self.strike)])
         discount = (1+self.rate)**(self.t2e/12)
         call_price = payoff/discount
@@ -819,7 +842,7 @@ class Delta_Hedge():
                  s0_2 = 1.001,
                  moneyness = 0.9):
         self.obj = egarch_obj
-        self.t2e = (self.obj.first_busday_after_expiry - self.obj.valdate).days//30
+        self.t2e = (self.obj.expiry_date - self.obj.valdate).days//30
         self.rate = rate
         self.step = step
         self.s0_1 = s0_1

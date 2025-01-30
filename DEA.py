@@ -8,7 +8,31 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import numpy as np
 
+month = ['Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec']
 
+year = [17, 18, 19, 20, 21, 22, 23, 24]
+crps_egarch = r"D:\TU_DORTMUND\Thesis\Data\crps\EGARCH"
+
+crps_root_dir = r'D:\TU_DORTMUND\Thesis\Data\crps\EGARCH'
+crps_df = pandas.DataFrame()
+for yy in year:
+    for mm in month:
+        contract = f"{mm}-{yy}"
+        df_temp = pandas.read_csv(f"{crps_root_dir}\{contract}.csv", index_col=0, parse_dates=True).iloc[-3:, :].T
+        df_temp.columns = ['6M', '3M', '1M']
+        df_temp.index = [contract]
+        crps_df = pandas.concat([crps_df, df_temp], axis=0)
 
 
 if __name__ == '__main__':

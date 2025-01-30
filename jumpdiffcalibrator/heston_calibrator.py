@@ -3,7 +3,7 @@ from jumpdiffcalibrator import *
 
 class HestonCalibrator(BasicCalibrator, ConditionalPosteriorHestonMixin):
 
-    def __init__(self, parameter_dict: dict = None, alpha_prior: float = 2.0, beta_prior: float = 0.005, p_prior: float = 2.0,
+    def __init__(self, parameter_dict: dict = None, alpha_prior: float = 2.0, beta_prior: float = 0.01, p_prior: float = 2.0,
                  psi_prior: float = 0.0, theta_prior: float = 0.0, sigma_sq_theta_prior: float = 1.0,
                  kappa_prior: float = 0.0, sigma_sq_kappa_prior: float = 1.0, vol_prior_mean: float = 0.09, vol_prior_std: float = 0.1, # annualized params
                  mu: float = 0.05, kappa: float = 0.5, theta: float = 0.1, omega: float = 0.1, psi: float = 0,
