@@ -20,6 +20,8 @@
 \usepackage[nameinlink,noabbrev]{cleveref}
 \usepackage{bbm}
 \usepackage{upgreek}
+% Please add the following required packages to your document preamble:
+\usepackage{booktabs}
 
 \newcommand\colorAutoref[1]{{\hypersetup{linkcolor=black}\autoref{#1}}}
 
@@ -152,13 +154,49 @@ In this study, I assume Efficient Market Hypothesis (EMH) holds true that prices
 
 \subsection{EGARCH}
 
+
+\subsubsection{Background and motivation}
+
+Traditional econometrics model which assumes homoskedasticity does not represent the well-documented stylized facts of financial time series, such as volatility clustering, leverage effects, and fat-tailed distributions. In 1982, autoregressive conditionally heteroscedastic (ARCH) models was first developed by Engle. The ARCH model is the first formal framework to capture volatility clustering. It describes volatility as a function of past squared residuals (shocks).
+
+While ARCH model is simple and successfully describes the important characteristic of financial returns, it usually requires a large number of lagged squared residuals to sufficiently represent the volatility process, resulting in estimation inefficiency. To address this issue, some alternatives were introduced. An extension of ARCH model, general autoregressive conditionally heteroscedastic (GARCH),  proposed by Bollerslev (1986) is one of the most well-known approach. 
+
+The important feature of (G)ARCH models are the conditional variance, which allows the variance at time t depending on the variances and shocks at time u with $u<t$.
+
+A strong GARCH(p,q) model is given by
+
+ \begin{align*}
+ &\epsilon_t = \sigma_t \eta_t,\\[0.6em]
+ &\sigma_t^2 = \omega + \sum_{i=1}^p \alpha_i \epsilon_{t-i}^2+ \sum_{j=1}^q \beta_j \sigma_{t-j}^2
+ \end{align*}
+ 
+ where the $\alpha_i$ and $\beta_j$ are non-negative constant and $\omega$ is positive constant, and $\eta_t ~ \mathbb{N}(0,1)$.
+
+If all $\beta_j =0$, function of variance becomes
+
+
+ \begin{align*}
+ \sigma_t^2 = \omega + \sum_{i=1}^p \alpha_i \epsilon_{t-i}^2
+ \end{align*}
+ 
+ and the process has a form of ARCH(p).
+ 
+As GARCH(p,q) model has ARCH($\infty$); therefore, it helps to capture the process of variance without adding too many lag of shocks and variances. However, there are some technical and practical issues one has to consider when employing GARCH(p,q) to modelling financial volatility cluster.
+
+First, $\alpha_i$ and $\beta_j$ have to be positive to ensure that $\sigma^2 >0$. The restriction makes it hard to have efficient optimizer.
+
+Second, ARCH and GARCH both assume the symmetric effect of negative and positive shock although there is obviously the asymmetric influence of price shocks in practice. 
+
+Exponential general autoregressive conditionally heteroscedastic (EGARCH) is one of the solution to both issue while maintaining the capability to capture volatility clustering.
+
+
 \subsubsection{EGARCH (1,1) Model}
 
 EGARCH captures volatility clustering as the conditional variance (volatility) is represented by a function of past squared returns, absolute returns, and other variables, in a way that accounts for the persistence of volatility over time. The EGARCH(p,q) model, proposed by Nelson et al. (1991), is defined as follows:
 
  \begin{align*}
- &r_t = \ln \left(\frac{S_t}{S_{t-1}}\right) = \mu + \epsilon_t ,\\
- &\epsilon_t = \sigma_t z_t,\\
+ &r_t = \ln \left(\frac{S_t}{S_{t-1}}\right) = \mu + \epsilon_t ,\\[0.6em]
+ &\epsilon_t = \sigma_t z_t,\\[0.6em]
  &\ln\left(\sigma_t^2\right) = \omega + \sum_{i=1}^p \left\{ \alpha_i \left( |z_{t-i}| - \mathbb{E}[|z_{t-i}|] \right) + \gamma_i z_{t-i} \right\} + \sum_{j=1}^q \beta_j \ln\left(\sigma_{t-j}^2\right)
  \end{align*}
  where $S_t$ is natural gas futures price at time t,  $r_t$ represents the logarithmic returns at time t, $\mu$ is the mean of return, $\sigma_t = Var(\epsilon_t|\epsilon_u, u<t)$ is the conditional variance, $z_t$ is an i.i.d standardized residuals (innovations), $\omega$ is constant term, $\alpha_i$ measures the impact of magnitude of past shocks (symmetric effect), $\gamma_i$ represent the sign effect of $z_t$ (asymmetric effect), $\beta_j$ is coefficient of past conditional variances, p and q are the orders of EGARCH model. The term $\sum_{j=1}^q \beta_j \ln\left(\sigma_{t-j}^2\right)$ captures the persistence of volatility. Specifically, high $\beta$ implies that large volatility in previous period tends to result in large volatility in subsequent periods. Since $\ln(\sigma_t^2)$ can be negative, the positivity of the variance is automatically satisfied; therefore, there is no restrictions for parameters.
@@ -171,7 +209,7 @@ EGARCH captures volatility clustering as the conditional variance (volatility) i
 By construction, $\gamma z_t$ and $\alpha (|z_t| - \mathbb{E}[|z_t|])$ have mean zero. If the distribution of $z_t$ is symmetric, the two elements are orthogonal. The conditional variance process responds asymmetrically to increase and decrease in price, which can be demonstrated as follows: 
  \begin{equation}
  \begin{cases}
- \ln\left(\sigma_t^2\right) &= \omega + (\alpha + \gamma) z_{t-1} +  \beta \ln\left(\sigma_{t-1}^2\right), 0 < z_t < \infty \\
+ \ln\left(\sigma_t^2\right) &= \omega + (\alpha + \gamma) z_{t-1} +  \beta \ln\left(\sigma_{t-1}^2\right), 0 < z_t < \infty \\[0.6em]
  \ln\left(\sigma_t^2\right) &= \omega + (-\alpha + \gamma) z_{t-1} +  \beta \ln\left(\sigma_{t-1}^2\right), -\infty < z_t \le 0
  \end{cases}
  \end{equation}
@@ -197,17 +235,17 @@ If $\delta = 1$, SST is reduced to Student-t distribution, which was developed i
 I consider EGARCH(1,1) model that cover all leverage effect, heavy tail and skew innovation. The proposed model is defined as follow:
 
 \begin{align*}
- &r_t = \ln \left(\frac{S_t}{S_{t-1}}\right) = \mu + \epsilon_t ,\\
- &\epsilon_t = \sigma_t z_t,\\
- &z_t \sim SST(0, 1, \nu, \delta), \\
- &\epsilon_t \sim SST(0, \sigma_t, \nu, \delta), \\
+ &r_t = \ln \left(\frac{S_t}{S_{t-1}}\right) = \mu + \epsilon_t ,\\[0.6em]
+ &\epsilon_t = \sigma_t z_t,\\[0.6em]
+ &z_t \sim SST(0, 1, \nu, \delta), \\[0.6em]
+ &\epsilon_t \sim SST(0, \sigma_t, \nu, \delta), \\[0.6em]
  &\ln\left(\sigma_t^2\right) = \omega + \alpha \left( |z_{t-1}| - \mathbb{E}[|z_{t-1}|] \right) + \gamma z_{t-1} +  \beta \ln\left(\sigma_{t-1}^2\right)
  \end{align*}
 
 The parameter set $ \varphi = (\mu, \alpha, \beta, \gamma, \delta, \nu)$ is estimated using Quasi-Maximum Likelihood (QML) approach (Francq, C. and Zakoian, J. M., 2019). In order to adopt QML, besides the i.i.d skewed-Student-t distribution of innovation $z_t$, some initial values $z_{t-1}, \sigma_{t-1}$  have to be chosen according to the estimated parameters as well as the observed $r_t$, which can be described as follows:
 
 \begin{align}
-\sigma_{0} &= \exp \left( \frac{\Tilde{\omega}}{1-\Tilde{\beta}} \right)^{0.5}, \label{eq:3.6}\\
+\sigma_{0} &= \exp \left( \frac{\Tilde{\omega}}{1-\Tilde{\beta}} \right)^{0.5}, \label{eq:3.6}\\[0.6em]
 z_{0} &= \frac{r_{0} - \Tilde{\mu}}{\sigma_{0}}
 \end{align}
 
@@ -216,8 +254,8 @@ with $\Tilde{\omega} \text{ and } \Tilde{\beta}$ are candidate for estimated par
 The $\Tilde{\epsilon_t}$, t = 1,..., n, and $\Tilde{\sigma}^2_t$, t = 1,..., n are recursively determined by
 
 \begin{align*}
-& \Tilde{\epsilon}_t = r_t - \mu \\
-& \Tilde{z}_t = \frac{\Tilde{\epsilon}_t}{\Tilde{\sigma}_t}\\
+& \Tilde{\epsilon}_t = r_t - \mu \\[0.6em]
+& \Tilde{z}_t = \frac{\Tilde{\epsilon}_t}{\Tilde{\sigma}_t}\\[0.6em]
  &\ln\left(\Tilde{\sigma}_t^2\right) = \Tilde{\omega} + \Tilde{\alpha} \left( |\Tilde{z}_{t-1}| - \mathbb{E}[|\Tilde{z}_{t-1}|] \right) + \Tilde{\gamma} \Tilde{z}_{t-1} +  \Tilde{\beta} \ln\left(\Tilde{\sigma}_{t-1}^2\right)
 \end{align*}
 
@@ -237,13 +275,54 @@ The QML estimated parameters $\hat{\varphi}$ is achieved by maximize the likelih
 
 
 \subsection{Heston model}
+\subsubsection{Background and motivation}
+
+\textbf{Black-Scholes model}
+
+Black-Scholes model, which assumes Geometric Brownian Motion (GBM) has been become the benchmark of models for financial derivatives pricing. The price of equity or commodity is given by GBM as follows
+
+\begin{align*}
+dS_t = \mu S_t dt + \sqrt{V} S_t dW_t^s
+\end{align*}
+
+where 
+
+\begin{itemize}
+\item $S_t$: asset price at time t
+\item $\mu$: expected return
+\item $\sqrt{V}$: constant volatility
+\item $W_t^s$: Wiener process (Brownian motion)
+\end{itemize}
+
+Back-Scholes model is well-known thanks to its closed-form solution for European options pricing. However, it has several issues for practitioners when applying in real world. First, volatility $\sqrt{V}$ is assumed to be constant over time. It can be seen from empirical data that volatility is time-varying and has feature of clustering. Secondly, in real world, volatility tends to revert to long-term mean, but this feature is not covered by GBM either. To address these issues, stochastic volatility Heston models were developed in 1993 where underlying price follows GBM with stochastic volatility be represented by Ornstein-Uhlenbeck process.
+
+\textbf{Ornstein-Uhlenbeck}
+
+The mean reversion Ornstein-Uhlenbeck model is employed in Heston model for describing stochastic volatility process
+
+\begin{align*}
+dV_t = \kappa (\theta - V_t) dt + \sqrt{V_t} \sigma_V dW_t^V 
+\end{align*}
+
+where 
+\begin{itemize}
+\item $V_t$: variance at time t
+\item $\kappa$: speed of mean reversion
+\item $\theta$: long-term volatility
+\item $\sigma_V$: volatility of volatility
+\item $W_t^v$: Wiener process (Brownian motion)
+\end{itemize}
+
+Ornstein-Uhlenbeck process has property of mean reversion that volatility fluctuates but tends to revert to long-term level. Additionally, Brownian motion $W_t^v$ make the process stochastic.
+
+
 \subsubsection{Model}
 The Heston model is an extension of the Black and Scholes model (BSM) that Heston model considers stochastic volatility (Heston 1993). Heston model is given by two stochastic differential equations:
 
 \begin{align}
-dS_t &= \mu S_t dt + \sqrt{V_t} S_t dW_t^S \label{eq:3.8} \\ 
-dV_t &= \kappa (\theta - V_t) dt + \sqrt{V_t} \sigma_V dW_t^V \label{eq:3.9} \\ 
-dW_t^S dW_V^2 &= \rho \\
+dS_t &= \mu S_t dt + \sqrt{V_t} S_t dW_t^S \label{eq:3.8} \\[0.6em]
+dV_t &= \kappa (\theta - V_t) dt + \sqrt{V_t} \sigma_V dW_t^V \label{eq:3.9} \\[0.6em]
+dW_t^S dW_V^2 &= \rho \\[0.6em]
 2\kappa \theta &\ge \sigma_V^2 \label{eq:3.10}
 \end{align}
 
@@ -253,25 +332,25 @@ $\sigma_V$ is volatility of the volatility, and it is generally responsible for 
 By applying Ito's Lemma, which is discussed in Appendix, Heston model becomes:
 
 \begin{align*}
-d \ln(S_t) &= \left( \mu - \frac{1}{2}V_t \right) dt + \sqrt{V_t} dW_t^S \\ 
-dV_t &= \kappa (\theta - V_t) dt + \sqrt{V_t} \sigma_V dW_t^V \\ 
+d \ln(S_t) &= \left( \mu - \frac{1}{2}V_t \right) dt + \sqrt{V_t} dW_t^S \\[0.6em] 
+dV_t &= \kappa (\theta - V_t) dt + \sqrt{V_t} \sigma_V dW_t^V \\[0.6em] 
 dW_t^1 dW_t^2 &= \rho
 \end{align*}
 
 In order to estimate parameter and to forecast the price process, Heston model needs to be discretized. By Euler–Maruyama discretisation scheme (Kloeden and Platen, 1992), Heston model can be described as
 
 \begin{align*}
-\ln(S_t) - \ln(S_{t-\Updelta t}) &= \left( \mu - \frac{1}{2}V_{t-\Updelta t} \right) \Updelta t+ \sqrt{V_{t - \Updelta t}} \sqrt{\Updelta t} \epsilon_t^S\\
-V_t - V_{t-\Updelta t} &= \kappa (\theta - V_{t- \Updelta t}) \Updelta t + \sqrt{V_{t - \Updelta t}} \sqrt{\Updelta t} \epsilon_t^V \\ 
-\epsilon_t^S &\sim \mathcal{N}(0, 1)\\
-\epsilon_t^V &\sim \mathcal{N}(0, \sigma_V^2)\\
+\ln(S_t) - \ln(S_{t-\Updelta t}) &= \left( \mu - \frac{1}{2}V_{t-\Updelta t} \right) \Updelta t+ \sqrt{V_{t - \Updelta t}} \sqrt{\Updelta t} \epsilon_t^S\\[0.6em]
+V_t - V_{t-\Updelta t} &= \kappa (\theta - V_{t- \Updelta t}) \Updelta t + \sqrt{V_{t - \Updelta t}} \sqrt{\Updelta t} \epsilon_t^V \\[0.6em] 
+\epsilon_t^S &\sim \mathcal{N}(0, 1)\\[0.6em]
+\epsilon_t^V &\sim \mathcal{N}(0, \sigma_V^2)\\[0.6em]
 Corr(\epsilon_t^S, \epsilon_t^V) &= \rho
 \end{align*}
 
 Consider $\Updelta t = \frac{1}{252}$ where 252 stands for the number of business days in a year, $\ln(S_t) - \ln(S_{t-\Updelta t}) = r_t$ is daily return, and all parameters can be interpreted annually. In order to facilitate the estimation, let $\psi = \rho \sigma_V$ and $\Omega = \sigma_V^2(1-\rho^2)$, Heston model can be illustrated as 
 
  \begin{align}
-r_t &= \left( \mu - \frac{1}{2}V_{t-\Updelta t} \right) \Updelta t+ \sqrt{V_{t - \Updelta t}} \sqrt{\Updelta t} \epsilon_t^S \label{eq:3.12} \\ 
+r_t &= \left( \mu - \frac{1}{2}V_{t-\Updelta t} \right) \Updelta t+ \sqrt{V_{t - \Updelta t}} \sqrt{\Updelta t} \epsilon_t^S \label{eq:3.12} \\[0.6em] 
 V_t &= \kappa \theta \Updelta t + V_{t- \Updelta t} (1 - \kappa \Updelta t)  + \sqrt{V_{t - \Updelta t}} \sqrt{\Updelta t} \epsilon_t^V \label{eq:3.13}
 \end{align}
 
@@ -280,8 +359,8 @@ V_t &= \kappa \theta \Updelta t + V_{t- \Updelta t} (1 - \kappa \Updelta t)  + \
 After reorganization, it can be seen that
 
 \begin{align*}
-\epsilon_t^S &= \frac{r_t - \mu \Updelta t + \frac{1}{2} V_{t-\Updelta t}}{\sqrt{V_{t-\Updelta t}}\sqrt{\Updelta t}}, \\
-\epsilon_t^V &= \frac{V_t - \kappa \theta \Updelta t - (1-\kappa \Updelta t) V_{t-\Updelta t}}{\sqrt{V_{t-\Updelta t}}\sqrt{\Updelta t}},\\
+\epsilon_t^S &= \frac{r_t - \mu \Updelta t + \frac{1}{2} V_{t-\Updelta t}}{\sqrt{V_{t-\Updelta t}}\sqrt{\Updelta t}}, \\[0.6em]
+\epsilon_t^V &= \frac{V_t - \kappa \theta \Updelta t - (1-\kappa \Updelta t) V_{t-\Updelta t}}{\sqrt{V_{t-\Updelta t}}\sqrt{\Updelta t}},\\[0.6em]
 (\epsilon_t^S, \epsilon_t^V) &\sim \mathcal{N}\left( (0,0), \begin{pmatrix}
 											1 & \rho \sigma_V\\
 											\rho \sigma_V & \sigma_V^2
@@ -304,15 +383,24 @@ P(r, V| \mu, \kappa, \theta, \psi, \Omega) = \Omega^{-n/2} \left( \prod_{t=1}^{n
 
 The joint likelihood of $r_t, V_t$ is then used with the assumptions of prior distribution for parameters to obtain posterior distributions of parameters.
 
+\vspace{1em}
+
 \textbf{A. Posterior distribution of $\mu$}
+
+\vspace{1em}
 
 Assuming that $\mu \sim \mathcal{N}(\mu_0, \sigma_0^2)$, according to Bayes rule, the posterior of $\mu$ is given by
 
 \begin{align*}
-P(\mu \mid Y, V, \kappa, \theta, \psi, \Omega) & \propto P(Y, V \mid \mu, \kappa, \theta, \psi, \Omega) \cdot P(\mu) \\
-& \propto\exp\left(-\frac{1}{2} \left[\left(\sum_{t=1}^n \frac{\Omega + \psi^2}{\Omega V_{t-1}}\right) \mu^2 \Delta t \right. \right. \\ 
-& \left. \left. - 2\sum_{t=1}^T \left(\frac{(\Omega + \psi^2)(Y_t - \frac{1}{2} V_{t-1} \Delta t)}{\Omega V_{t-1} \sqrt{V_{t-1} \Delta t}} - \frac{\psi \left(V_t - \kappa \theta \Delta t - (1 - \kappa \Delta t)V_{t-1} \right)}{\Omega V_{t-1}} \right) \mu \right] \right) \\
+P(\mu \mid Y, V, \kappa, \theta, \psi, \Omega) & \propto P(Y, V \mid \mu, \kappa, \theta, \psi, \Omega) \cdot P(\mu) \\[0.6em]
+& \propto \exp\left( -\frac{1}{2\Omega} \sum_{t=1}^{n} \left[ (\Omega + \psi^2)(\epsilon_t^S)^2 - 2\psi \epsilon_t^V \epsilon_t^S \right] \right) \cdot \exp\left( -\frac{(\mu - \mu_0)^2}{2\sigma_0^2} \right) \\[0.6em]
+& \propto \exp\left( -\frac{1}{2} \sum_{t=1}^{n} \left[ \frac{\Omega + \psi^2}{\Omega} \left( \frac{Y_t - \mu \Delta t + \frac{1}{2} V_{t-1} \Delta t}{\sqrt{V_{t-1} \Delta t}} \right)^2 \right. \right. \\[0.6em]
+& \left. \left. - \frac{2\psi}{\Omega} \left( \frac{V_t - \kappa \theta \Delta t - (1 - \kappa \Delta t) V_{t-1}}{\sqrt{V_{t-1} \Delta t}} \right) \left( \frac{-\mu \Delta t}{\sqrt{V_{t-1} \Delta t}} \right) \right] \right) \\[0.6em]
+& \cdot \exp\left( -\frac{\mu^2 - 2\mu_0 \mu}{2\sigma_0^2} \right)\\[0.6em]
+& \propto\exp\left(-\frac{1}{2} \left[\left(\sum_{t=1}^n \frac{\Omega + \psi^2}{\Omega V_{t-1}}\right) \mu^2 \Delta t \right. \right. \\[0.6em] 
+& \left. \left. - 2\sum_{t=1}^T \left(\frac{(\Omega + \psi^2)(Y_t - \frac{1}{2} V_{t-1} \Delta t)}{\Omega V_{t-1} \sqrt{V_{t-1} \Delta t}} - \frac{\psi \left(V_t - \kappa \theta \Delta t - (1 - \kappa \Delta t)V_{t-1} \right)}{\Omega V_{t-1}} \right) \mu \right] \right) \\[0.6em]
 & \cdot \exp\left(-\frac{1}{2} \left[\frac{1}{\sigma_0^2} \mu^2 - 2 \frac{\mu_0}{\sigma_0^2} \mu \right] \right).
+%%& \propto \exp \left( \frac{-1}{2} \left( \Delta t \sum_{t=1}^n \frac{\Omega + \psi^2}{\Omega V_{t-1}}  + \frac{1}{\sigma_0^2}\right) \right  \right)^{-1} 
 \end{align*}
 
 After simplification, the $\mu \sim \mathcal{N}(\mu^*, \sigma^{*2})$ with
@@ -325,16 +413,23 @@ After simplification, the $\mu \sim \mathcal{N}(\mu^*, \sigma^{*2})$ with
 \sigma^{*2} = \frac{1}{\Delta t \sum_{t=1}^n ((\Omega + \psi^2) / \Omega V_{t-1}) + 1 / \sigma_0^2}
 \]
 
+\vspace{1em}
+
 \textbf{B. Posterior distribution of $\psi$ and $\Omega$}
+\vspace{1em}
 
 Let the prior distribution assumptions be $\Omega\sim \mathcal{IG}(\Tilde{\alpha}, \Tilde{\beta})$ and $\psi_{|\Omega} \sim \mathcal{N}(\psi_0, \Omega/p_0)$. In Bayesian statistics, the inverse gamma distribution is commonly used as a prior for the variance of a normal distribution because it ensures the conjunction property.
 
 First, the joint posterior density of $(\psi,\Omega)$ is as follows
 
 \begin{align*}
-P(\psi, \Omega \mid Y, V, \kappa, \theta, \mu) &\propto P(Y, V \mid \psi, \Omega, \kappa, \theta, \mu) \cdot P(\psi \mid \Omega) \cdot P(\Omega) \\
-&\propto \Omega^{-n/2-\Tilde{\alpha}-1} \cdot \exp \left( -\frac{1}{\Omega} \left[\Tilde{\beta} + \frac{1}{2}\sum_{t=1}^n (\epsilon_t^V)^2\right]\right) \cdot \exp \left(\frac{-1}{2\Omega}p_0\psi_0^2\right)\frac{1}{\Omega^{1/2}}\\
-&\cdot \exp \left( -\frac{1}{2 \Omega} \left[ \left( p_0 + \sum_{t=1}^n (\epsilon_t^S)^2 \right) \psi^2 -2 \left(p_0 \psi + \sum_{t=1}^n \epsilon_t^S \epsilon_{t=1}^V \right) \psi \right. \right.\\
+P(\psi, \Omega \mid Y, V, \kappa, \theta, \mu) &\propto P(Y, V \mid \psi, \Omega, \kappa, \theta, \mu) \cdot P(\psi \mid \Omega) \cdot P(\Omega) \\[0.6em]
+& \propto \Omega^{-T/2} \exp\left( -\frac{1}{2\Omega} \sum_{t=1}^{T} \left[ (\Omega + \psi^2)(\epsilon_t^S)^2 + (\epsilon_t^V)^2 - 2\psi \epsilon_t^S \epsilon_t^V \right] \right) \\[0.6em]
+& \cdot \sqrt{\frac{p_0}{\Omega}} \exp\left( -\frac{(\psi - \psi_0)^2}{2\Omega/p_0} \right) \cdot \frac{\tilde{\beta}^{\tilde{\alpha}}}{\Gamma(\tilde{\alpha})} \Omega^{-\tilde{\alpha}-1} \exp\left( -\frac{\tilde{\beta}}{\Omega} \right) \\[0.6em]
+& \propto \Omega^{-T/2 - \tilde{\alpha} - 1} \cdot \frac{1}{\Omega^{1/2}} \cdot \exp\left( -\frac{1}{2\Omega} \sum_{t=1}^{T} \left[ (\Omega + \psi^2)(\epsilon_t^S)^2 + (\epsilon_t^V)^2 - 2\psi \epsilon_t^S \epsilon_t^V \right] \right. \\[0.6em]
+& \left. - \frac{1}{2} \frac{(\psi - \psi_0)^2}{\Omega/p_0} - \frac{\tilde{\beta}}{\Omega} \right)\\[0.6em]
+&\propto \Omega^{-n/2-\Tilde{\alpha}-1} \cdot \exp \left( -\frac{1}{\Omega} \left[\Tilde{\beta} + \frac{1}{2}\sum_{t=1}^n (\epsilon_t^V)^2\right]\right) \cdot \exp \left(\frac{-1}{2\Omega}p_0\psi_0^2\right)\frac{1}{\Omega^{1/2}}\\[0.6em]
+&\cdot \exp \left( -\frac{1}{2 \Omega} \left[ \left( p_0 + \sum_{t=1}^n (\epsilon_t^S)^2 \right) \psi^2 -2 \left(p_0 \psi + \sum_{t=1}^n \epsilon_t^S \epsilon_{t=1}^V \right) \psi \right. \right.\\[0.6em]
 &\left. \left. + \frac{(p_0 \psi_0 + \sum_{t=1}^n \epsilon_t^S \epsilon_t^V )^2 }{p_0 + \sum_{t=1}^n (\epsilon_t^S )^2 } - \frac{(p_0 \psi_0 + \sum_{t=1}^n \epsilon_t^S \epsilon_t^V )^2 }{p_0 + \sum_{t=1}^n (\epsilon_t^S )^2 }\right]\right)
 \end{align*}
 
@@ -346,7 +441,7 @@ and
 
 \[\beta_* = \Tilde{\beta} + \frac{1}{2} \sum_{t=1}^n (\epsilon_t^V)^2 + \frac{1}{2} p_0 \psi_0^2 - \frac{1}{2} \frac{(p_0 \psi_0 + \sum_{t=1}^n \epsilon_t^S \epsilon_t^V)^2}{p_0 + \sum_{t=1}^n (\epsilon_t^S )^2} \] 
 
-Additionally, $\psi_{|\Omega} \sim \mathcal{N} (\psi_*, \sigma_\psi^{*2}$ where
+Additionally, $\psi_{|\Omega} \sim \mathcal{N} (\psi_*, \sigma_\psi^{*2})$ where
 
 \[\psi_* =\frac{(p_0 \psi_0 + \sum_{t=1}^n \epsilon_t^S \epsilon_t^V)^2}{p_0 + \sum_{t=1}^n (\epsilon_t^S )^2} \]
 
@@ -354,14 +449,22 @@ and
 
 \[\sigma\psi^{*2} = \frac{\Omega}{p_0 + \sum_{t=1}^n (\epsilon_t^S)^2 }\]
 
+\vspace{1em}
+
 \textbf{C. Posterior distribution of $\theta$}
+
+\vspace{1em}
 
 Assume that the prior of $\theta \sim \mathcal{N}(\theta_0, \sigma_\theta^2)$, then the posterior of $\theta$ is given by
 
 \begin{align*}
-P(\theta \mid Y, V, \mu, \kappa, \psi, \Omega) & \propto P(Y, V \mid \mu, \kappa, \theta, \psi, \Omega) \cdot P(\theta) \\
-& \propto\exp\left(-\frac{1}{2} \left[\left(\sum_{t=1}^n \frac{\kappa^2}{\Omega V_{t-1}}\right) \theta^2 \Delta t \right. \right. \\ 
-& \left. \left. - 2\sum_{t=1}^T \left(\frac{\kappa (V_t - (1-\kappa \Delta t) V_{t-1})}{\Omega V_{t-1}} - \frac{\psi (r_t -\mu \Updelta t + \frac{1}{2} V_{t-1} \Updelta t) \kappa}{\Omega V_{t-1}} \right) \theta \right] \right) \\
+P(\theta \mid Y, V, \mu, \kappa, \psi, \Omega) & \propto P(Y, V \mid \mu, \kappa, \theta, \psi, \Omega) \cdot P(\theta) \\[0.6em]
+& \propto \exp\left( -\frac{1}{2\Omega} \sum_{t=1}^{T} \left[ (\epsilon_t^V)^2 - 2\psi \epsilon_t^V \epsilon_t^S \right] \right) \cdot \exp\left( -\frac{(\theta - \theta_0)^2}{2\sigma_\theta^2} \right)\\
+& \propto \exp\left( -\frac{1}{2} \sum_{t=1}^{T} \left[ \frac{1}{\Omega} \left( \frac{V_t - \kappa \theta \Delta t - (1 - \kappa \Delta t)V_{t-1}}{\sqrt{V_{t-1} \Delta t}} \right)^2 \right. \right. \\
+& \left. \left. - \frac{2\psi}{\Omega} \left( \frac{Y_t - \mu \Delta t + \frac{1}{2} V_{t-1} \Delta t}{\sqrt{V_{t-1} \Delta t}} \right) \left( \frac{-\kappa \theta \Delta t}{\sqrt{V_{t-1} \Delta t}} \right) \right] \right) \\
+& \cdot \exp\left( -\frac{\theta^2 - 2\theta_0 \theta}{2\sigma_\theta^2} \right)\\
+& \propto\exp\left(-\frac{1}{2} \left[\left(\sum_{t=1}^n \frac{\kappa^2}{\Omega V_{t-1}}\right) \theta^2 \Delta t \right. \right. \\[0.6em] 
+& \left. \left. - 2\sum_{t=1}^T \left(\frac{\kappa (V_t - (1-\kappa \Delta t) V_{t-1})}{\Omega V_{t-1}} - \frac{\psi (r_t -\mu \Updelta t + \frac{1}{2} V_{t-1} \Updelta t) \kappa}{\Omega V_{t-1}} \right) \theta \right] \right) \\[0.6em]
 & \cdot \exp\left(-\frac{1}{2} \left[\frac{1}{\sigma_\theta^2} \theta^2 - 2 \frac{\theta_0}{\sigma_\theta^2} \theta \right] \right).
 \end{align*}
 
@@ -380,9 +483,13 @@ and
 Let $\kappa \sim \mathcal{N}(\kappa_0, \sigma_\kappa^2)$, similarly the posterior density is as follows
 
 \begin{align*}
-P(\kappa \mid Y, V, \mu, \theta, \psi, \Omega) & \propto P(Y, V \mid \mu, \kappa, \theta, \psi, \Omega) \cdot P(\kappa) \\
-& \propto\exp\left(-\frac{1}{2} \left[\left(\sum_{t=1}^n \frac{(V_{t-1} - \theta)^2}{\Omega V_{t-1}} \right) \kappa^2 \Updelta t \right. \right. \\ 
-& \left. \left. - 2\sum_{t=1}^T \left( \frac{(\theta - V_{t-1}) (V_t - V_{t-1})}{\Omega V_{t-1}} - \frac{\psi (r_t - \mu \Updelta t + \frac{1}{2} V_{t-1} \Updelta t )(\theta - V_{t-1})}{\Omega V_{t-1}} \right) \kappa \right] \right) \\
+P(\kappa \mid Y, V, \mu, \theta, \psi, \Omega) & \propto P(Y, V \mid \mu, \kappa, \theta, \psi, \Omega) \cdot P(\kappa) \\[0.6em]
+&\propto \exp\left(-\frac{1}{2\Omega} \Sigma_{i=1}^T [(\epsilon_i^V)^2 - 2\psi \epsilon_i^V \epsilon_i^S]\right) \cdot \exp\left(-\frac{(\kappa - \kappa_0)^2}{2\sigma_k^2}\right) \\[0.6em]
+&\propto \exp\left(-\frac{1}{2} \Sigma_{i=1}^T \left[ \frac{1}{\Omega} \left( \frac{V_t - \kappa \theta \Delta t - (1 - \kappa \Delta t) V_{t-1}}{\sqrt{V_{t-1} \Delta t}} \right)^2 \right. \right. \\[0.6em]
+& \left. \left.  - \frac{2\psi}{\Omega} \left( \frac{V_t - \mu \Delta t + \frac{1}{2} V_{t-1} \Delta t}{\sqrt{V_{t-1} \Delta t}} \right) \left( -\frac{\kappa (\theta - V_{t-1}) \Delta t}{\sqrt{V_{t-1} \Delta t}} \right) \right] \right) \\[0.6em]
+& \cdot \exp\left(-\frac{(\kappa^2 - 2\kappa_0 \kappa)}{2\sigma_k^2}\right)\\[0.6em]
+& \propto\exp\left(-\frac{1}{2} \left[\left(\sum_{t=1}^n \frac{(V_{t-1} - \theta)^2}{\Omega V_{t-1}} \right) \kappa^2 \Updelta t \right. \right. \\[0.6em] 
+& \left. \left. - 2\sum_{t=1}^T \left( \frac{(\theta - V_{t-1}) (V_t - V_{t-1})}{\Omega V_{t-1}} - \frac{\psi (r_t - \mu \Updelta t + \frac{1}{2} V_{t-1} \Updelta t )(\theta - V_{t-1})}{\Omega V_{t-1}} \right) \kappa \right] \right) \\[0.6em]
 & \cdot \exp\left(-\frac{1}{2} \left[\frac{1}{\sigma_\kappa^2} \kappa^2 - 2 \frac{\kappa_0}{\sigma_\kappa^2} \kappa \right] \right).
 \end{align*}
 
@@ -396,14 +503,25 @@ and
 \sigma_\kappa^{*2} = \frac{1}{\Updelta t \sum_{t=1}^n ((V_{t-1}-\theta)^2/\Omega V_{t-1}) + 1 / \sigma_\kappa^2}
 \]
 
+\vspace{1em}
+
 \textbf{Posterior distribution of $V_t$}
+\vspace{1em}
+
 \begin{align*}
-P(V_t \mid Y, V_{t+1}, V_{t-1}, \kappa, \mu, \theta, \psi, \Omega) &= P(Y, V_{t+1}, V_{t}, \mid V_{t-1}, \mu, \kappa, \theta, \psi, \Omega) \frac{P(V_{t-1} \mid \kappa, \theta, \psi, \Omega, \mu)}{P(r, V_{t+1}, V_{t-1} \mid \kappa, \theta, \psi, \Omega, \mu)}\\
-& \propto P(Y, V_{t+1}, V_{t} \mid V_{t-1}, \kappa, \theta, \psi, \Omega, \mu)\\
-&=\frac{1}{V_t \Updelta t}\exp\left(-\frac{1}{2 \Omega} \frac{(\Omega + \psi^2)(\frac{1}{2}V_t \Updelta t + Y_{t+1} - \mu \Updelta t)^2}{V_t \Updelta t} \right. \\ 
-& \left. -\frac{1}{2 \Omega} \frac{-2\psi (\frac{1}{2}V_t \Updelta t + r_{t+1} -mu \Updelta t)(-(1-\kappa \Updelta t)V_t -\kappa \theta \Updelta t + V_{t+1})}{V_t \Updelta t} \right. \\
-& \left. -\frac{1}{2 \Omega} \frac{(-(1-\kappa \Updelta t) V_t - \kappa \theta \Updelta t + V_{t+1})^2}{V_t \Updelta t} \right) \\
-& \cdot \exp \left( - \frac{1}{2 \Omega} \frac{-2 \psi (Y_t - \mu \Updelta t + \frac{1}{2}V_{t-1} \Updelta t)(V_t - \kappa \theta \Updelta t - (1-\kappa \theta)V_{t-1})}{V_{t-1} \Updelta t} \right. \\
+P(V_t \mid Y, V_{t+1}, V_{t-1}, \kappa, \mu, \theta, \psi, \Omega) &= P(Y, V_{t+1}, V_{t}, \mid V_{t-1}, \mu, \kappa, \theta, \psi, \Omega) \frac{P(V_{t-1} \mid \kappa, \theta, \psi, \Omega, \mu)}{P(r, V_{t+1}, V_{t-1} \mid \kappa, \theta, \psi, \Omega, \mu)}\\[0.6em]
+& \propto P(Y, V_{t+1}, V_{t} \mid V_{t-1}, \kappa, \theta, \psi, \Omega, \mu)\\[0.6em]
+&\propto \frac{1}{V_t\Delta t}\exp\left(-\frac{1}{2\Omega}\left[(\Omega+\psi^2)(\epsilon_{t+1}^S)^2 - 2\psi\epsilon_{t+1}^S\epsilon_{t+1}^V + (\epsilon_{t+1}^V)^2\right]\right. \\
+&\quad \left. -\frac{1}{2\Omega}\left[(\Omega+\psi^2)(\epsilon_i^S)^2 - 2\psi\epsilon_i^S\epsilon_i^V + (\epsilon_i^V)^2\right]\right)\\
+&=\frac{1}{V_t \Updelta t}\exp\left(-\frac{1}{2 \Omega} \frac{(\Omega + \psi^2)(\frac{1}{2}V_t \Updelta t + Y_{t+1} - \mu \Updelta t)^2}{V_t \Updelta t} \right. \\[0.6em] 
+&= \frac{1}{V_t \Delta t} \exp \left( - \frac{1}{2 \Omega} \frac{(\Omega + \psi^2)\left(\frac{1}{2} V_t \Delta t + Y_{t+1} - \mu \Delta t\right)^2}{V_t \Delta t} \right) \\
+&\quad - \frac{1}{2 \Omega} \frac{- 2 \psi \left(\frac{1}{2} V_t \Delta t + Y_{t+1} - \mu \Delta t\right) \left(- (1 - \kappa \Delta t) V_t - \kappa \theta \Delta t + V_{t+1}\right)}{V_t \Delta t} \\
+&\quad - \frac{1}{2 \Omega} \frac{\left(- (1 - \kappa \Delta t) V_t - \kappa \theta \Delta t + V_{t+1}\right)^2}{V_t \Delta t} \\
+&\quad - \frac{1}{2 \Omega} \frac{- 2 \psi \left(Y_t - \mu \Delta t + \frac{1}{2} V_{t-1} \Delta t\right) \left(V_t - \kappa \theta \Delta t - (1 - \kappa \Delta t) V_{t-1}\right)}{V_{t-1} \Delta t} \\
+&\quad - \frac{1}{2 \Omega} \frac{\left(V_t - \kappa \theta \Delta t - (1 - \kappa \Delta t) V_{t-1}\right)^2}{V_{t-1} \Delta t}
+& \left. -\frac{1}{2 \Omega} \frac{-2\psi (\frac{1}{2}V_t \Updelta t + r_{t+1} -mu \Updelta t)(-(1-\kappa \Updelta t)V_t -\kappa \theta \Updelta t + V_{t+1})}{V_t \Updelta t} \right. \\[0.6em]
+& \left. -\frac{1}{2 \Omega} \frac{(-(1-\kappa \Updelta t) V_t - \kappa \theta \Updelta t + V_{t+1})^2}{V_t \Updelta t} \right) \\[0.6em]
+& \cdot \exp \left( - \frac{1}{2 \Omega} \frac{-2 \psi (Y_t - \mu \Updelta t + \frac{1}{2}V_{t-1} \Updelta t)(V_t - \kappa \theta \Updelta t - (1-\kappa \theta)V_{t-1})}{V_{t-1} \Updelta t} \right. \\[0.6em]
 & \left. -\frac{1}{2 \Omega} \frac{(V_t - \kappa \theta \Updelta t - (1-\kappa\Updelta t)V_{t-1})^2}{V_{t-1}\Updelta t}\right).
 \end{align*}
 
@@ -440,20 +558,20 @@ New proposal $V_t^{(g)}$ is rejected or accepted based on the comparison of like
 where $\pi(V_t^{*(g)})$ and $\pi(V_t^{(g-1)})$ are likelihood calculated as follows:
 
 \begin{align*}
-\pi(V_t^{*(g)}) &= \frac{1}{V_t^{*(g)} \Updelta t} \exp \left( -\frac{1}{2 \Omega} \frac{(\Omega + \psi^2)(\frac{1}{2} V_t^{*(g)} \Updelta t + Y_{t+1} - \mu \Updelta t)^2)}{V_t^{*(g)} \Updelta t} \right.\\
-& \left. -\frac{1}{2\Omega}\frac{-2\psi (\frac{1}{2}V_t^{*(g)} \Updelta t + Y_{t+1} - \mu \Updelta t)(-(1-\kappa\Updelta t) V_t^{*(g)} -\kappa \theta \Updelta t + V_{t+1}^{(g-1)})}{V_t^{*(g)} \Updelta t} \right.\\
-& \left. -\frac{1}{2\Omega}\frac{(-(1-\kappa \Updelta t) V_t^{*(g)} -\kappa \theta \Updelta t + V_{t+1}^{*(g-1)})^2}{V_t^{*(g)} \Updelta t} \right)\\
-& \cdot \exp \left( - \frac{1}{2 \Omega} \frac{-2 \psi (Y_t - \mu \Updelta t + \frac{1}{2}V_{t-1}^{(g)} \Updelta t)(V_t^{*(g)} - \kappa \theta \Updelta t - (1-\kappa \theta)V_{t-1})}{V_{t-1}^{(g)} \Updelta t} \right. \\
+\pi(V_t^{*(g)}) &= \frac{1}{V_t^{*(g)} \Updelta t} \exp \left( -\frac{1}{2 \Omega} \frac{(\Omega + \psi^2)(\frac{1}{2} V_t^{*(g)} \Updelta t + Y_{t+1} - \mu \Updelta t)^2)}{V_t^{*(g)} \Updelta t} \right.\\[0.6em]
+& \left. -\frac{1}{2\Omega}\frac{-2\psi (\frac{1}{2}V_t^{*(g)} \Updelta t + Y_{t+1} - \mu \Updelta t)(-(1-\kappa\Updelta t) V_t^{*(g)} -\kappa \theta \Updelta t + V_{t+1}^{(g-1)})}{V_t^{*(g)} \Updelta t} \right.\\[0.6em]
+& \left. -\frac{1}{2\Omega}\frac{(-(1-\kappa \Updelta t) V_t^{*(g)} -\kappa \theta \Updelta t + V_{t+1}^{*(g-1)})^2}{V_t^{*(g)} \Updelta t} \right)\\[0.6em]
+& \cdot \exp \left( - \frac{1}{2 \Omega} \frac{-2 \psi (Y_t - \mu \Updelta t + \frac{1}{2}V_{t-1}^{(g)} \Updelta t)(V_t^{*(g)} - \kappa \theta \Updelta t - (1-\kappa \theta)V_{t-1})}{V_{t-1}^{(g)} \Updelta t} \right. \\[0.6em]
 & \left. -\frac{1}{2 \Omega} \frac{(V_t^{*(g)} - \kappa \theta \Updelta t - (1-\kappa\Updelta t)V_{t-1}^{(g)})^2}{V_{t-1}^{(g)}\Updelta t}\right).
 \end{align*}
 
 and 
 
 \begin{align*}
-\pi(V_t^{(g-1)}) &= \frac{1}{V_t^{(g-1)} \Updelta t} \exp \left( -\frac{1}{2 \Omega} \frac{(\Omega + \psi^2)(\frac{1}{2} V_t^{(g-1)} \Updelta t + Y_{t+1} - \mu \Updelta t)^2)}{V_t^{(g-1)} \Updelta t} \right.\\
-& \left. -\frac{1}{2\Omega}\frac{-2\psi (\frac{1}{2}V_t^{(g-1)} \Updelta t + Y_{t+1} - \mu \Updelta t)(-(1-\kappa\Updelta t) V_t^{(g-1)} -\kappa \theta \Updelta t + V_{t+1}^{(g-1)})}{V_t^{(g-1)} \Updelta t} \right.\\
-& \left. -\frac{1}{2\Omega}\frac{(-(1-\kappa \Updelta t) V_t^{(g-1)} -\kappa \theta \Updelta t + V_{t+1}^{(g-1)})^2}{V_t^{(g-1)} \Updelta t} \right)\\
-& \cdot \exp \left( - \frac{1}{2 \Omega} \frac{-2 \psi (Y_t - \mu \Updelta t + \frac{1}{2}V_{t-1}^{(g)} \Updelta t)(V_t^{(g-1)} - \kappa \theta \Updelta t - (1-\kappa \theta)V_{t-1})}{V_{t-1}^{(g)} \Updelta t} \right. \\
+\pi(V_t^{(g-1)}) &= \frac{1}{V_t^{(g-1)} \Updelta t} \exp \left( -\frac{1}{2 \Omega} \frac{(\Omega + \psi^2)(\frac{1}{2} V_t^{(g-1)} \Updelta t + Y_{t+1} - \mu \Updelta t)^2)}{V_t^{(g-1)} \Updelta t} \right.\\[0.6em]
+& \left. -\frac{1}{2\Omega}\frac{-2\psi (\frac{1}{2}V_t^{(g-1)} \Updelta t + Y_{t+1} - \mu \Updelta t)(-(1-\kappa\Updelta t) V_t^{(g-1)} -\kappa \theta \Updelta t + V_{t+1}^{(g-1)})}{V_t^{(g-1)} \Updelta t} \right.\\[0.6em]
+& \left. -\frac{1}{2\Omega}\frac{(-(1-\kappa \Updelta t) V_t^{(g-1)} -\kappa \theta \Updelta t + V_{t+1}^{(g-1)})^2}{V_t^{(g-1)} \Updelta t} \right)\\[0.6em]
+& \cdot \exp \left( - \frac{1}{2 \Omega} \frac{-2 \psi (Y_t - \mu \Updelta t + \frac{1}{2}V_{t-1}^{(g)} \Updelta t)(V_t^{(g-1)} - \kappa \theta \Updelta t - (1-\kappa \theta)V_{t-1})}{V_{t-1}^{(g)} \Updelta t} \right. \\[0.6em]
 & \left. -\frac{1}{2 \Omega} \frac{(V_t^{(g-1)} - \kappa \theta \Updelta t - (1-\kappa\Updelta t)V_{t-1}^{(g)})^2}{V_{t-1}^{(g)}\Updelta t}\right).
 \end{align*}
 
@@ -467,21 +585,18 @@ $\mathcal{A}(V_t^{*(g)}, V_t^{(g-1)})$ then is compared with random sampling U f
 Metropolis-Hastings sampling is iterated for $t \in {1, 2, ..., n}$ in order to determine state space $V_1^{(g)}, V_2^{(g)}, ...V_n^{()}$. For $V_0^{(g)}$, the $\pi(V_0^{*(g)}$ and $\pi(V_0^{(g-1)}$ is computed considering only the first exponential part. 
 
 \begin{align*}
-\pi(V_0^{*(g)}) &= \frac{1}{V_0^{*(g)} \Updelta t} \exp \left( -\frac{1}{2 \Omega} \frac{(\Omega + \psi^2)(\frac{1}{2} V_0^{*(g)} \Updelta t + Y_{1} - \mu \Updelta t)^2)}{V_0{*(g)} \Updelta t} \right.\\
-& \left. -\frac{1}{2\Omega}\frac{-2\psi (\frac{1}{2}V_0^{*(g)} \Updelta t + Y_{1} - \mu \Updelta t)(-(1-\kappa\Updelta t) V_0^{*(g)} -\kappa \theta \Updelta t + V_{1}^{(g-1)})}{V_0^{*(g)} \Updelta t} \right.\\
+\pi(V_0^{*(g)}) &= \frac{1}{V_0^{*(g)} \Updelta t} \exp \left( -\frac{1}{2 \Omega} \frac{(\Omega + \psi^2)(\frac{1}{2} V_0^{*(g)} \Updelta t + Y_{1} - \mu \Updelta t)^2)}{V_0{*(g)} \Updelta t} \right.\\[0.6em]
+& \left. -\frac{1}{2\Omega}\frac{-2\psi (\frac{1}{2}V_0^{*(g)} \Updelta t + Y_{1} - \mu \Updelta t)(-(1-\kappa\Updelta t) V_0^{*(g)} -\kappa \theta \Updelta t + V_{1}^{(g-1)})}{V_0^{*(g)} \Updelta t} \right.\\[0.6em]
 & \left. -\frac{1}{2\Omega}\frac{(-(1-\kappa \Updelta t) V_0^{*(g)} -\kappa \theta \Updelta t + V_{1}^{*(g-1)})^2}{V_0^{*(g)} \Updelta t} \right)
 \end{align*}
 
 and 
 
 \begin{align*}
-\pi(V_0^{(g-1)}) &= \frac{1}{V_0^{(g-1)} \Updelta t} \exp \left( -\frac{1}{2 \Omega} \frac{(\Omega + \psi^2)(\frac{1}{2} V_0^{(g-1)} \Updelta t + Y_{1} - \mu \Updelta t)^2)}{V_0^{(g-1)} \Updelta t} \right.\\
-& \left. -\frac{1}{2\Omega}\frac{-2\psi (\frac{1}{2}V_0^{(g-1)} \Updelta t + Y_{1} - \mu \Updelta t)(-(1-\kappa\Updelta t) V_0^{(g-1)} -\kappa \theta \Updelta t + V_{1}^{(g-1)})}{V_0^{(g-1)} \Updelta t} \right.\\
+\pi(V_0^{(g-1)}) &= \frac{1}{V_0^{(g-1)} \Updelta t} \exp \left( -\frac{1}{2 \Omega} \frac{(\Omega + \psi^2)(\frac{1}{2} V_0^{(g-1)} \Updelta t + Y_{1} - \mu \Updelta t)^2)}{V_0^{(g-1)} \Updelta t} \right.\\[0.6em]
+& \left. -\frac{1}{2\Omega}\frac{-2\psi (\frac{1}{2}V_0^{(g-1)} \Updelta t + Y_{1} - \mu \Updelta t)(-(1-\kappa\Updelta t) V_0^{(g-1)} -\kappa \theta \Updelta t + V_{1}^{(g-1)})}{V_0^{(g-1)} \Updelta t} \right.\\[0.6em]
 & \left. -\frac{1}{2\Omega}\frac{(-(1-\kappa \Updelta t) V_0^{(g-1)} -\kappa \theta \Updelta t + V_{1}^{(g-1)})^2}{V_0^{(g-1)} \Updelta t} \right)
 \end{align*}
-
-
-\subsection{n-day ahead forecast}
 
 
 \subsection{Evaluation Measurement}
@@ -554,52 +669,182 @@ F(y) =
  
 Put simply, it is shown in \colorAutoref{CRPS_graph} that CRPS represents the gray area between the forecast CDF and observed CDF.The smaller the area, the more accurate the probabilistic forecast. 
 
-\subsubsection{Delta-neutral replication performance}
+In this thesis, forecast accuracy of Heston and EGARCH models are investigated using CRPS. A comparative analysis is conducted not only descriptively but also via hypothesis testing. In order to statistically compare the performance of 2 models, Wilcoxon signed-rank test, which is an alternative for t-test when the normal distribution assumption does not hold, is employed to analyze if one of the two models perform significantly better than the other one. The normal distributed assumption is replaced by a weaker assumption that the difference between the performances of 2 models is symmetric around its mean. Wilcoxon signed-rank test then investigates if the central value is significantly different from zero.
 
-In addition to CRPS, this study assesses the performance of delta-neutral replication as a metric for evaluating the accuracy of probabilistic forecasts using EGARCH and Heston models. Under the assumption that futures prices are driven by randomness as defined in the relevant models, the calculation of a derivative price using forecast curve results in a fair price, which then lead to a minimum loss or gain of a portfolio replicating that derivative. 
-
-For the purpose of evaluating the futures price forecast, a portfolio consisting of a call option and underlying asset is considered, where a call option is an financial contract that gives the holder the right, but not the obligation, to buy a specific amount of an underlying asset (such as stocks, commodities, or indices) at a predetermined price (known as the strike price) within a specified time period (until the expiration date). Value of call option is determined by the expected payoff at expiration as follows
-
-\[C(F, K) = e^{-rT} \mathbb{E} \left[(F_T - K)^+ \right] \]
-
-with $F_T$ is the price of the underlying asset at expiration and K is strike price of the option. The option's price is computed numerically given by
-
-\[C_t(F_t, K) = \frac{1}{n} \sum_{i=1}^n \hat{F}_i \mathbbm{1}_{(K, \infty)}(\hat{F}_i) \]
-
-with $F_i$ is the price simulation by relevant model.
-In the context of this thesis, underlying asset is futures contract of natural gas and its $F_T$ is the curve generated by relevant models.  Considering a portfolio $\Pi$ consisting of: 
+Wilcoxon signed-rank test evaluates the median difference between CRPS of Heston and EGARCH models with the hypothesis as follows
 
 \begin{itemize}
-\item Short position in call option C
-\item Long position in $\Delta$ amount of the underlying F
-\item A cash account B
+\item Null hypothesis (H0): The median difference between CRPSs of Heston and EGARCH is zero. None of the two models performs better than the other.
+
+\item Alternative hypothesis (H1): The median difference is not zero. There is significant difference in the models' performance.
 \end{itemize}
 
-By construction, the portfolio $\Pi = \Delta F - C + B$, with $\Delta = \frac{\partial C}{\partial F}$ measuring the sensitivity if an option's price to small changes in the price of the underlying asset. Similarly to call option's price, $\Delta$ is computed numerically as follows:
-
-\[\Delta_t = \frac{C_t(F_t+\epsilon, K) - C_t(F_t - \epsilon, K)}{2\epsilon}\] 
-
-with small $\epsilon$.
-
-By continuously adjusting the position in the underlying asset by long $\Delta_{t+1} - \Delta_t$ amount of underlying, the portfolio is delta-neutral. Together with the assumption for EGARCH model that price process has only one source of randomness from $\epsilon$, the portfolio is risk-free. 
-
-The non-arbitrage condition of the market is ensured by minimizing the value of the portfolio, which results in a fair price of the option. Consequently, the absolute value of the portfolio at the expiration date, as determined by the relevant models, serves as a metric to assess the performance of models in terms of probabilistic forecasting. 
-
-\[|\Pi_T| = |\Delta_{T-1} F_T - C_T + B_{T-1}|\]
-
-The smaller the absolute value of the portfolio at the expiration date, the more effective the model is in generating probabilistic forecasts.
 
 
-\subsection{pseudo code}
+\subsection{Forecasting design}
+
+The analysis including parameterization and forecasting performance of the models was conducted for each futures contract. Specifically, the analysis was performed 2 times for each contract: once 3 months before the expiry and 1 month before the expiry $T$. The estimation window is fixed to 3 months data $S_{T-6*30}$ to $S_{T-3*30}$ for 3 month-ahead forecast and $S_{T-4*30}$ to $S_{T-1*30}$ for 1 month-ahead forecast. Then CPRS was computed using the model forecasts and price at expiry.
+
+EGARCH is estimated by minimizing their negative log-likelihood while Markov Chain Monte Carlo was used to estimate Heston. I implemented them in Python and made used of some built-in packages like pandas, numpy, scipy, SST distribution (Berrisch, 2021). The procedure of parameter estimation and probabilistic forecast is as follows:
+
+\subsubsection{EGARCH}
+
+For each futures contract:
+
+\begin{itemize}
+\item EGARCH(1,1) is fitted for financial series of 3 months using MLE approach by minimizing negative log likelihood in equation (3.2) to obtain $ \hat{\varphi} = (\hat{\mu}, \hat{\alpha}, \hat{\beta}, \hat{\gamma}, \hat{\delta}, \hat{\nu})$ only once.
+\item Initial volatility is computed as $\sigma_0 = (e^{\frac{\hat{\omega}}{1-\hat{\beta}}})^{0.5}$
+\end{itemize}
+
+For i from 0 to 25*3 (for 3 month-ahead forecast) or i from 0 to 25 (for 1 month-ahead forecast)
+\begin{itemize}
+\item Sampling 1000 i.i.d random variable from skewed Student-t distribution SST(mean = 0, variance = 0, skew = $\hat{\delta}$, degree of freedom = $\hat{\nu}$).
+\item Computing
+\end{itemize}
+
 
 \section{Empirical Analysis}
 
-\subsection{CPRS}
+\subsection{Model diagnostics}
 
-\subsection{Delta-neutral replication}
+\subsubsection{Estimated parameters}
 
-\subsection{Statistical Test}
+Followed the estimation method outlined in methodology chapter, the parameters are estimated for both models for 3-month and 1-month-ahead forecast. This thesis focuses on comparing the forecast performance of Heston and EGARCH model; however, it is also essential to validate the parameters estimation and in-sample fitted values.
 
+ \colorAutoref{3Mhestonparams} and  \colorAutoref{1Mhestonparams} shows the time series of Heston parameters for 3 month-ahead and 1 month-ahead forecast respectively. It is obvious that the range of parameters are similar for both cases, except for long-term volatility $\theta$, which can be explained by the liquidity of the futures contract when time to expiry becomes smaller. Specifically, when the contract expires in shorter time, there is higher demand for the commodity; Therefore, the volatility increases. 
+
+
+\begin{figure}[h!] 
+\includegraphics[scale=1,width=1\linewidth,height=0.4\textheight]{heston_params_3m.png}
+\caption{Heston parameter estimates from price calibration for 3 month-ahead}
+\label{3Mhestonparams}
+\end{figure}
+
+\begin{figure}[h!] 
+\includegraphics[scale=1,width=1\linewidth,height=0.4\textheight]{heston_params_1m.png}
+\caption{Heston parameter estimates from price calibration for 1 month-ahead}
+\label{1Mhestonparams}
+\end{figure}
+
+EGARCH parameters are shown in \colorAutoref{3Megarchparams} and  \colorAutoref{1Megarchparams}. It is noteworthy from these graphs that both that parameters for 3 month-ahead and 1 month-ahead have the same pattern. Moreover, $\delta$ is 1 implying the symmetric t-distribution for return overtime. 
+
+\begin{figure}[h!] 
+\includegraphics[scale=1,width=1\linewidth,height=0.4\textheight]{egarch_params_3m.png}
+\caption{EGARCH parameter estimates from price calibration for 3 month-ahead}
+\label{3Megarchparams}
+\end{figure}
+
+\begin{figure}[h!] 
+\includegraphics[scale=1,width=1\linewidth,height=0.4\textheight]{egarch_params_1m.png}
+\caption{EGARCH parameter estimates from price calibration for 1 month-ahead}
+\label{1Megarchparams}
+\end{figure}
+
+\subsubsection{In-sample performance}
+
+
+In-sample CRPS of Heston and EGARCH can be seen from \colorAutoref{3M_in} and \colorAutoref{1M_in} . In general, the fitted distribution of EGARCH is more accurate than the one of Heston, except for the extreme case; e.g, Russian-Ukrainian war 2022. The finding is similar in case of 1 month-ahead forecast where the pattern is found at the beginning of Covid 19. 
+
+\begin{figure}[h!] 
+\includegraphics[scale=1,width=1\linewidth,height=0.4\textheight]{insample_crps_3m.png}
+\caption{In-sample CPRS of 3 month-ahead models}
+\label{3M_in}
+\end{figure}
+
+\begin{figure}[h!] 
+\includegraphics[scale=1,width=1\linewidth,height=0.4\textheight]{insample_crps_1m.png}
+\caption{In-sample CPRS of 1 month-ahead models}
+\label{3M_in}
+\end{figure}
+
+Wilcoxon tests are applied to test the following hypothesis:
+
+H0: The performances of in-sample fitted distribution by Heston and EGARCH model are indifferent.
+
+H1:  In-sample CRPS of EGARCH is smaller than in-sample CRPS of Heston.
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{@{}lll@{}}
+\toprule
+N month-ahead     & p-value & Conclusion                     \\ \midrule
+3 month-ahead     & 0.0002  & In-sample fitted distribution of EGARCH is more accurate \\
+1 month-ahead     & 0.025    & In-sample fitted distribution of EGARCH is more accurate \\ \bottomrule
+\end{tabular}
+\end{table}
+
+In both forecast scenarios, EGARCH performance is better in terms of in-sample CRPS, which probably suggests the overfitting of EGARCH. The out-sample performance of two models are evaluated in next section in order to examine the forecast accuracy.
+
+\subsection{Predictive performance}
+
+\subsubsection{3 month-ahead forecast}
+
+ In total, data for 96 contracts was used in this study. However, EGARCH model fails at parameterization step for some contracts. In this section, the comparative analysis focuses exclusively on those that both estimated parameters and CPRS are available for both Heston and EGARCH model.
+ 
+ \colorAutoref{3M} shows the forecasting performance of 3 month-ahead models. It can be seen from the \colorAutoref{3M}that in 2022, CRPS of both models are considerably higher than CRPS during the rest of the time. It is clear in \colorAutoref{3Mwithout22} that there is no obvious difference between the CRPS of Heston and EGARCH except for the period of the beginning of Russian-Ukrainian conflict. Moreover, Heston clearly outperform EGARCH during the 2022. In order to have statistical evidence for comparative analysis, non-parametric Wilcoxon tests are run for the whole period without 2022 and for the whole period from 2017 to 2024. 
+ 
+
+\begin{figure}[h!] 
+\includegraphics[scale=1,width=1\linewidth,height=0.4\textheight]{threemonthahead.png}
+\caption{CPRS of 3 month-ahead models}
+\label{3M}
+\end{figure}
+
+\begin{figure}[h!] 
+\includegraphics[scale=1,width=1\linewidth,height=0.4\textheight]{m3_without22.png}
+\caption{CPRS of 3 month-ahead models excluding 2022}
+\label{3Mwithout22}
+\end{figure}
+
+Wilcoxon tests are employed to test the following hypothesis:
+
+H0: The performances of Heston and EGARCH model are indifferent.
+
+H1: The performances of 2 models are different.
+
+Table 1 show the result of Wilcoxon tests. In both cases, the null hypothesis is not rejected which means that there is no significant different between the forecasting performance of Heston and EGARCH model for 3 month-ahead forecast.
+
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{@{}lll@{}}
+\toprule
+Investigation period     & p-value & Conclusion                     \\ \midrule
+2017-2024                & 0.36    & Fail to reject null hypothesis \\
+2017-2024 (without 2022) & 0.88    & Fail to reject null hypothesis \\ \bottomrule
+\end{tabular}
+\end{table}
+
+CRPS of EGARCH when extreme events happen are noticeably higher than CRPS of Heston model for both in-sample and out-sample for 3 month-ahead forecast. Therefore, even though Heston is computationally expensive and not statistically significant better than EGARCH, one should consider employing HESTON model when there is a concern that an essential event happens unexpectedly. 
+
+
+\subsubsection{1 month-ahead forecast}
+
+The comparison of CRPS from EGARCH and Heston for 1 month-ahead forecast can be seen from \colorAutoref{1M}. The finding for 1 month-ahead prediction is similar to the one for 3 month-ahead analyzed above, that EGARCH's CRPS is noticeably higher than CRPS of Heston during Covid time in 2019 and Russian-Ukrainian war in 2022. On the other hand, the performance of both models is not dramatically different in terms of CRPS for the rest of the time.
+
+\begin{figure}[h!] 
+\includegraphics[scale=1,width=1\linewidth,height=0.4\textheight]{onemonthahead.png}
+\caption{CPRS of 1 month-ahead models}
+\label{1M}
+\end{figure}
+
+Two-sided Wilcoxon tests are conducted to investigate the comparison of CRPS from two models, which shows the results as follows:
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{@{}lll@{}}
+\toprule
+Investigation period     & p-value & Conclusion                     \\ \midrule
+2017-2024                & 0.311    & Fail to reject null hypothesis \\
+2017-2024 (without 2022) & 0.186    & Fail to reject null hypothesis \\ \bottomrule
+\end{tabular}
+\end{table}
+
+
+
+
+
+\newpage
 \section{Conclusion}
 
 

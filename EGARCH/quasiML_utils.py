@@ -625,16 +625,19 @@ class EGARCH_SST():
         self.dist = dist
         self.rate = rate
         self.egarch_mle()
-        if self.result.success == True:
-            self.insample_simulation()
-
-            # spot = pandas.read_csv(r'D:\TU_DORTMUND\Thesis\Data\price\Spot_Price.csv')
-            # spot['Date'] = pandas.to_datetime(spot['Date'])
-            # self.spot = spot
-            self.get_step_till_expiry()
-            self.get_step_till_end()
-        else:
-            pass
+        # if self.result.success == True:
+        #     self.insample_simulation()
+        #
+        #     # spot = pandas.read_csv(r'D:\TU_DORTMUND\Thesis\Data\price\Spot_Price.csv')
+        #     # spot['Date'] = pandas.to_datetime(spot['Date'])
+        #     # self.spot = spot
+        #     self.get_step_till_expiry()
+        #     self.get_step_till_end()
+        # else:
+        #     pass
+        self.get_step_till_expiry()
+        self.get_step_till_end()
+        self.insample_simulation()
 
     def loss(self, params):
         mu = params[0]
@@ -724,13 +727,13 @@ class EGARCH_SST():
                              'delta': self.result['x'][6]}
         else:
             self.result = self.fixed_result
-            self._params_dict = {'mu': self.result['x'][0],
-                             'omega': self.result['x'][1],
-                             'alpha': self.result['x'][2],
-                             'gamma': self.result['x'][3],
-                             'beta': self.result['x'][4],
-                             'nu': self.result['x'][5],
-                             'delta': self.result['x'][6]}
+            self._params_dict = {'mu': self.result['mu'],
+                             'omega': self.result['omega'],
+                             'alpha': self.result['alpha'],
+                             'gamma': self.result['gamma'],
+                             'beta': self.result['beta'],
+                             'nu': self.result['nu'],
+                             'delta': self.result['delta']}
         return self.result
 
     def get_paths(self, s0=18.56111935, nsteps=2000, nsim=100, v0=None):

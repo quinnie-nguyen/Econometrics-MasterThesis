@@ -10,6 +10,7 @@ import os
 rootdir = r'D:\TU_DORTMUND\Thesis\Data\price'
 params_root_dir = r'D:\TU_DORTMUND\Thesis\Data\params'
 crps_root_dir = r'D:\TU_DORTMUND\Thesis\Data\crps'
+in_crps_root_dir = r'D:\TU_DORTMUND\Thesis\Data\insample'
 pnl_root_dir = r'D:\TU_DORTMUND\Thesis\Data\pnl'
 
 def get_price_data(no_month_ahead=1, start_date = datetime.datetime(2016, 2, 1), end_date = datetime.datetime(2025, 1, 1)):
@@ -91,19 +92,15 @@ class calibration_CNT():
         self.estimation_length = estimation_length
         self.fixed_result = fixed_result
         self.params_calibration()
-        if self.model == 'EGARCH' and self.model_obj.result.success == True:
-            self.outsample_simulation()
-        elif self.model == 'EGARCH' and self.model_obj.result.success == False:
-            self.crps = pandas.DataFrame([numpy.nan], index = [self.valdate], columns = ['CRPS'])
-        elif self.model == 'HESTON':
-            self.outsample_simulation()
+        self.insample_simulation()
+        self.outsample_simulation()
+        #if self.model == 'EGARCH' and self.model_obj.result.success == True:
+        #   self.outsample_simulation()
+        #elif self.model == 'EGARCH' and self.model_obj.result.success == False:
+        #   self.crps = pandas.DataFrame([numpy.nan], index = [self.valdate], columns = ['CRPS'])
+        #elif self.model == 'HESTON':
+        #   self.outsample_simulation()
 
-        # attemp = 0
-        # while self.model_obj.outsample_crps is numpy.nan and attemp <=4:
-        #     attemp = attemp +1
-        #     self.valdate = get_business_day(self.valdate + datetime.timedelta(days = 1))
-        #     self.params_calibration()
-        #     self.outsample_simulation()
 
 
     def params_calibration(self):
@@ -115,6 +112,21 @@ class calibration_CNT():
             self.model_obj = HESTON.HESTON_CNT(contract=self.cnt, valdate=self.valdate, estimation_length=self.estimation_length, fixed_param=self.fixed_result)
             self.S0 = self.model_obj.gas_data[-1]
             self._params_dict = self.model_obj._params_dict
+
+    def insample_simulation(self):
+        self.model_obj.insample_simulation()
+        self.in_crps = pandas.DataFrame([self.model_obj.insample_crps], index = [self.valdate], columns = ['CRPS'])
+
+    def archive_crps_insample(self):
+        df = pandas.DataFrame(self.in_crps, index=[self.valdate])
+        file_path = fr"{in_crps_root_dir}\{self.model}\{self.cnt}.csv"
+        if os.path.exists(file_path):
+            df_save = pandas.read_csv(file_path, index_col=0, parse_dates=True)
+            df_save = pandas.concat([df_save, df], axis = 0)
+            df_save = df_save.loc[~df_save.index.duplicated(keep='last')]
+            df_save.to_csv(fr"{in_crps_root_dir}\{self.model}\{self.cnt}.csv")
+        else:
+            df.to_csv(fr"{in_crps_root_dir}\{self.model}\{self.cnt}.csv")
 
     def archive_params(self):
         df = pandas.DataFrame(self._params_dict, index=[self.valdate])
