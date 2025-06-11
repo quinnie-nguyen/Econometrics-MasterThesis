@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 # Suppress all warnings
 warnings.filterwarnings("ignore")
 
-month = [#'Jan',
+month = ['Jan',
       'Feb',
       'Mar',
       'Apr',
@@ -132,7 +132,7 @@ def replication_rslt(contract,
 
 t2e_pnl = 1/12
 model = ['EGARCH', 'HESTON']
-moneyness = 1
+moneyness = [0.95, 1.05]
 def pnl_main():
     df = pandas.DataFrame()
     for mm in month:
@@ -140,20 +140,52 @@ def pnl_main():
             contract = f"{mm}-{yy}"
             print(contract)
             for md in model:
-                rslt = replication_rslt(contract,
-                                 md,
-                                 moneyness,
-                                 t2e_pnl
-                                 )
-                df = pandas.concat([df, pandas.DataFrame(rslt, index=[0])], axis = 0)
-                df.to_csv("D:\TU_DORTMUND\Thesis\Data\pnl2.csv")
+                for mo in moneyness:
+                    rslt = replication_rslt(contract,
+                                     md,
+                                     mo,
+                                     t2e_pnl
+                                     )
+                    df = pandas.concat([df, pandas.DataFrame(rslt, index=[0])], axis = 0)
+                    df.to_csv("D:\TU_DORTMUND\Thesis\Data\pnl3.csv")
 
 
 if __name__ == '__main__':
-    t2e_pnl = 1/ 12
-    model = ['EGARCH', 'HESTON']
-    moneyness = 1
-    pnl_main()
+    pnl = pandas.read_csv("D:/TU_DORTMUND/Thesis/Data/total_pnl.csv")
+    pnl = pnl[['cnt', 'moneyness', 'model', 'hedged_pnl']]
+    h = pandas.DataFrame(pnl[pnl['model'] == "HESTON"].groupby('cnt')['hedged_pnl'].mean()).reset_index()
+    rslt = dict()
+    rslt['cnt'] = []
+    rslt['pnl'] = []
+    for yy in year:
+        for mm in month:
+            contract = f"{yy}-{mm}"
+            rslt['cnt'].append(contract)
+            rslt['pnl'].append(abs(float(h[h['cnt'] == contract]['hedged_pnl'])))
+
+    h = pandas.DataFrame(pnl[pnl['model'] == "HESTON"].groupby('cnt')['hedged_pnl'].mean()).reset_index()
+    e = pandas.DataFrame(pnl[pnl['model'] == "EGARCH"].groupby('cnt')['hedged_pnl'].mean()).reset_index()
+    rslt = dict()
+    rslt['cnt'] = []
+    rslt['h_pnl'] = []
+    rslt['e_pnl'] = []
+    for yy in year:
+        for mm in month:
+            contract = f"{yy}-{mm}"
+            rslt['cnt'].append(contract)
+            rslt['h_pnl'].append(abs(float(h[h['cnt'] == contract]['hedged_pnl'])))
+            rslt['e_pnl'].append(abs(float(e[e['cnt'] == contract]['hedged_pnl'])))
+
+
+    rslt = pandas.DataFrame(rslt)
+    rslt = rslt[rslt['e_pnl']<5]
+    plt.plot(rslt.cnt, rslt['h_pnl'])
+    rslt[rslt['e_pnl'] < 5].plot()
+    plt.xticks(rslt.cnt)
+    #t2e_pnl = 1/ 12
+    #model = ['EGARCH', 'HESTON']
+    #moneyness = [0.95, 1.05]
+    #pnl_main()
     peng
 
 

@@ -97,6 +97,10 @@ In order to have robust probabilistic price forecast, accurate volatility predic
 
 While EGARCH model has been widely employed for discrete-time series in econometric analysis, Heston model, which captures stochastic volatility as well as the correlation between price shock and volatility shock, is a benchmark model when it comes to model stochastic volatility from mathematical perspective. Heston model, proposed by Steven L. Heston in 1993, extends the Black and Scholes model (BSM) by considering stochastic volatility driven by a Cox–Ingersoll–Ross (CIR) process (Sircar, 1999). Moreover, this model can capture the heavy-tailed nature of the return distributions, leverage effect, and volatility clustering, which make it one of the most famous stochastic volatility models for option pricing and risk management. Primarily, Heston model was used mainly for equity and currency (Adrian A Dragulescu \& Victor M Yakovenko, 2002 and Mikhailov, S., \& Nögel, U., 2004). Recently, Oyuna, D., \& Yaobin, L. (2021) applied Heston model to forecast crude oil price and their finding showed that the stochastic volatility model performs better than traditional GARCH model. 
 
+The literature on wide range of methodologies used for gas price forecast grew substantially over the previous decade. These methods vary from econometrics models, statistical machine learning model and the combinations of these two (Elgharbawy and Sayed, 2020). Jonathan Berrisch, Florian Ziel (2022) proposes models to forecast day-ahead and one month-ahead natural gas price. The time series models cover skewed and heavy-tailed distribution which enable it to capture stylized facts of financial data. Additionally, autocorrelation, seasonality, risk premia, temperature, storage levels, price of CO2 certificate and other energy' prices are included in the model. Jinpei Liu et al. (2025) introduces probabilistic connectivity network (PCnet) link models for predicting natural gas prices. The empirical analysis shows the outstanding performance of price prediction; however, the approach consists of four data-intensive steps which makes it hard to verify the generalized representation of the model. Ambya, A. et al., 2020 utilized econometrics models, such as ARIMA and GARCH, to predict future natural gas price. According to the empirical result, AR(1)-GARCH(1,1) performs the best among models from the same class. 
+
+Heston model which enable one to capture the stochastic volatility has been mainly used to forecast and analyze price of stock-exchanged market (Bianca Reichert1 and Adriano Mendonça Souza 2022). In 2011, Beth introduces a non-Gaussian stochastic volatility model of Barndorff-Nielsen and Shephard and compare the natural gas price forecast performance of his model and Heston model. Afterwards, Heston becomes more well-known for its application in commodity market ( Dong et al., 2020; Hsu et al., 2017).
+
 This paper contributes to the literature by undertaking a detailed comparative analysis of EGARCH assuming skewed-t-distribution and Heston model, evaluating their performance in modeling and forecasting natural gas probabilistic price. For performance evaluation, I compare not only Continuous Ranked Probability Score (CRPS) but also investigate the investment strategy built on probabilistic forecast. This approach provides insightful comparison for both academic and practitioner as it brings both statistical and commercial perspectives while analyzing the accuracy of price prediction.
 
 The remainder of the paper is as follows: Section 2 explains the data used, giving overview of the US gas price and many stylized facts. The proposed models, estimation method and evaluation criteria are presented and discussed in Section 3. Section 4 presents the comparative analysis of EGARCH and Heston models in terms of their predictive performance. The conclusion is discussed in Section 5.
@@ -679,6 +683,44 @@ Wilcoxon signed-rank test evaluates the median difference between CRPS of Heston
 \item Alternative hypothesis (H1): The median difference is not zero. There is significant difference in the models' performance.
 \end{itemize}
 
+\subsubsection{Delta-neutral replication performance}
+
+Natural gas price forecast is intermediate step which is required for different purposes, such as risk management, derivative pricing, ... According to Alexander et al., (2012), accurate option pricing and hedging is more important than forecasting prices alone. 
+
+This thesis investigates only the delta hedge accuracy that is used to hedge the risk associated with price's volatility. In case of multiple risk sources for price and volatility, delta hedging is very likely insufficient to examine the hedging performance. For the sake of simplicity and maintain a fair ground for comparison, imperfect hedging is conducted to evaluate the performance of EGARCH and Heston model. 
+
+In addition to CRPS, this study assesses the performance of delta-neutral replication as a metric for evaluating the accuracy of probabilistic forecasts using EGARCH and Heston models. Under the assumption that futures prices are driven by randomness as defined in the relevant models, the calculation of a derivative price using forecast curve results in a fair price, which then lead to a minimum loss or gain of a portfolio replicating that derivative. 
+
+For the purpose of evaluating the futures price forecast, a portfolio consisting of a call option and underlying asset is considered, where a call option is an financial contract that gives the holder the right, but not the obligation, to buy a specific amount of an underlying asset (such as stocks, commodities, or indices) at a predetermined price (known as the strike price) within a specified time period (until the expiration date). Value of call option is determined by the expected payoff at expiration as follows
+
+\[C(F, K) = e^{-rT} \mathbb{E} \left[(F_T - K)^+ \right] \]
+
+with $F_T$ is the price of the underlying asset at expiration and K is strike price of the option. The option's price is computed numerically given by
+
+\[C_t(F_t, K) = \frac{1}{n} \sum_{i=1}^n \hat{F}_i \mathbbm{1}_{(K, \infty)}(\hat{F}_i) \]
+
+with $F_i$ is the price simulation by relevant model.
+In the context of this thesis, underlying asset is futures contract of natural gas and its $F_T$ is the curve generated by relevant models. Considering a portfolio $\Pi$ consisting of: 
+
+\begin{itemize}
+\item Short position in call option C
+\item Long position in $\Delta$ amount of the underlying F
+\item A cash account B
+\end{itemize}
+
+By construction, the portfolio $\Pi = \Delta F - C + B$, with $\Delta = \frac{\partial C}{\partial F}$ measuring the sensitivity if an option's price to small changes in the price of the underlying asset. Similarly to call option's price, $\Delta$ is computed numerically as follows:
+
+\[\Delta_t = \frac{C_t(F_t+\epsilon, K) - C_t(F_t - \epsilon, K)}{2\epsilon}\] 
+
+with small $\epsilon$.
+
+By continuously adjusting the position in the underlying asset by long $\Delta_{t+1} - \Delta_t$ amount of underlying, the portfolio is delta-neutral. Together with the assumption for EGARCH model that price process has only one source of randomness from $\epsilon$, the portfolio is risk-free. 
+
+The non-arbitrage condition of the market is ensured by minimizing the value of the portfolio, which results in a fair price of the option. Consequently, the absolute value of the portfolio at the expiration date, as determined by the relevant models, serves as a metric to assess the performance of models in terms of probabilistic forecasting. 
+
+\[|\Pi_T| = |\Delta_{T-1} F_T - C_T + B_{T-1}|\]
+
+The smaller the absolute value of the portfolio at the expiration date, the more effective the model is in generating probabilistic forecasts.
 
 
 \subsection{Forecasting design}
@@ -692,15 +734,19 @@ EGARCH is estimated by minimizing their negative log-likelihood while Markov Cha
 For each futures contract:
 
 \begin{itemize}
-\item EGARCH(1,1) is fitted for financial series of 3 months using MLE approach by minimizing negative log likelihood in equation (3.2) to obtain $ \hat{\varphi} = (\hat{\mu}, \hat{\alpha}, \hat{\beta}, \hat{\gamma}, \hat{\delta}, \hat{\nu})$ only once.
+\item EGARCH(1,1) is fitted on 3 months log return using MLE approach by minimizing negative log likelihood in equation (3.2) to obtain $ \hat{\varphi} = (\hat{\mu}, \hat{\alpha}, \hat{\beta}, \hat{\gamma}, \hat{\delta}, \hat{\nu})$ only once.
 \item Initial volatility is computed as $\sigma_0 = (e^{\frac{\hat{\omega}}{1-\hat{\beta}}})^{0.5}$
 \end{itemize}
 
-For i from 0 to 25*3 (for 3 month-ahead forecast) or i from 0 to 25 (for 1 month-ahead forecast)
+For t from 0 to 25*3 (for 3 month-ahead forecast) or i from 0 to 25 (for 1 month-ahead forecast)
 \begin{itemize}
-\item Sampling 1000 i.i.d random variable from skewed Student-t distribution SST(mean = 0, variance = 0, skew = $\hat{\delta}$, degree of freedom = $\hat{\nu}$).
-\item Computing
+\item Sampling 1000 i.i.d random variable $z_t$ from skewed Student-t distribution SST(mean = 0, variance = 0, skew = $\hat{\delta}$, degree of freedom = $\hat{\nu}$).
+\item Computing $\hat{\sigma}_t$ where $ \ln\left(\hat{\sigma}_t^2\right) = \hat{\omega} + \hat{\alpha} \left( |\epsilon_{t-1}| - \mathbb{E}[|\epsilon_{t-1}|] \right) + \hat{\gamma} \epsilon_{t-1} +  \hat{\beta} \ln\left(\hat{\sigma}_{t-1}^2\right)$
+\item Computing $\hat{\epsilon}_t = \hat{\sigma}_t z_t $
+\item $\hat{S}_t = \hat{S}_{t-1} e^{\hat{\mu} + \hat{\epsilon}_t}$
 \end{itemize}
+
+\subsubsection{Heston}
 
 
 \section{Empirical Analysis}
@@ -840,7 +886,21 @@ Investigation period     & p-value & Conclusion                     \\ \midrule
 \end{tabular}
 \end{table}
 
+\subsection{Delta Hedge Performance}
 
+
+\colorAutoref{deltahegde} shows the performance of EGARCH and Heston model when they are implement to delta hedge a call option with one-month to expiry. It is noticeable that profit and loss (PnL) of Heston model is more stable than the one based on EGARCH price forecast. Then fluctuation in PnL of EGARCH is clear during the 2022 when one of the main supply of natural gas was disrupted because of Russian-Ukrainian war. It is not obvious whether Heston outperforms EGARCH model in terms of delta hedge efficiency; therefore, I run Wilcoxon test to answer the question if there is a significant difference between these PnL from two models. The hypothesis is as follows
+
+\begin{itemize}
+\item H0
+\item H1
+\end{itemize}
+
+\begin{figure}[h!] 
+\includegraphics[scale=1,width=1\linewidth,height=0.4\textheight]{deltahedge_pnl.png}
+\caption{Absolute PnL Delta Hedge for Call option with one month to expiry}
+\label{deltahegde}
+\end{figure}
 
 
 
