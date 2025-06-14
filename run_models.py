@@ -178,10 +178,12 @@ if __name__ == '__main__':
 
 
     rslt = pandas.DataFrame(rslt)
-    rslt = rslt[rslt['e_pnl']<5]
+    rslt = rslt[rslt['e_pnl'] < 5]
     plt.plot(rslt.cnt, rslt['h_pnl'])
-    rslt[rslt['e_pnl'] < 5].plot()
-    plt.xticks(rslt.cnt)
+
+    plt.plot(rslt.cnt, rslt['e_pnl'])
+    plt.xticks(rslt.cnt[::5], rotation='vertical')
+    plt.legend(['Heston PnL', 'EGARCH PnL'])
     #t2e_pnl = 1/ 12
     #model = ['EGARCH', 'HESTON']
     #moneyness = [0.95, 1.05]

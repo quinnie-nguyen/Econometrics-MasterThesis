@@ -685,11 +685,9 @@ Wilcoxon signed-rank test evaluates the median difference between CRPS of Heston
 
 \subsubsection{Delta-neutral replication performance}
 
-Natural gas price forecast is intermediate step which is required for different purposes, such as risk management, derivative pricing, ... According to Alexander et al., (2012), accurate option pricing and hedging is more important than forecasting prices alone. 
+Natural gas price forecast is intermediate step which is required for different purposes, such as risk management, derivative pricing, ... According to Alexander et al., (2012), accurate option pricing and hedging is more important than forecasting prices alone. Moreover, performance of delta hedges, which helps to reduce risk associated with changes in price, is another way to represent the ability of model to capture the price dynamics. 
 
-This thesis investigates only the delta hedge accuracy that is used to hedge the risk associated with price's volatility. In case of multiple risk sources for price and volatility, delta hedging is very likely insufficient to examine the hedging performance. For the sake of simplicity and maintain a fair ground for comparison, imperfect hedging is conducted to evaluate the performance of EGARCH and Heston model. 
-
-In addition to CRPS, this study assesses the performance of delta-neutral replication as a metric for evaluating the accuracy of probabilistic forecasts using EGARCH and Heston models. Under the assumption that futures prices are driven by randomness as defined in the relevant models, the calculation of a derivative price using forecast curve results in a fair price, which then lead to a minimum loss or gain of a portfolio replicating that derivative. 
+The general idea of delta hedges is to adjust the replicating portfolio periodically, aiming to maintain the value of the portfolio as close to the value of derivative as possible. This thesis investigates only the delta hedge accuracy that is used to hedge the risk associated with price's volatility. In case of multiple risk sources for price and volatility, delta hedging is very likely insufficient to examine the hedging performance. For the sake of simplicity and to maintain a fair ground for comparison, although it is obvious that delta hedges is not perfect, imperfect hedging is conducted to evaluate the performance of EGARCH and Heston model. Further more, in order to keep it close to the real world practice, daily hedges accuracy is considered in the comparative performance analysis of EGARCH and Heston model.
 
 For the purpose of evaluating the futures price forecast, a portfolio consisting of a call option and underlying asset is considered, where a call option is an financial contract that gives the holder the right, but not the obligation, to buy a specific amount of an underlying asset (such as stocks, commodities, or indices) at a predetermined price (known as the strike price) within a specified time period (until the expiration date). Value of call option is determined by the expected payoff at expiration as follows
 
@@ -720,12 +718,26 @@ The non-arbitrage condition of the market is ensured by minimizing the value of 
 
 \[|\Pi_T| = |\Delta_{T-1} F_T - C_T + B_{T-1}|\]
 
-The smaller the absolute value of the portfolio at the expiration date, the more effective the model is in generating probabilistic forecasts.
+
+
+In simple words, the call option with specific strike price (i) is short at time t, while the replicating portfolio includes $\Delta _{i,t}$ units of the asset and cash position of $b_{i,t}$. The mean absolute hedging error at the maturity date of N options with different moneyness is measured as performance metric given as
+
+\begin{align*}
+PnL = \frac{1}{N} \sum_{i = 1}^{N} |\Pi_{i,T}|
+\end{align*}
+
+where moneyness is defined as 
+
+\begin{align*}
+moneyness = \frac{K}{S_0} \text{ with K: Strike price, and $S_0$: asset price at valuation date}
+\end{align*}
+
+The absolute error is investigated in order to evaluate the hedging accuracy rather than the expected PnL. Computing absolute error ensures that every deviation from zero of the PnL counts and positive and negative errors do not cancel out. The smaller the hedge error at the expiration date, the more effective the model is in generating probabilistic forecasts.
 
 
 \subsection{Forecasting design}
 
-The analysis including parameterization and forecasting performance of the models was conducted for each futures contract. Specifically, the analysis was performed 2 times for each contract: once 3 months before the expiry and 1 month before the expiry $T$. The estimation window is fixed to 3 months data $S_{T-6*30}$ to $S_{T-3*30}$ for 3 month-ahead forecast and $S_{T-4*30}$ to $S_{T-1*30}$ for 1 month-ahead forecast. Then CPRS was computed using the model forecasts and price at expiry.
+The analysis including parameterization and forecasting performance of the models was conducted for each futures contract. Specifically, the analysis was performed 2 times for each contract: once 3 months before the expiry and 1 month before the expiry $T$. The estimation window is fixed to 3 months data, then CPRS was computed using the model forecasts and price at expiry.
 
 EGARCH is estimated by minimizing their negative log-likelihood while Markov Chain Monte Carlo was used to estimate Heston. I implemented them in Python and made used of some built-in packages like pandas, numpy, scipy, SST distribution (Berrisch, 2021). The procedure of parameter estimation and probabilistic forecast is as follows:
 
@@ -738,7 +750,8 @@ For each futures contract:
 \item Initial volatility is computed as $\sigma_0 = (e^{\frac{\hat{\omega}}{1-\hat{\beta}}})^{0.5}$
 \end{itemize}
 
-For t from 0 to 25*3 (for 3 month-ahead forecast) or i from 0 to 25 (for 1 month-ahead forecast)
+Condition variance and price ($S_T$) are computed recursively by 
+
 \begin{itemize}
 \item Sampling 1000 i.i.d random variable $z_t$ from skewed Student-t distribution SST(mean = 0, variance = 0, skew = $\hat{\delta}$, degree of freedom = $\hat{\nu}$).
 \item Computing $\hat{\sigma}_t$ where $ \ln\left(\hat{\sigma}_t^2\right) = \hat{\omega} + \hat{\alpha} \left( |\epsilon_{t-1}| - \mathbb{E}[|\epsilon_{t-1}|] \right) + \hat{\gamma} \epsilon_{t-1} +  \hat{\beta} \ln\left(\hat{\sigma}_{t-1}^2\right)$
@@ -746,7 +759,40 @@ For t from 0 to 25*3 (for 3 month-ahead forecast) or i from 0 to 25 (for 1 month
 \item $\hat{S}_t = \hat{S}_{t-1} e^{\hat{\mu} + \hat{\epsilon}_t}$
 \end{itemize}
 
+Finally, CRPS is computed for $S_T$ following equation (CRPS*)
+
 \subsubsection{Heston}
+
+First, the prior distribution for parameters is partly taken from Cape et al. (2014) with some modification according to the observations in real data
+
+\begin{align*}
+\mu &\sim N(0,1) \\
+\kappa &\sim N(0,1) \\
+\theta &\sim N(0,1) \\
+\Omega &\sim IG(2, 0.01) \\
+\Psi &\sim N(0, \Omega/2) \\
+V &\sim N(0.09, 0.1) 
+\end{align*}
+
+MCMC algorithm is run to estimate the Heston's parameters as follows
+
+\begin{itemize}
+\item Randomly choose initial values of $\mu_0$, $\kappa_0$, $\theta_0$, $\Sigma_0$, $\Psi_0 \sim N(0, \Sigma_0/2)$ \\
+\item Sampling $V_0, V_1, ..., V_T$ from chosen truncate normal distribution to ensure the non-negative value for variance \\
+\item Computing mean and variance for $\mu$ according to equation ... Sampling new value of $\mu_0$ from the defined distribution of $\mu$.\\
+\item Computing $\beta$ parameter for IG according to equation... Replacing $\Omega_0$ by random sample from $IG(2, \beta$\\
+\item Repeating same procedure for $\Psi$, $\theta$, $\kappa$. \\
+\item Propose new V = V + N(0, 0.001), then compute the likelihood of current V and proposed V.\\
+\item Compute the acceptance rate and compare with random variable from Uniform distribution U(0,1).
+\end{itemize}
+
+In this study, MCMC is repeated 15000 times with 5000 sampling as burn-in period and only the last 10000 iterations is used to estimate parameters. After achieving the estimated parameters, forecast for returns and eventually price are computed following the procedure
+
+\begin{itemize}
+\item 
+\end{itemize}
+
+At valuation date, 
 
 
 \section{Empirical Analysis}
@@ -892,9 +938,11 @@ Investigation period     & p-value & Conclusion                     \\ \midrule
 \colorAutoref{deltahegde} shows the performance of EGARCH and Heston model when they are implement to delta hedge a call option with one-month to expiry. It is noticeable that profit and loss (PnL) of Heston model is more stable than the one based on EGARCH price forecast. Then fluctuation in PnL of EGARCH is clear during the 2022 when one of the main supply of natural gas was disrupted because of Russian-Ukrainian war. It is not obvious whether Heston outperforms EGARCH model in terms of delta hedge efficiency; therefore, I run Wilcoxon test to answer the question if there is a significant difference between these PnL from two models. The hypothesis is as follows
 
 \begin{itemize}
-\item H0
-\item H1
+\item H0 EGARCH and Heston's delta hedged PnL performance is not significantly different.
+\item H1 There is a significant difference in the delta hedged PnL performance of EGARCH and Heston model.
 \end{itemize}
+
+
 
 \begin{figure}[h!] 
 \includegraphics[scale=1,width=1\linewidth,height=0.4\textheight]{deltahedge_pnl.png}
@@ -906,7 +954,9 @@ Investigation period     & p-value & Conclusion                     \\ \midrule
 
 \newpage
 \section{Conclusion}
+This thesis studies the comparative analysis of EGARCH and Heston model in terms of their performance on probabilistic forecast for natural gas, considering futures prices from January 2017 to December 2024. In general, EGARCH and Heston model can be used to represent the volatility clustering of financial time series.  EGARCH is mainly used as econometrics model to derive value at risk (VAR) which is a well-known metric in risk management, while Heston is famous for its usage in derivative pricing. Probabilistic price forecast plays a key role in achieving VAR or derivative price. 
 
+In order to maintain the fair ground for comparison, I investigate the EGARCH assuming that error terms follow skewed student-t distribution. As a result, both models are able to capture heavy tails and skewness characteristic of empirical log-return. 
 
 
 \newpage
