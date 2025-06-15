@@ -777,22 +777,24 @@ V &\sim N(0.09, 0.1)
 MCMC algorithm is run to estimate the Heston's parameters as follows
 
 \begin{itemize}
-\item Randomly choose initial values of $\mu_0$, $\kappa_0$, $\theta_0$, $\Sigma_0$, $\Psi_0 \sim N(0, \Sigma_0/2)$ \\
-\item Sampling $V_0, V_1, ..., V_T$ from chosen truncate normal distribution to ensure the non-negative value for variance \\
-\item Computing mean and variance for $\mu$ according to equation ... Sampling new value of $\mu_0$ from the defined distribution of $\mu$.\\
-\item Computing $\beta$ parameter for IG according to equation... Replacing $\Omega_0$ by random sample from $IG(2, \beta$\\
-\item Repeating same procedure for $\Psi$, $\theta$, $\kappa$. \\
-\item Propose new V = V + N(0, 0.001), then compute the likelihood of current V and proposed V.\\
+\item Randomly choose initial values of $\mu_0$, $\kappa_0$, $\theta_0$, $\Sigma_0$, $\Psi_0 \sim N(0, \Sigma_0/2)$
+\item Sampling $V_0, V_1, ..., V_T$ from chosen truncate normal distribution to ensure the non-negative value for variance 
+\item Computing mean and variance for $\mu$ according to equation ... Sampling new value of $\mu_0$ from the defined distribution of $\mu$
+\item Computing $\beta$ parameter for IG according to equation... Replacing $\Omega_0$ by random sample from $IG(2, \beta$
+\item Repeating same procedure for $\Psi$, $\theta$, $\kappa$
+\item Propose new V = V + N(0, 0.001), then compute the likelihood of current V and proposed V
 \item Compute the acceptance rate and compare with random variable from Uniform distribution U(0,1).
 \end{itemize}
 
 In this study, MCMC is repeated 15000 times with 5000 sampling as burn-in period and only the last 10000 iterations is used to estimate parameters. After achieving the estimated parameters, forecast for returns and eventually price are computed following the procedure
 
 \begin{itemize}
-\item 
+\item Sampling $Z_V \sim N(0,1)$ and $Z_{corr} \sim N(0,1)$ independently. Then $Z_S = \hat{\rho} Z_V + \sqrt{1-\rho^2} Z_{corr}$.
+\item Compute simulated volatility according to equation ().
+\item Compute simulated price according to equation().
 \end{itemize}
 
-At valuation date, 
+In case of CRPS, the probabilistic price forecast is sufficient to get the final metric. On the other hand, additional computation is required to derive the performance of EGARCH and Heston model in delta hedging. In order to avoid the computational cost, models's parameters are estimated once and used throughout the valuation period. Secondly, probabilistic price forecasts is achieved based on the estimated parameters, assuming different initial prices. Third, delta is calculated according to equation. Finally, the replicating portfolio is adjusted according to delta. The procedure is repeated until the expiry date for 3 moneyness: 0.95, 1, 1.05. The mean of absolute delta hedges error represents for the performance of models.
 
 
 \section{Empirical Analysis}
@@ -956,7 +958,19 @@ Investigation period     & p-value & Conclusion                     \\ \midrule
 \section{Conclusion}
 This thesis studies the comparative analysis of EGARCH and Heston model in terms of their performance on probabilistic forecast for natural gas, considering futures prices from January 2017 to December 2024. In general, EGARCH and Heston model can be used to represent the volatility clustering of financial time series.  EGARCH is mainly used as econometrics model to derive value at risk (VAR) which is a well-known metric in risk management, while Heston is famous for its usage in derivative pricing. Probabilistic price forecast plays a key role in achieving VAR or derivative price. 
 
-In order to maintain the fair ground for comparison, I investigate the EGARCH assuming that error terms follow skewed student-t distribution. As a result, both models are able to capture heavy tails and skewness characteristic of empirical log-return. 
+In order to maintain the fair ground for comparison, I investigate the EGARCH assuming that error terms follow skewed student-t distribution. As a result, both models are able to capture heavy tails and skewness characteristic of empirical log-return. EGARCH(1,1) and Heston are employed to forecast three month-ahead and one month-ahead probabilistic prices at maturity date for 96 futures contract during the period from 2017 to 2024. The econometrics model EGARCH is estimated by maximizing log-likelihood assuming the skewed-student t distribution of residuals while Markov Chain Monte Carlo method is employed to estimate parameters for Heston. In-sample fitted values and out-of-sample forecast are used to analyze the representation of the models to natural gas price process. The focus of the study is to evaluate the forecast performance using various probabilistic metrics, including the CRPS and delta hedges absolute errors.
+
+I highlight three main findings. First, EGARCH's estimated skewness $\delta$ is one for most of the contracts. which implies the symmetric of residuals. Additionally, the parameters of EGARCH and Heston model fluctuate within the same range for both cases of one month-ahead and three month-ahead forecast, except for the long-term volatility of Heston model, which can be explained by the fact that there are more trades for futures contract when time to expiry is getting close, leading to high volatility.
+
+Secondly, the in-sample performance of EGARCH model is better than the one of Heston in terms of CRPS by Wilcoxon test. The same relative result applies for both one-month ahead and three-month ahead. However, in case of extreme events such as Russian-Ukrainian war, the in-sample fitted distribution is not accurate, which can be seen from CRPS. 
+
+Third, I find limited evidence for the relative difference in probabilistic forecast performance of EGARCH and Heston model with respect to CRPS. Even though it is clear in graphical illustrations that Heston outperforms EGARCH for one-month and three month ahead forecast in period when important events leading to disruption in supply happened, there is not positive statistical testing result that supports the finding.  
+
+Fourth, performance of delta hedges of EGARCH and Heston are investigated by applying replicating portfolio approach. Mean of absolute delta hedges errors of multiple options with different strike is utilized as metric to measure the accuracy of probabilistic forecast. The finding is similar to the result of comparing CRPS that the delta hedges error of Heston model is smaller during 2019 and 2022. On the other hand, it is not obvious about the comparative performance of EGARCH and Heston whether one is better than the other for the rest of the study period. 
+
+Overall, it is more computationally expensive to estimate parameters of Heston model as many sampling iterations has to be run in order to get the parameters converge. Although there is no testing proof for the improvement in probabilistic forecast evaluating by CRPS and delta hedges errors when using Heston model, it is recommended to use Heston when it is uncertain what happens in the future affecting supply of natural gas.
+
+Finally, simple prior distribution is utilized when estimating Heston model that does not consider much industry knowledge in order to make a fair ground for comparison. One can consider to modify the prior distribution according to the real world to get better result. Furthermore, it is noteworthy that delta hedges is not perfect as it considers only the uncertainty in price process. For that reason, a more sophisticated hedging procedure including vega hedge $\frac{\Delta C}{\Delta \sigma}$ can be investigate to accurately measure the performance of models. 
 
 
 \newpage
