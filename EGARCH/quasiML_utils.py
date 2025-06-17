@@ -827,6 +827,7 @@ class EGARCH_SST():
         else:
             self.outsample_crps = numpy.nan
         print(f"CRPS Out-Sample: {self.outsample_crps}")
+        self.outsample_forecast = price_forecast
         return price_simu_outsample, self.outsample_crps
 
     def call_option_price(self, step, moneyness=0.9):

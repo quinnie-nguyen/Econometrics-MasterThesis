@@ -63,13 +63,17 @@ def get_imsample_crps():
                         :]).T.iloc[0, :].to_dict()
 
                 egarch_obj = utils.calibration_CNT(contract=contract, t2m=tt, valdate=None, model='EGARCH', delta_hegde=False, estimation_length=3, fixed_result= efixed_params)
-                egarch_obj.archive_crps_insample()
-                egarch_obj.archive_crps()
+                egarch_obj.archive_probprice()
+
+
+                #egarch_obj.archive_crps_insample()
+                #egarch_obj.archive_crps()
 
 
                 heston_obj = utils.calibration_CNT(contract=contract, t2m=tt, valdate=None, model='HESTON', delta_hegde=False, estimation_length=3, fixed_result=hfixed_params)
-                heston_obj.archive_crps_insample()
-                heston_obj.archive_crps()
+                heston_obj.archive_probprice()
+                #heston_obj.archive_crps_insample()
+                #heston_obj.archive_crps()
 
 
 def replication_rslt(contract,
@@ -151,6 +155,56 @@ def pnl_main():
 
 
 if __name__ == '__main__':
+    import ast
+    probprice_dir = r'D:\TU_DORTMUND\Thesis\Data\probprice\EGARCH'
+    df = pandas.DataFrame()
+    real = []
+    cnt = []
+    for yy in year:
+        for mm in month:
+            contract = f"{mm}-{yy}"
+            print(contract)
+
+            df_temp = pandas.read_csv(fr"{probprice_dir}\{contract}.csv", index_col=0).iloc[:, 0]
+
+            if pandas.DataFrame(ast.literal_eval(df_temp[1])).shape[0] != 0:
+                real.append(float(df_temp[0]))
+                df = pandas.concat([df, pandas.DataFrame(ast.literal_eval(df_temp[1]))], axis=1)
+
+                cnt.append(contract)
+
+    df = df[(df <= 1000).all(axis=1)]
+    quantiles = df.T.quantile([0.05, 0.25, 0.5, 0.75, 0.95], axis=1).T
+    quantiles.columns = ['q05', 'q25', 'q50', 'q75', 'q95']
+    quantiles['real_price'] = real
+    quantiles['date'] = cnt
+
+    #plt.figure(figsize=(14, 6))
+
+    # Plot
+    plt.figure(figsize=(14, 6))
+
+    # Fan plot: 90% and 50% intervals
+    plt.fill_between(quantiles['date'], quantiles['q05'], quantiles['q95'], color='gray', alpha=0.3,
+                     label='90% Interval')
+    plt.fill_between(quantiles['date'], quantiles['q25'], quantiles['q75'], color='gray', alpha=0.5,
+                     label='50% Interval')
+
+    # Median forecast
+    plt.plot(quantiles['date'], quantiles['q50'], color='black', linestyle='--', label='Forecast Median')
+
+    # Real price
+    plt.plot(quantiles['date'], quantiles['real_price'], color='blue', label='Real Price')
+
+    plt.ylabel('USD')
+    plt.title('Probabilistic Forecast for Oil Futures')
+    plt.legend()
+    plt.xticks(cnt[::5], rotation='vertical')
+    #plt.grid(True)
+    #plt.tight_layout()
+    plt.show()
+    #get_imsample_crps()
+
     pnl = pandas.read_csv("D:/TU_DORTMUND/Thesis/Data/total_pnl.csv")
     pnl = pnl[['cnt', 'moneyness', 'model', 'hedged_pnl']]
     h = pandas.DataFrame(pnl[pnl['model'] == "HESTON"].groupby('cnt')['hedged_pnl'].mean()).reset_index()

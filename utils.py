@@ -12,6 +12,7 @@ params_root_dir = r'D:\TU_DORTMUND\Thesis\Data\params'
 crps_root_dir = r'D:\TU_DORTMUND\Thesis\Data\crps'
 in_crps_root_dir = r'D:\TU_DORTMUND\Thesis\Data\insample'
 pnl_root_dir = r'D:\TU_DORTMUND\Thesis\Data\pnl'
+probprice_dir = r'D:\TU_DORTMUND\Thesis\Data\probprice'
 
 def get_price_data(no_month_ahead=1, start_date = datetime.datetime(2016, 2, 1), end_date = datetime.datetime(2025, 1, 1)):
     month_to_symbol = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
@@ -127,6 +128,22 @@ class calibration_CNT():
             df_save.to_csv(fr"{in_crps_root_dir}\{self.model}\{self.cnt}.csv")
         else:
             df.to_csv(fr"{in_crps_root_dir}\{self.model}\{self.cnt}.csv")
+
+    def archive_probprice(self):
+        s = []
+        s.append(self.model_obj.terminal_price)
+        s.append(self.model_obj.outsample_forecast)
+        df = pandas.DataFrame(s)
+        df.columns = [self.t2m]
+
+        file_path = fr"{probprice_dir}\{self.model}\{self.cnt}.csv"
+        if os.path.exists(file_path):
+            df_save = pandas.read_csv(file_path, index_col=0, parse_dates=True)
+            df_save = pandas.concat([df_save, df], axis = 1)
+            #df_save = df_save.loc[~df_save.index.duplicated(keep='last')]
+            df_save.to_csv(fr"{probprice_dir}\{self.model}\{self.cnt}.csv")
+        else:
+            df.to_csv(fr"{probprice_dir}\{self.model}\{self.cnt}.csv")
 
     def archive_params(self):
         df = pandas.DataFrame(self._params_dict, index=[self.valdate])
