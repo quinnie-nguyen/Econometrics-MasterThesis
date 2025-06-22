@@ -156,30 +156,74 @@ def pnl_main():
 
 if __name__ == '__main__':
     import ast
-    probprice_dir = r'D:\TU_DORTMUND\Thesis\Data\probprice\EGARCH'
-    df = pandas.DataFrame()
-    real = []
+    probprice_dir = r'D:\TU_DORTMUND\Thesis\Data\probprice'
+    df_egarch = pandas.DataFrame()
+    df_heston = pandas.DataFrame()
+    real_egarch = []
+    real_heston = []
     cnt = []
     for yy in year:
         for mm in month:
             contract = f"{mm}-{yy}"
             print(contract)
 
-            df_temp = pandas.read_csv(fr"{probprice_dir}\{contract}.csv", index_col=0).iloc[:, 0]
-
-            if pandas.DataFrame(ast.literal_eval(df_temp[1])).shape[0] != 0:
-                real.append(float(df_temp[0]))
-                df = pandas.concat([df, pandas.DataFrame(ast.literal_eval(df_temp[1]))], axis=1)
-
+            df_temp_egarch = pandas.read_csv(fr"{probprice_dir}\EGARCH\{contract}.csv", index_col=0).iloc[:, 1] # 0: 3 month, 1: 1 month
+            df_temp_heston = pandas.read_csv(fr"{probprice_dir}\HESTON\{contract}.csv", index_col=0).iloc[:, 1]
+            if pandas.DataFrame(ast.literal_eval(df_temp_egarch[1])).shape[0] != 0:
+                real_egarch.append(float(df_temp_egarch[0]))
+                real_heston.append(float(df_temp_heston[0]))
+                df_egarch = pandas.concat([df_egarch, pandas.DataFrame(ast.literal_eval(df_temp_egarch[1]))], axis=1)
+                df_heston = pandas.concat([df_heston, pandas.DataFrame(ast.literal_eval(df_temp_heston[1]))], axis=1)
                 cnt.append(contract)
 
-    df = df[(df <= 1000).all(axis=1)]
-    quantiles = df.T.quantile([0.05, 0.25, 0.5, 0.75, 0.95], axis=1).T
-    quantiles.columns = ['q05', 'q25', 'q50', 'q75', 'q95']
-    quantiles['real_price'] = real
-    quantiles['date'] = cnt
+    df_egarch.columns = cnt
+    df_heston.columns = cnt
+    df_egarch = df_egarch[(df_egarch <= 1000).all(axis=1)]
+    df_heston = df_heston[df_egarch.columns]
+    quantiles_e = df_egarch.T.quantile([0.05, 0.25, 0.5, 0.75, 0.95], axis=1).T
+    quantiles_e.columns = ['q05', 'q25', 'q50', 'q75', 'q95']
+    quantiles_e['real_price'] = real_egarch
+    quantiles_e['date'] = cnt
 
-    #plt.figure(figsize=(14, 6))
+    quantiles_h = df_heston.T.quantile([0.05, 0.25, 0.5, 0.75, 0.95], axis=1).T
+    quantiles_h.columns = ['q05', 'q25', 'q50', 'q75', 'q95']
+    quantiles_h['real_price'] = real_heston
+    quantiles_h['date'] = cnt
+
+    fig, axes = plt.subplots(
+        nrows=2,  # Number of rows = number of time series
+        ncols=1,  # Single column
+        figsize=(8, 6),  # Figure size (width, height)
+        sharex=True  # Share x-axis for alignment
+    )
+
+    # Fan plot: 90% and 50% intervals
+    axes[0].fill_between(quantiles_e['date'], quantiles_e['q05'], quantiles_e['q95'], color='gray', alpha=0.3,
+                     label='90% Interval')
+    axes[0].fill_between(quantiles_e['date'], quantiles_e['q25'], quantiles_e['q75'], color='gray', alpha=0.5,
+                     label='50% Interval')
+
+    # Median forecast
+    axes[0].plot(quantiles_e['date'], quantiles_e['q50'], color='black', linestyle='--', label='Forecast Median')
+
+    # Real price
+    axes[0].plot(quantiles_e['date'], quantiles_e['real_price'], color='blue', label='Real Price')
+
+    axes[1].fill_between(quantiles_h['date'], quantiles_h['q05'], quantiles_h['q95'], color='gray', alpha=0.3,
+                     label='90% Interval')
+    axes[1].fill_between(quantiles_h['date'], quantiles_h['q25'], quantiles_h['q75'], color='gray', alpha=0.5,
+                     label='50% Interval')
+
+    # Median forecast
+    axes[1].plot(quantiles_h['date'], quantiles_h['q50'], color='black', linestyle='--', label='Forecast Median')
+
+    # Real price
+    axes[1].plot(quantiles_h['date'], quantiles_h['real_price'], color='blue', label='Real Price')
+
+    #plt.title('Probabilistic Forecast for Gas Futures')
+    axes[0].legend(loc="upper right", bbox_to_anchor=(1.0, 1.0))
+    axes[1].legend(loc="upper right", bbox_to_anchor=(1.0, 1.0))
+    plt.xticks(cnt[::5], rotation='vertical')
 
     # Plot
     plt.figure(figsize=(14, 6))

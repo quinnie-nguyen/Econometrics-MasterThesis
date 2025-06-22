@@ -77,6 +77,8 @@ Thanh Quyen Nguyen\\
   \hypersetup{linkcolor=black}
   \renewcommand{\baselinestretch}{1.5}\normalsize 
   \tableofcontents
+  \listoffigures
+  \listoftables
   \thispagestyle{empty}
 }
 
@@ -87,21 +89,22 @@ Thanh Quyen Nguyen\\
 \renewcommand{\baselinestretch}{1.5}\normalsize 
 
 
-Natural gas is essential to global energy systems, representing over 23\% of worldwide energy use, as reported by the International Energy Agency in August 2024. It makes natural gas the third-largest source of energy after oil and coal. Moreover, it is published in The U.S. Energy Information Administration report that natural gas produces 50\% less $CO_2$ than coal and 30\% less $CO_2$ than oil when burned for energy. Therefore, natural gas has been becoming a reliable and relatively cleaner source of energy given the fact that it support the climate-neutral transformation scheme. Robust gas price forecast enables decision-making units to make informed decisions regarding energy consumption, investment strategies, resource allocation and risk management. While point forecast seems to be not sufficient to achieve the above-mentioned goals, probabilistic prediction, providing a full predictive distribution, quantifying uncertainty and offering probabilities for different outcomes., is a powerful tool, which can serve for multiple purposes, e.g. scenario analysis, complex derivative pricing, portfolio optimization,...
+Natural gas is essential to global energy systems, representing over 23\% of worldwide energy use, as reported by the International Energy Agency in August 2024. Additionally, natural gas markets are noticeably liberalized, making natural gas an essential financial commodity (Hong et al., 2020). According to the U.S. Energy Information Administration report, natural gas produces 50\% less $CO_2$ than coal and 30\% less $CO_2$ than oil when burned for energy. Therefore, natural gas has become a reliable and relatively cleaner source of energy, given that it supports the climate-neutral transformation scheme. A robust gas price forecast enables decision-making units to make informed decisions regarding energy consumption, investment strategies, resource allocation and risk management. While point forecasts seem to be insufficient to achieve the above-mentioned goals, probabilistic prediction, providing a full predictive distribution, quantifying uncertainty, and offering probabilities for different outcomes, is a powerful tool that can serve multiple purposes, e.g., scenario analysis, complex derivative pricing, and portfolio optimization.
 
 
-De Gooijer and Hyndman (2006), in their analysis of time series forecasting research from 1982 to 2005, which encompasses over 940 papers, conclude that the utilization of prediction intervals and densities, or probabilistic forecasting, has significantly increased over time, as practitioners have recognized the limitations of point forecasts. While probability forecasts for binary events (e.g., an 80\% likelihood of rain today, a 10\% likelihood of a financial crisis by year-end) have been prevalent for several decades (Gigerenzer et al. 2005), focus has increasingly turned to probabilistic forecasts for a broader range of variables and events. Significant challenges in science and society have driven this research area; these challenges consist of meteorological and climatic forecasting (Collins \& Knight 2007; Gneiting \& Raftery 2005; Palmer 2002, 2012), projections regarding the accessibility of renewable energy resources (Pinson 2013, Zhu \& Genton 2012), and economic and financial risk assessment (Groen et al. 2013, Timmermann 2000). As natural gas has been becoming an important financial commodity (Hong et al., 2020), there is a significant growth in the literature on natural gas price forecasting in the last decade where a wide range of different methodologies is employed: econometric model, statistical machine learning model and fundamental model. Ferrari et al. (2021) proposed dynamic factor models to forecast commodities' prices, including oil, natural gas an coal, when using a large dataset if macroeconomic variables. The penalized maximum likelihood approach enables the the shrink to zero of parameters, which allows the model to get rid of the curve of dimension. They found that their model outperformed machine learning technique, such as LASSO and elastic net. Similarly, macroeconomics and technical trading rules are used to build commodities' price density forecast (Wang et al., 2020). It showed that technical indicators perform better than economic variables in predicting the density of commodity price. 
+In their analysis of 940 time-series forecasting researches from 1982 to 2005, De Gooijer and Hyndman (2006) concluded that the utilization of prediction intervals and densities, or probabilistic forecasting, has increased significantly over time as practitioners have recognized the limitations of point forecasts. While probability forecasts for binary events (e.g., an 80\% likelihood of rain today, a 10\% likelihood of a financial crisis by year-end) have been popular for several decades (Gigerenzer et al., 2005), the focus has increasingly turned to probabilistic forecasts for a broader range of variables and events. Significant challenges in science and society have driven this research area, including the accessibility of renewable energy resources (Wan et al., 2013; Zhu \& Genton, 2012) and economic and financial risk assessment (Timmermann, 2000). 
 
+To achieve a robust probabilistic price forecast, accurate volatility prediction is essential. Introduced by Engle (1982), Autoregressive Conditional Heteroskedasticity (ARCH) is a well-known time-varying volatility model that was further developed by Engle (1982) and Bollerslev (1986) by including the ARMA structure, known as the Generalized Autoregressive Conditional Heteroskedasticity (GARCH) model. ARCH and GARCH have been extensively employed in the econometric literature to model the conditional variance characteristics of time series data because they enable the representation of the volatility clustering feature of financial returns. Despite their popularity, the GARCH model faces some limitations. First, asymmetric eﬀects shocks on volatility are not covered in the GARCH model, while it is a pronounced characteristic in the energy market (Sadorsky, 1999); Reboredo, 2011). Second, as volatility is required to be positive, the estimated parameters of the GARCH model have to be non-negative, which makes the GARCH model difficult to estimate. The exponential GARCH (EGARCH) model, introduced by Nelson (1991), not only captures the asymmetric eﬀect of shocks on volatility but also simplifies the estimation by eliminating the non-negativity condition for estimated parameters.
 
-In order to have robust probabilistic price forecast, accurate volatility prediction is required. Over the past few decades, there has been a significant evolution in the literature on energy market volatility. Introduced by Engle (1982), Autoregressive Conditional Heteroskedasticity (ARCH) is well-known time-varying volatility model, which was further developed in Bellerslev (1986) by including the ARMA structure, known as Generalized ARCH (GARCH) model. ARCH and GARCH have been extensively employed in econometric literature to model conditional variance characteristic of time series data due to the fact that they enable the representation of volatility cluster characteristic of financial return. Despite their popularity, GARCH model faces some limitations. First, asymmetric effects shocks on volatility is not covered in GARCH model, while it is a pronounced characteristic in energy market (Sadorsky, 1999) and Reboredo, 2011). Second, as volatility is required to be positive, the estimated parameters of GARCH model have to be non-negative, which make the GARCH model difficult to estimate. Exponential GARCH (EGARCH) model, introduced by Nelson (1991), not only capture the asymmetric effect of shocks on volatility but also simplify the estimation by eliminating the non-negativity condition for estimated parameters. 
+While the EGARCH model has been widely employed for discrete-time series in econometric analysis, the Heston model, which captures both stochastic volatility and the correlation between price shocks and volatility shocks, is a benchmark model from a mathematical perspective for modeling stochastic volatility. Heston model, proposed by Steven L. Heston in 1993, extends the Black and Scholes model (BSM) by considering stochastic volatility driven by a Cox–Ingersoll–Ross (CIR) process (Sircar, 1985). Moreover, this model can capture the heavy-tailed nature of the return distributions, leverage effect, and volatility clustering, which makes it one of the most famous stochastic volatility models for option pricing and risk management.
 
-While EGARCH model has been widely employed for discrete-time series in econometric analysis, Heston model, which captures stochastic volatility as well as the correlation between price shock and volatility shock, is a benchmark model when it comes to model stochastic volatility from mathematical perspective. Heston model, proposed by Steven L. Heston in 1993, extends the Black and Scholes model (BSM) by considering stochastic volatility driven by a Cox–Ingersoll–Ross (CIR) process (Sircar, 1999). Moreover, this model can capture the heavy-tailed nature of the return distributions, leverage effect, and volatility clustering, which make it one of the most famous stochastic volatility models for option pricing and risk management. Primarily, Heston model was used mainly for equity and currency (Adrian A Dragulescu \& Victor M Yakovenko, 2002 and Mikhailov, S., \& Nögel, U., 2004). Recently, Oyuna, D., \& Yaobin, L. (2021) applied Heston model to forecast crude oil price and their finding showed that the stochastic volatility model performs better than traditional GARCH model. 
+As natural gas has become a significant financial commodity (Hong et al., 2020), there has been substantial growth in the literature on natural gas price forecasting over the last decade, with a wide range of methodologies employed, including econometric models, statistical machine learning models, and fundamental models. Ferrari et al. (2021) proposed dynamic factor models to forecast the prices of commodities, including oil, natural gas, and coal, using a large dataset of macroeconomic variables. The penalized maximum likelihood approach enables the shrinkage of parameters to zero, which allows the model to eliminate the dimensionality of the curve. They found that their model outperformed machine learning techniques, such as LASSO and elastic net. Similarly, macroeconomics and technical trading rules are employed to construct commodity price density forecasts (Wang et al., 2020). The results showed that technical indicators outperform economic variables in predicting the density of commodity prices. 
 
-The literature on wide range of methodologies used for gas price forecast grew substantially over the previous decade. These methods vary from econometrics models, statistical machine learning model and the combinations of these two (Elgharbawy and Sayed, 2020). Jonathan Berrisch, Florian Ziel (2022) proposes models to forecast day-ahead and one month-ahead natural gas price. The time series models cover skewed and heavy-tailed distribution which enable it to capture stylized facts of financial data. Additionally, autocorrelation, seasonality, risk premia, temperature, storage levels, price of CO2 certificate and other energy' prices are included in the model. Jinpei Liu et al. (2025) introduces probabilistic connectivity network (PCnet) link models for predicting natural gas prices. The empirical analysis shows the outstanding performance of price prediction; however, the approach consists of four data-intensive steps which makes it hard to verify the generalized representation of the model. Ambya, A. et al., 2020 utilized econometrics models, such as ARIMA and GARCH, to predict future natural gas price. According to the empirical result, AR(1)-GARCH(1,1) performs the best among models from the same class. 
+Jonathan Berrisch and Florian Ziel (2022) proposed models to forecast day-ahead and one-month-ahead natural gas prices. The time series models covered skewed and heavy-tailed distributions, which enabled them to capture the stylized facts of financial data. Additionally, autocorrelation, seasonality, risk premia, temperature, storage levels, the price of a CO2 certificate, and other energy prices were included in the model. Jinpei Liu et al. (2025) introduced probabilistic connectivity network (PCnet) link models for predicting natural gas prices. The empirical analysis demonstrated the outstanding performance of the price prediction approach; however, the method consisted of four data-intensive steps, which maked it challenging to verify the generalized representation of the model. Moreover, Ambya A. et al. (2020) employed econometric models, including ARIMA and GARCH, to forecast future natural gas prices. According to the empirical result, AR(1)-GARCH(1,1) performs the best among models from the same class.
 
-Heston model which enable one to capture the stochastic volatility has been mainly used to forecast and analyze price of stock-exchanged market (Bianca Reichert1 and Adriano Mendonça Souza 2022). In 2011, Beth introduces a non-Gaussian stochastic volatility model of Barndorff-Nielsen and Shephard and compare the natural gas price forecast performance of his model and Heston model. Afterwards, Heston becomes more well-known for its application in commodity market ( Dong et al., 2020; Hsu et al., 2017).
+The Heston model, which enables the capture of stochastic volatility, has been primarily used to forecast and analyze the prices of stock-exchange markets (Bianca Reichert and Adriano Mendonça Souza, 2022). In 2011, Beth introduced a non-Gaussian stochastic volatility model by Barndorff-Nielsen and Shephard and compared the natural gas price forecast performance of this model with that of the Heston model. Afterwards, Heston becomes more well-known for its application in the commodity market ( Dong et al., 2020; Hsu et al., 2017). Recently, Oyuna, D., \& Yaobin, L. (2021) applied the Heston model to forecast crude oil prices, and their finding showed that the stochastic volatility model performs better than the traditional GARCH model.
 
-This paper contributes to the literature by undertaking a detailed comparative analysis of EGARCH assuming skewed-t-distribution and Heston model, evaluating their performance in modeling and forecasting natural gas probabilistic price. For performance evaluation, I compare not only Continuous Ranked Probability Score (CRPS) but also investigate the investment strategy built on probabilistic forecast. This approach provides insightful comparison for both academic and practitioner as it brings both statistical and commercial perspectives while analyzing the accuracy of price prediction.
+This thesis contributes to the literature by undertaking a detailed comparative analysis of EGARCH assuming skewed-t-distribution and Heston model, evaluating their performance in modeling and forecasting natural gas probabilistic price. For performance evaluation, I compare not only Continuous Ranked Probability Score (CRPS) but also investigate the investment strategy built on probabilistic forecast. This approach provides insightful comparison for both academic and practitioner as it brings both statistical and commercial perspectives while analyzing the accuracy of price prediction. I found that there is no significant difference between the performance of EGARCH and Heston model based on the result of Wilcoxon test for probabilistic forecast errors and delta hedges errors. However, it can be shown graphically that both forecast errors and delta hedges errors of Heston model is noticeably smaller than errors of EGARCH model, implying the advantage of Heston usage during extreme events that can cause demand-supply shocks.
 
 The remainder of the paper is as follows: Section 2 explains the data used, giving overview of the US gas price and many stylized facts. The proposed models, estimation method and evaluation criteria are presented and discussed in Section 3. Section 4 presents the comparative analysis of EGARCH and Heston models in terms of their predictive performance. The conclusion is discussed in Section 5.
 
@@ -152,7 +155,7 @@ This study focuses on analyzing daily prices of NYMEX Henry Hub Natural Gas Futu
 \label{Jan16pacf}
 \end{figure}
 
-In this study, I assume Efficient Market Hypothesis (EMH) holds true that prices fully reflect all available information at any given time. Based on EMH, futures prices are random and there is no need to use past information or exogenous variables to systematically predict prices. Therefore, this study utilizes only prices series, and focus on analyzing its dynamic employing EGARCH and HESTON model.
+In this study, I assume Efficient Market Hypothesis (EMH) developed by Eugene F. Fama in the 1960s holds true that prices fully reflect all available information at any given time. Based on EMH, futures prices are random and there is no need to use past information or exogenous variables to systematically predict prices. Therefore, this study utilizes only prices series, and focus on analyzing its dynamic employing EGARCH and HESTON model.
 
 \section{Methodology}
 
@@ -161,11 +164,11 @@ In this study, I assume Efficient Market Hypothesis (EMH) holds true that prices
 
 \subsubsection{Background and motivation}
 
-Traditional econometrics model which assumes homoskedasticity does not represent the well-documented stylized facts of financial time series, such as volatility clustering, leverage effects, and fat-tailed distributions. In 1982, autoregressive conditionally heteroscedastic (ARCH) models was first developed by Engle. The ARCH model is the first formal framework to capture volatility clustering. It describes volatility as a function of past squared residuals (shocks).
+Traditional econometric models, which assume homoskedasticity, do not represent the well-documented stylized facts of financial time series, such as volatility clustering, leverage effects, and fat-tailed distributions. In 1982, autoregressive conditionally heteroscedastic (ARCH) models were first developed by Engle. The ARCH model is the first formal framework to capture volatility clustering. It describes volatility as a function of past squared residuals (shocks).
 
-While ARCH model is simple and successfully describes the important characteristic of financial returns, it usually requires a large number of lagged squared residuals to sufficiently represent the volatility process, resulting in estimation inefficiency. To address this issue, some alternatives were introduced. An extension of ARCH model, general autoregressive conditionally heteroscedastic (GARCH),  proposed by Bollerslev (1986) is one of the most well-known approach. 
+While the ARCH model is simple and successfully describes the important characteristic of financial returns, it usually requires a large number of lagged squared residuals to sufficiently represent the volatility process, resulting in estimation inefficiency. To address this issue, some alternative models were introduced. An extension of the ARCH model, general autoregressive conditionally heteroscedastic (GARCH),  proposed by Bollerslev (1986), is one of the most well-known approaches.
 
-The important feature of (G)ARCH models are the conditional variance, which allows the variance at time t depending on the variances and shocks at time u with $u<t$.
+A key feature of (G)ARCH models is the conditional variance, which allows the variance at time t to depend on the variances and shocks at time u with $u<t$.
 
 A strong GARCH(p,q) model is given by
 
@@ -174,7 +177,7 @@ A strong GARCH(p,q) model is given by
  &\sigma_t^2 = \omega + \sum_{i=1}^p \alpha_i \epsilon_{t-i}^2+ \sum_{j=1}^q \beta_j \sigma_{t-j}^2
  \end{align*}
  
- where the $\alpha_i$ and $\beta_j$ are non-negative constant and $\omega$ is positive constant, and $\eta_t ~ \mathbb{N}(0,1)$.
+ where the $\alpha_i$ and $\beta_j$ are non-negative constant and $\omega$ is positive constant, and $\eta_t \sim \mathbb{N}(0,1)$.
 
 If all $\beta_j =0$, function of variance becomes
 
@@ -185,18 +188,12 @@ If all $\beta_j =0$, function of variance becomes
  
  and the process has a form of ARCH(p).
  
-As GARCH(p,q) model has ARCH($\infty$); therefore, it helps to capture the process of variance without adding too many lag of shocks and variances. However, there are some technical and practical issues one has to consider when employing GARCH(p,q) to modelling financial volatility cluster.
-
-First, $\alpha_i$ and $\beta_j$ have to be positive to ensure that $\sigma^2 >0$. The restriction makes it hard to have efficient optimizer.
-
-Second, ARCH and GARCH both assume the symmetric effect of negative and positive shock although there is obviously the asymmetric influence of price shocks in practice. 
-
-Exponential general autoregressive conditionally heteroscedastic (EGARCH) is one of the solution to both issue while maintaining the capability to capture volatility clustering.
+As the GARCH(p,q) model has ARCH($\infty$), it helps capture the variance process without adding too many lags of shocks and variances. However, there are some technical and practical issues that one must consider when employing GARCH(p,q) to model financial volatility clusters. First, $\alpha_i$ and $\beta_j$ have to be positive to ensure that $\sigma^2 >0$. The restriction makes it hard to have an efficient optimizer. Second, ARCH and GARCH both assume a symmetric effect of negative and positive shocks, although there is an asymmetric influence of price shocks in practice. The exponential general autoregressive conditionally heteroscedastic (EGARCH) model is one of the solutions to both issues while maintaining the capability to capture volatility clustering.
 
 
 \subsubsection{EGARCH (1,1) Model}
 
-EGARCH captures volatility clustering as the conditional variance (volatility) is represented by a function of past squared returns, absolute returns, and other variables, in a way that accounts for the persistence of volatility over time. The EGARCH(p,q) model, proposed by Nelson et al. (1991), is defined as follows:
+EGARCH captures volatility clustering as the conditional variance (volatility) is represented by a function of past squared returns, absolute returns, and other variables, in a way that accounts for the persistence of volatility over time. The EGARCH(p,q) model, proposed by Nelson (1991), is defined as follows:
 
  \begin{align*}
  &r_t = \ln \left(\frac{S_t}{S_{t-1}}\right) = \mu + \epsilon_t ,\\[0.6em]
@@ -281,7 +278,8 @@ The QML estimated parameters $\hat{\varphi}$ is achieved by maximize the likelih
 \subsection{Heston model}
 \subsubsection{Background and motivation}
 
-\textbf{Black-Scholes model}
+\vspace{0.5cm}
+\hspace{2em} \textbf{Black-Scholes model}
 
 Black-Scholes model, which assumes Geometric Brownian Motion (GBM) has been become the benchmark of models for financial derivatives pricing. The price of equity or commodity is given by GBM as follows
 
@@ -300,6 +298,7 @@ where
 
 Back-Scholes model is well-known thanks to its closed-form solution for European options pricing. However, it has several issues for practitioners when applying in real world. First, volatility $\sqrt{V}$ is assumed to be constant over time. It can be seen from empirical data that volatility is time-varying and has feature of clustering. Secondly, in real world, volatility tends to revert to long-term mean, but this feature is not covered by GBM either. To address these issues, stochastic volatility Heston models were developed in 1993 where underlying price follows GBM with stochastic volatility be represented by Ornstein-Uhlenbeck process.
 
+\vspace{0.5cm}
 \textbf{Ornstein-Uhlenbeck}
 
 The mean reversion Ornstein-Uhlenbeck model is employed in Heston model for describing stochastic volatility process
@@ -330,8 +329,7 @@ dW_t^S dW_V^2 &= \rho \\[0.6em]
 2\kappa \theta &\ge \sigma_V^2 \label{eq:3.10}
 \end{align}
 
-with the \eqref{eq:3.8} represents asset price process at time t, and stochastic volatility of asset price is assumed to admit an Ornstein-Uhlenbeck process given in \eqref{eq:3.9} where $\mu$ is growth rate or expected return of asset price, $\theta$ represent the long-term average from which the volatility diverges and to which it then returns $\kappa$ is mean reversion speed coefficient (the larger the k, the longer it takes to return to $\theta$)
-$\sigma_V$ is volatility of the volatility, and it is generally responsible for the “scale” of randomness of the volatility process and $dW^S, dW^V$ are two correlated standard Brownian motions with a $\rho \neq 0$ correlation. The Feller condition in \eqref{eq:3.10} ensures the non-negative of variance.
+with the \eqref{eq:3.8} represents asset price process at time t, and stochastic volatility of asset price is assumed to admit an Ornstein-Uhlenbeck process given in \eqref{eq:3.9} where $\mu$ is growth rate or expected return of asset price, $\theta$ represent the long-term average from which the volatility diverges and to which it then returns $\kappa$ is mean reversion speed coefficient (the larger the k, the longer it takes to return to $\theta$), $\sigma_V$ is volatility of the volatility, and it is generally responsible for the “scale” of randomness of the volatility process and $dW^S, dW^V$ are two correlated standard Brownian motions with a $\rho \neq 0$ correlation. The Feller condition in \eqref{eq:3.10} ensures the non-negative of variance.
 
 By applying Ito's Lemma, which is discussed in Appendix, Heston model becomes:
 
@@ -351,14 +349,14 @@ V_t - V_{t-\Updelta t} &= \kappa (\theta - V_{t- \Updelta t}) \Updelta t + \sqrt
 Corr(\epsilon_t^S, \epsilon_t^V) &= \rho
 \end{align*}
 
-Consider $\Updelta t = \frac{1}{252}$ where 252 stands for the number of business days in a year, $\ln(S_t) - \ln(S_{t-\Updelta t}) = r_t$ is daily return, and all parameters can be interpreted annually. In order to facilitate the estimation, let $\psi = \rho \sigma_V$ and $\Omega = \sigma_V^2(1-\rho^2)$, Heston model can be illustrated as 
+Consider $\Updelta t = \frac{1}{252}$ where 252 stands for the number of business days in a year, $\ln(S_t) - \ln(S_{t-\Updelta t}) = r_t$ is daily return, and all parameters can be interpreted annually. According to Joshua Cape et al. (2014), in order to facilitate the estimation, let $\psi = \rho \sigma_V$ and $\Omega = \sigma_V^2(1-\rho^2)$, Heston model can be illustrated as 
 
  \begin{align}
 r_t &= \left( \mu - \frac{1}{2}V_{t-\Updelta t} \right) \Updelta t+ \sqrt{V_{t - \Updelta t}} \sqrt{\Updelta t} \epsilon_t^S \label{eq:3.12} \\[0.6em] 
 V_t &= \kappa \theta \Updelta t + V_{t- \Updelta t} (1 - \kappa \Updelta t)  + \sqrt{V_{t - \Updelta t}} \sqrt{\Updelta t} \epsilon_t^V \label{eq:3.13}
 \end{align}
 
-\eqref{eq:3.13} shows that volatility squared $V_t$ is a function of $V_{t-\Updelta_t}$ and other parameters. Therefore, HESTON can capture volatility clustering feature of returns. Furthermore, stochastic volatility setup allows random spike or drop in volatility. As a result, it will increase the probability of extreme movements in price, which then causes heavy-tailed distribution of returns because large price changes occurs more frequently in HESTON model than in standard Black-Scholes model. 
+Equation (3.13) shows that volatility squared $V_t$ is a function of $V_{t-\Updelta_t}$ and other parameters. Therefore, HESTON can capture volatility clustering feature of returns. Furthermore, stochastic volatility setup allows random spike or drop in volatility. As a result, it will increase the probability of extreme movements in price, which then causes heavy-tailed distribution of returns because large price changes occurs more frequently in HESTON model than in standard Black-Scholes model. 
 
 After reorganization, it can be seen that
 
@@ -374,12 +372,12 @@ After reorganization, it can be seen that
 										    									  \end{pmatrix} \right)
 \end{align*}
 
-Over the last decades, parameter estimation for stochastic differential equation has been investigated thoroughly. There are several approaches that have been studied and employed in financial mathematics. According to Gruszka, Jarosław, and Janusz Szwabinski (2023), Bayesian approach performs well in estimating parameters from the model class. In this study, Heston model is estimated by using Markov Chain Monte Carlo (MCMC) method, which bases on Bayesian inference. In general, the prior distribution for each parameter is assumed, then together with data observed, the posterior distribution is formalized. Under the assumption of Markov Chain and the repeated random sampling by Monte Carlo, the estimated parameters are achieved. I briefly discuss the characteristic of Markov Chain and Monte Carlo in the Appendix. The main content solely focus on the prior density assumption and posterior density derivation, which is developed in Joshua Cape et al. (2014).
+Over the last decades, parameter estimation for stochastic differential equation has been investigated thoroughly. There are several approaches that have been studied and employed in financial mathematics. According to Gruszka, Jarosław, and Janusz Szwabinski (2023), Bayesian approach performs well in estimating parameters from the model class. In this study, Heston model is estimated by using Markov Chain Monte Carlo (MCMC) method, which bases on Bayesian inference. In general, the prior distribution for each parameter is assumed, then together with data observed, the posterior distribution is formalized. Under the assumption of Markov Chain and the repeated random sampling by Monte Carlo, the estimated parameters are achieved. The main content solely focus on the prior density assumption and posterior density derivation, which is developed in Joshua Cape et al. (2014).
 
 MCMC distinguishes between parameter set and state space, where parameter set includes $\mu, \kappa, \theta, \sigma_V, \rho$, where state space ${V_0, V_1, ...V_T}$. These two components are estimated jointly using different random sampling methods which are discussed later in this chapter.
 
 \subsubsection{Estimation}
-I start with deriving likelihood function of $(r_t, V_t)$. It can be seen from \eqref{eq:3.12} and  \eqref{eq:3.13} that $(r_t, V_t)$ is a linear transformation of $(\epsilon_t^S, \epsilon_t^V)$ respectively. As $(\epsilon_t^S, \epsilon_t^V)$ is jointly normal distributed, $(r_t, V_t)$ follows bivariate normal distribution with joint probability density function given below
+The estimation for Heston model using MCMC starts with deriving likelihood function of $(r_t, V_t)$. It can be seen from Equation (3.12) and (3.13) that $(r_t, V_t)$ is a linear transformation of $(\epsilon_t^S, \epsilon_t^V)$ respectively. As $(\epsilon_t^S, \epsilon_t^V)$ is jointly normal distributed, $(r_t, V_t)$ follows bivariate normal distribution with joint probability density function given below
 
 \[
 P(r, V| \mu, \kappa, \theta, \psi, \Omega) = \Omega^{-n/2} \left( \prod_{t=1}^{n} \frac{1}{V_{t-1}}\right) \exp \left(- \frac{1}{2\Omega} \sum_{t=1}^{n} [(\Omega + \psi^2)(\epsilon_t^S)^2 - 2 \psi \epsilon_t^S \epsilon_t^V + (\epsilon_t^V)^2]\right) \label{eq:3.13}
@@ -396,21 +394,21 @@ The joint likelihood of $r_t, V_t$ is then used with the assumptions of prior di
 Assuming that $\mu \sim \mathcal{N}(\mu_0, \sigma_0^2)$, according to Bayes rule, the posterior of $\mu$ is given by
 
 \begin{align*}
-P(\mu \mid Y, V, \kappa, \theta, \psi, \Omega) & \propto P(Y, V \mid \mu, \kappa, \theta, \psi, \Omega) \cdot P(\mu) \\[0.6em]
+P(\mu \mid r, V, \kappa, \theta, \psi, \Omega) & \propto P(r, V \mid \mu, \kappa, \theta, \psi, \Omega) \cdot P(\mu) \\[0.6em]
 & \propto \exp\left( -\frac{1}{2\Omega} \sum_{t=1}^{n} \left[ (\Omega + \psi^2)(\epsilon_t^S)^2 - 2\psi \epsilon_t^V \epsilon_t^S \right] \right) \cdot \exp\left( -\frac{(\mu - \mu_0)^2}{2\sigma_0^2} \right) \\[0.6em]
-& \propto \exp\left( -\frac{1}{2} \sum_{t=1}^{n} \left[ \frac{\Omega + \psi^2}{\Omega} \left( \frac{Y_t - \mu \Delta t + \frac{1}{2} V_{t-1} \Delta t}{\sqrt{V_{t-1} \Delta t}} \right)^2 \right. \right. \\[0.6em]
+& \propto \exp\left( -\frac{1}{2} \sum_{t=1}^{n} \left[ \frac{\Omega + \psi^2}{\Omega} \left( \frac{r_t - \mu \Delta t + \frac{1}{2} V_{t-1} \Delta t}{\sqrt{V_{t-1} \Delta t}} \right)^2 \right. \right. \\[0.6em]
 & \left. \left. - \frac{2\psi}{\Omega} \left( \frac{V_t - \kappa \theta \Delta t - (1 - \kappa \Delta t) V_{t-1}}{\sqrt{V_{t-1} \Delta t}} \right) \left( \frac{-\mu \Delta t}{\sqrt{V_{t-1} \Delta t}} \right) \right] \right) \\[0.6em]
 & \cdot \exp\left( -\frac{\mu^2 - 2\mu_0 \mu}{2\sigma_0^2} \right)\\[0.6em]
 & \propto\exp\left(-\frac{1}{2} \left[\left(\sum_{t=1}^n \frac{\Omega + \psi^2}{\Omega V_{t-1}}\right) \mu^2 \Delta t \right. \right. \\[0.6em] 
-& \left. \left. - 2\sum_{t=1}^T \left(\frac{(\Omega + \psi^2)(Y_t - \frac{1}{2} V_{t-1} \Delta t)}{\Omega V_{t-1} \sqrt{V_{t-1} \Delta t}} - \frac{\psi \left(V_t - \kappa \theta \Delta t - (1 - \kappa \Delta t)V_{t-1} \right)}{\Omega V_{t-1}} \right) \mu \right] \right) \\[0.6em]
+& \left. \left. - 2\sum_{t=1}^T \left(\frac{(\Omega + \psi^2)(r_t + \frac{1}{2} V_{t-1} \Delta t)}{\Omega V_{t-1}} - \frac{\psi \left(V_t - \kappa \theta \Delta t - (1 - \kappa \Delta t)V_{t-1} \right)}{\Omega V_{t-1}} \right) \mu \right] \right) \\[0.6em]
 & \cdot \exp\left(-\frac{1}{2} \left[\frac{1}{\sigma_0^2} \mu^2 - 2 \frac{\mu_0}{\sigma_0^2} \mu \right] \right).
 %%& \propto \exp \left( \frac{-1}{2} \left( \Delta t \sum_{t=1}^n \frac{\Omega + \psi^2}{\Omega V_{t-1}}  + \frac{1}{\sigma_0^2}\right) \right  \right)^{-1} 
 \end{align*}
 
-After simplification, the $\mu \sim \mathcal{N}(\mu^*, \sigma^{*2})$ with
+After simplification, the $\mu \sim \mathcal{N}(\mu^*, \sigma^{*2})$ where 
 
 \[
-\mu^* = \frac{\sum_{t=1}^n ((\Omega + \psi^2) (Y_t + \frac{1}{2} V_{t-1} \Delta t)/\Omega V_{t-1}) - \sum_{t=1}^n (\psi (V_t - \kappa \theta \Updelta t - (1 - \kappa \Updelta t)V_{t-1})/\Omega V_{t-1}) + \mu_0/\sigma_0^2}{\Updelta t \sum_{t=1}^n ((\Omega + \psi^2) / \Omega V_{t-1}) + 1 / \sigma_0^2}
+\mu^* = \frac{\sum_{t=1}^n ((\Omega + \psi^2) (r_t + \frac{1}{2} V_{t-1} \Delta t)/\Omega V_{t-1}) - \sum_{t=1}^n (\psi (V_t - \kappa \theta \Updelta t - (1 - \kappa \Updelta t)V_{t-1})/\Omega V_{t-1}) + \mu_0/\sigma_0^2}{\Updelta t \sum_{t=1}^n ((\Omega + \psi^2) / \Omega V_{t-1}) + 1 / \sigma_0^2}
 \]
 
 \[
@@ -428,9 +426,9 @@ First, the joint posterior density of $(\psi,\Omega)$ is as follows
 
 \begin{align*}
 P(\psi, \Omega \mid Y, V, \kappa, \theta, \mu) &\propto P(Y, V \mid \psi, \Omega, \kappa, \theta, \mu) \cdot P(\psi \mid \Omega) \cdot P(\Omega) \\[0.6em]
-& \propto \Omega^{-T/2} \exp\left( -\frac{1}{2\Omega} \sum_{t=1}^{T} \left[ (\Omega + \psi^2)(\epsilon_t^S)^2 + (\epsilon_t^V)^2 - 2\psi \epsilon_t^S \epsilon_t^V \right] \right) \\[0.6em]
+& \propto \Omega^{-n/2} \exp\left( -\frac{1}{2\Omega} \sum_{t=1}^{n} \left[ (\Omega + \psi^2)(\epsilon_t^S)^2 + (\epsilon_t^V)^2 - 2\psi \epsilon_t^S \epsilon_t^V \right] \right) \\[0.6em]
 & \cdot \sqrt{\frac{p_0}{\Omega}} \exp\left( -\frac{(\psi - \psi_0)^2}{2\Omega/p_0} \right) \cdot \frac{\tilde{\beta}^{\tilde{\alpha}}}{\Gamma(\tilde{\alpha})} \Omega^{-\tilde{\alpha}-1} \exp\left( -\frac{\tilde{\beta}}{\Omega} \right) \\[0.6em]
-& \propto \Omega^{-T/2 - \tilde{\alpha} - 1} \cdot \frac{1}{\Omega^{1/2}} \cdot \exp\left( -\frac{1}{2\Omega} \sum_{t=1}^{T} \left[ (\Omega + \psi^2)(\epsilon_t^S)^2 + (\epsilon_t^V)^2 - 2\psi \epsilon_t^S \epsilon_t^V \right] \right. \\[0.6em]
+& \propto \Omega^{-n/2 - \tilde{\alpha} - 1} \cdot \frac{1}{\Omega^{1/2}} \cdot \exp\left( -\frac{1}{2\Omega} \sum_{t=1}^{n} \left[ (\Omega + \psi^2)(\epsilon_t^S)^2 + (\epsilon_t^V)^2 - 2\psi \epsilon_t^S \epsilon_t^V \right] \right. \\[0.6em]
 & \left. - \frac{1}{2} \frac{(\psi - \psi_0)^2}{\Omega/p_0} - \frac{\tilde{\beta}}{\Omega} \right)\\[0.6em]
 &\propto \Omega^{-n/2-\Tilde{\alpha}-1} \cdot \exp \left( -\frac{1}{\Omega} \left[\Tilde{\beta} + \frac{1}{2}\sum_{t=1}^n (\epsilon_t^V)^2\right]\right) \cdot \exp \left(\frac{-1}{2\Omega}p_0\psi_0^2\right)\frac{1}{\Omega^{1/2}}\\[0.6em]
 &\cdot \exp \left( -\frac{1}{2 \Omega} \left[ \left( p_0 + \sum_{t=1}^n (\epsilon_t^S)^2 \right) \psi^2 -2 \left(p_0 \psi + \sum_{t=1}^n \epsilon_t^S \epsilon_{t=1}^V \right) \psi \right. \right.\\[0.6em]
@@ -447,7 +445,7 @@ and
 
 Additionally, $\psi_{|\Omega} \sim \mathcal{N} (\psi_*, \sigma_\psi^{*2})$ where
 
-\[\psi_* =\frac{(p_0 \psi_0 + \sum_{t=1}^n \epsilon_t^S \epsilon_t^V)^2}{p_0 + \sum_{t=1}^n (\epsilon_t^S )^2} \]
+\[\psi_* =\frac{p_0 \psi_0 + \sum_{t=1}^n \epsilon_t^S \epsilon_t^V}{p_0 + \sum_{t=1}^n (\epsilon_t^S )^2} \]
 
 and 
 
@@ -462,24 +460,24 @@ and
 Assume that the prior of $\theta \sim \mathcal{N}(\theta_0, \sigma_\theta^2)$, then the posterior of $\theta$ is given by
 
 \begin{align*}
-P(\theta \mid Y, V, \mu, \kappa, \psi, \Omega) & \propto P(Y, V \mid \mu, \kappa, \theta, \psi, \Omega) \cdot P(\theta) \\[0.6em]
-& \propto \exp\left( -\frac{1}{2\Omega} \sum_{t=1}^{T} \left[ (\epsilon_t^V)^2 - 2\psi \epsilon_t^V \epsilon_t^S \right] \right) \cdot \exp\left( -\frac{(\theta - \theta_0)^2}{2\sigma_\theta^2} \right)\\
-& \propto \exp\left( -\frac{1}{2} \sum_{t=1}^{T} \left[ \frac{1}{\Omega} \left( \frac{V_t - \kappa \theta \Delta t - (1 - \kappa \Delta t)V_{t-1}}{\sqrt{V_{t-1} \Delta t}} \right)^2 \right. \right. \\
-& \left. \left. - \frac{2\psi}{\Omega} \left( \frac{Y_t - \mu \Delta t + \frac{1}{2} V_{t-1} \Delta t}{\sqrt{V_{t-1} \Delta t}} \right) \left( \frac{-\kappa \theta \Delta t}{\sqrt{V_{t-1} \Delta t}} \right) \right] \right) \\
+P(\theta \mid r, V, \mu, \kappa, \psi, \Omega) & \propto P(r, V \mid \mu, \kappa, \theta, \psi, \Omega) \cdot P(\theta) \\[0.6em]
+& \propto \exp\left( -\frac{1}{2\Omega} \sum_{t=1}^{n} \left[ (\epsilon_t^V)^2 - 2\psi \epsilon_t^V \epsilon_t^S \right] \right) \cdot \exp\left( -\frac{(\theta - \theta_0)^2}{2\sigma_\theta^2} \right)\\
+& \propto \exp\left( -\frac{1}{2} \sum_{t=1}^{n} \left[ \frac{1}{\Omega} \left( \frac{V_t - \kappa \theta \Delta t - (1 - \kappa \Delta t)V_{t-1}}{\sqrt{V_{t-1} \Delta t}} \right)^2 \right. \right. \\
+& \left. \left. - \frac{2\psi}{\Omega} \left( \frac{r_t - \mu \Delta t + \frac{1}{2} V_{t-1} \Delta t}{\sqrt{V_{t-1} \Delta t}} \right) \left( \frac{-\kappa \theta \Delta t}{\sqrt{V_{t-1} \Delta t}} \right) \right] \right) \\
 & \cdot \exp\left( -\frac{\theta^2 - 2\theta_0 \theta}{2\sigma_\theta^2} \right)\\
 & \propto\exp\left(-\frac{1}{2} \left[\left(\sum_{t=1}^n \frac{\kappa^2}{\Omega V_{t-1}}\right) \theta^2 \Delta t \right. \right. \\[0.6em] 
-& \left. \left. - 2\sum_{t=1}^T \left(\frac{\kappa (V_t - (1-\kappa \Delta t) V_{t-1})}{\Omega V_{t-1}} - \frac{\psi (r_t -\mu \Updelta t + \frac{1}{2} V_{t-1} \Updelta t) \kappa}{\Omega V_{t-1}} \right) \theta \right] \right) \\[0.6em]
+& \left. \left. - 2\sum_{t=1}^n \left(\frac{\kappa (V_t - (1-\kappa \Delta t) V_{t-1})}{\Omega V_{t-1}} - \frac{\psi (r_t -\mu \Updelta t + \frac{1}{2} V_{t-1} \Updelta t) \kappa}{\Omega V_{t-1}} \right) \theta \right] \right) \\[0.6em]
 & \cdot \exp\left(-\frac{1}{2} \left[\frac{1}{\sigma_\theta^2} \theta^2 - 2 \frac{\theta_0}{\sigma_\theta^2} \theta \right] \right).
 \end{align*}
 
 It requires some more reorganization to see that $\theta \sim \mathcal{N}(\theta^*, \sigma_\theta^2)$ with
 
 \[
-\theta^* = \frac{\sum_{t=1}^n (\kappa (V_t - (1-\kappa \Delta t) V_{t-1}))/\Omega V_{t-1}) - \sum_{t=1}^n (\psi (V_t - \kappa \theta \Updelta t - (1 - \kappa \Updelta t)V_{t-1})/\Omega V_{t-1}) + \theta_0/\sigma_\theta^2}{\Updelta t \sum_{t=1}^n (\kappa^2 / \Omega V_{t-1}) + 1 / \sigma_\theta^2}
+\theta^* = \frac{\sum_{t=1}^n (\kappa (V_t - (1-\kappa \Delta t) V_{t-1}))/\Omega V_{t-1}) - \sum_{t=1}^n (\psi (r_t - \mu  \Updelta t  + \frac{1}{2} V_{t-1} \Updelta t ) \kappa /\Omega V_{t-1}) + \theta_0/\sigma_\theta^2}{\Updelta t \sum_{t=1}^n (\kappa^2 / \Omega V_{t-1}) + 1 / \sigma_\theta^2}
 \]
 and
 \[
-\sigma^{*2} = \frac{1}{\Delta t \sum_{t=1}^n (\kappa^2 / \Omega V_{t-1}) + 1 / \sigma_\theta^2}
+\sigma^{*2} = \frac{1}{\Updelta t \sum_{t=1}^n (\kappa^2 / \Omega V_{t-1}) + 1 / \sigma_{\theta}^2}
 \]
 
 \textbf{Posterior distribution of $\kappa$}
@@ -487,17 +485,17 @@ and
 Let $\kappa \sim \mathcal{N}(\kappa_0, \sigma_\kappa^2)$, similarly the posterior density is as follows
 
 \begin{align*}
-P(\kappa \mid Y, V, \mu, \theta, \psi, \Omega) & \propto P(Y, V \mid \mu, \kappa, \theta, \psi, \Omega) \cdot P(\kappa) \\[0.6em]
-&\propto \exp\left(-\frac{1}{2\Omega} \Sigma_{i=1}^T [(\epsilon_i^V)^2 - 2\psi \epsilon_i^V \epsilon_i^S]\right) \cdot \exp\left(-\frac{(\kappa - \kappa_0)^2}{2\sigma_k^2}\right) \\[0.6em]
+P(\kappa \mid r, V, \mu, \theta, \psi, \Omega) & \propto P(r, V \mid \mu, \kappa, \theta, \psi, \Omega) \cdot P(\kappa) \\[0.6em]
+&\propto \exp\left(-\frac{1}{2\Omega} \Sigma_{i=1}^n [(\epsilon_i^V)^2 - 2\psi \epsilon_i^V \epsilon_i^S]\right) \cdot \exp\left(-\frac{(\kappa - \kappa_0)^2}{2\sigma_k^2}\right) \\[0.6em]
 &\propto \exp\left(-\frac{1}{2} \Sigma_{i=1}^T \left[ \frac{1}{\Omega} \left( \frac{V_t - \kappa \theta \Delta t - (1 - \kappa \Delta t) V_{t-1}}{\sqrt{V_{t-1} \Delta t}} \right)^2 \right. \right. \\[0.6em]
-& \left. \left.  - \frac{2\psi}{\Omega} \left( \frac{V_t - \mu \Delta t + \frac{1}{2} V_{t-1} \Delta t}{\sqrt{V_{t-1} \Delta t}} \right) \left( -\frac{\kappa (\theta - V_{t-1}) \Delta t}{\sqrt{V_{t-1} \Delta t}} \right) \right] \right) \\[0.6em]
+& \left. \left.  - \frac{2\psi}{\Omega} \left( \frac{r_t - \mu \Delta t + \frac{1}{2} V_{t-1} \Delta t}{\sqrt{V_{t-1} \Delta t}} \right) \left( -\frac{\kappa (\theta - V_{t-1}) \Delta t}{\sqrt{V_{t-1} \Delta t}} \right) \right] \right) \\[0.6em]
 & \cdot \exp\left(-\frac{(\kappa^2 - 2\kappa_0 \kappa)}{2\sigma_k^2}\right)\\[0.6em]
 & \propto\exp\left(-\frac{1}{2} \left[\left(\sum_{t=1}^n \frac{(V_{t-1} - \theta)^2}{\Omega V_{t-1}} \right) \kappa^2 \Updelta t \right. \right. \\[0.6em] 
 & \left. \left. - 2\sum_{t=1}^T \left( \frac{(\theta - V_{t-1}) (V_t - V_{t-1})}{\Omega V_{t-1}} - \frac{\psi (r_t - \mu \Updelta t + \frac{1}{2} V_{t-1} \Updelta t )(\theta - V_{t-1})}{\Omega V_{t-1}} \right) \kappa \right] \right) \\[0.6em]
 & \cdot \exp\left(-\frac{1}{2} \left[\frac{1}{\sigma_\kappa^2} \kappa^2 - 2 \frac{\kappa_0}{\sigma_\kappa^2} \kappa \right] \right).
 \end{align*}
 
-After some transformations, posterior distribution of $\kappa \sim \mathcal{N}(\kappa_*, \sigma_\kappa^*)$ with
+After some transformations, posterior distribution of $\kappa \sim \mathcal{N}(\kappa_*, \sigma_\kappa^{*2})$ with
 
 \[
 \kappa^* = \frac{\sum_{t=1}^n ((\theta - V_{t-1}) (V_t - V_{t-1})/\Omega V_{t-1}) - \sum_{t=1}^n (\psi (r_t - \mu \Updelta t + \frac{1}{2} V_{t-1} \Updelta t )(\theta - V_{t-1})/\Omega V_{t-1}) + \kappa_0/\sigma_\kappa^2}{\Updelta t \sum_{t=1}^n ((V_{t-1}-\theta)^2/\Omega V_{t-1}) + 1 / \sigma_\kappa^2}
@@ -513,47 +511,48 @@ and
 \vspace{1em}
 
 \begin{align*}
-P(V_t \mid Y, V_{t+1}, V_{t-1}, \kappa, \mu, \theta, \psi, \Omega) &= P(Y, V_{t+1}, V_{t}, \mid V_{t-1}, \mu, \kappa, \theta, \psi, \Omega) \frac{P(V_{t-1} \mid \kappa, \theta, \psi, \Omega, \mu)}{P(r, V_{t+1}, V_{t-1} \mid \kappa, \theta, \psi, \Omega, \mu)}\\[0.6em]
+P(V_t \mid r, V_{t+1}, V_{t-1}, \kappa, \mu, \theta, \psi, \Omega) &= P(r, V_{t+1}, V_{t}, \mid V_{t-1}, \mu, \kappa, \theta, \psi, \Omega) \frac{P(V_{t-1} \mid \kappa, \theta, \psi, \Omega, \mu)}{P(r, V_{t+1}, V_{t-1} \mid \kappa, \theta, \psi, \Omega, \mu)}\\[0.6em]
 & \propto P(Y, V_{t+1}, V_{t} \mid V_{t-1}, \kappa, \theta, \psi, \Omega, \mu)\\[0.6em]
-&\propto \frac{1}{V_t\Delta t}\exp\left(-\frac{1}{2\Omega}\left[(\Omega+\psi^2)(\epsilon_{t+1}^S)^2 - 2\psi\epsilon_{t+1}^S\epsilon_{t+1}^V + (\epsilon_{t+1}^V)^2\right]\right. \\
-&\quad \left. -\frac{1}{2\Omega}\left[(\Omega+\psi^2)(\epsilon_i^S)^2 - 2\psi\epsilon_i^S\epsilon_i^V + (\epsilon_i^V)^2\right]\right)\\
-&=\frac{1}{V_t \Updelta t}\exp\left(-\frac{1}{2 \Omega} \frac{(\Omega + \psi^2)(\frac{1}{2}V_t \Updelta t + Y_{t+1} - \mu \Updelta t)^2}{V_t \Updelta t} \right. \\[0.6em] 
-&= \frac{1}{V_t \Delta t} \exp \left( - \frac{1}{2 \Omega} \frac{(\Omega + \psi^2)\left(\frac{1}{2} V_t \Delta t + Y_{t+1} - \mu \Delta t\right)^2}{V_t \Delta t} \right) \\
-&\quad - \frac{1}{2 \Omega} \frac{- 2 \psi \left(\frac{1}{2} V_t \Delta t + Y_{t+1} - \mu \Delta t\right) \left(- (1 - \kappa \Delta t) V_t - \kappa \theta \Delta t + V_{t+1}\right)}{V_t \Delta t} \\
-&\quad - \frac{1}{2 \Omega} \frac{\left(- (1 - \kappa \Delta t) V_t - \kappa \theta \Delta t + V_{t+1}\right)^2}{V_t \Delta t} \\
-&\quad - \frac{1}{2 \Omega} \frac{- 2 \psi \left(Y_t - \mu \Delta t + \frac{1}{2} V_{t-1} \Delta t\right) \left(V_t - \kappa \theta \Delta t - (1 - \kappa \Delta t) V_{t-1}\right)}{V_{t-1} \Delta t} \\
-&\quad - \frac{1}{2 \Omega} \frac{\left(V_t - \kappa \theta \Delta t - (1 - \kappa \Delta t) V_{t-1}\right)^2}{V_{t-1} \Delta t}
-& \left. -\frac{1}{2 \Omega} \frac{-2\psi (\frac{1}{2}V_t \Updelta t + r_{t+1} -mu \Updelta t)(-(1-\kappa \Updelta t)V_t -\kappa \theta \Updelta t + V_{t+1})}{V_t \Updelta t} \right. \\[0.6em]
+&\propto \frac{1}{V_t\Delta t}\exp\left(-\frac{1}{2\Omega}\left[(\Omega+\psi^2)(\epsilon_{t+1}^S)^2 - 2\psi\epsilon_{t+1}^S\epsilon_{t+1}^V + (\epsilon_{t+1}^V)^2\right]\right. \\[0.6em]
+&\quad \left. -\frac{1}{2\Omega}\left[(\Omega+\psi^2)(\epsilon_i^S)^2 - 2\psi\epsilon_i^S\epsilon_i^V + (\epsilon_i^V)^2\right]\right)\\[0.6em]
+&=\frac{1}{V_t \Updelta t}\exp\left(-\frac{1}{2 \Omega} \frac{(\Omega + \psi^2)(\frac{1}{2}V_t \Updelta t + r_{t+1} - \mu \Updelta t)^2}{V_t \Updelta t} \right. \\[0.6em] 
+& \left. - \frac{1}{2\Omega} \frac{-2 \psi (\frac{1}{2} V_t \Delta t + r_{t+1} -\mu \Delta t ) (-(1-\kappa \Delta t)V_t - \kappa \theta \Delta t + V_{t+1})}{V_t \Delta t }\right. \\[0.6em]
+& \left. - \frac{1}{2\Omega} \frac{(-(1-\kappa \Delta t)V_t - \kappa \theta \Delta t + V_{t+1})^2}{V_t \Delta t }\right. \\[0.6em]
+& \left. - \frac{1}{2\Omega} \frac{-2 \psi (r_t  -\mu \Delta t  + \frac{1}{2} V_{t-1} \Delta t) ( V_t -\kappa \theta \Delta t  - (1- \kappa \Delta t) V_{1-1})}{V_{t-1} \Delta t }\right. \\[0.6em]
+& \left. - \frac{1}{2\Omega} \frac{(V_t-\kappa \theta \Delta t - (1-\kappa \Delta t)V_{t-1})^2}{V_{t-1} \Delta t}\right)\\[0.6em]
+&= \frac{1}{V_t \Delta t} \exp \left( - \frac{1}{2 \Omega} \frac{(\Omega + \psi^2)\left(\frac{1}{2} V_t \Delta t + Y_{t+1} - \mu \Delta t\right)^2}{V_t \Delta t} \right) \\[0.6em]
+& \left. -\frac{1}{2 \Omega} \frac{-2\psi (\frac{1}{2}V_t \Updelta t + r_{t+1} -\ mu \Updelta t)(-(1-\kappa \Updelta t)V_t -\kappa \theta \Updelta t + V_{t+1})}{V_t \Updelta t} \right. \\[0.6em]
 & \left. -\frac{1}{2 \Omega} \frac{(-(1-\kappa \Updelta t) V_t - \kappa \theta \Updelta t + V_{t+1})^2}{V_t \Updelta t} \right) \\[0.6em]
-& \cdot \exp \left( - \frac{1}{2 \Omega} \frac{-2 \psi (Y_t - \mu \Updelta t + \frac{1}{2}V_{t-1} \Updelta t)(V_t - \kappa \theta \Updelta t - (1-\kappa \theta)V_{t-1})}{V_{t-1} \Updelta t} \right. \\[0.6em]
+& \cdot \exp \left( - \frac{1}{2 \Omega} \frac{-2 \psi (r_t - \mu \Updelta t + \frac{1}{2}V_{t-1} \Updelta t)(V_t - \kappa \theta \Updelta t - (1-\kappa \theta)V_{t-1})}{V_{t-1} \Updelta t} \right. \\[0.6em]
 & \left. -\frac{1}{2 \Omega} \frac{(V_t - \kappa \theta \Updelta t - (1-\kappa\Updelta t)V_{t-1})^2}{V_{t-1}\Updelta t}\right).
 \end{align*}
 
 \subsubsection{MCMC}
 
-In general, MCMC generates random samples from a given target distribution. In this study, a sequence of sampling of target parameters $\mu, \kappa, \theta, \psi, \Omega$ and space $V_1, V_2, ..., V_n$ are generated based on posterior distributions which are derived from prior distribution assumption and observed data. By construction, the sequence has Markov's properies includin convergence. 
- 
-According to Michael Johannes and Nicholas Polson (2003), convergence of the sequence relied on the ergodic theory for Markov Chain. A g-step transition probability plays a key role to define a Markov Chain:
+In general, MCMC generates random samples from a given target distribution. In this study, a sequence of sampling of target parameters $\mu, \kappa, \theta, \psi, \Omega$ and spaces $V_1, V_2, ..., V_n$ is generated based on posterior distributions which are derived from prior distribution assumption and observed data. By construction, the sequence has Markov's properties, including convergence.
+
+The convergence of the sequence relied on ergodic theory for Markov Chains. A g-step transition probability plays a key role in defining a Markov Chain:
 
 \[P^{(g)} (x, A) = P[\theta^{(g)} \in A \mid \theta^0 = x]\]
 
-There are two important conditions for Markov Chain to converge, i.e. irreducible and aperiodic. A Markov chain is irreducible if it has positive probability of eventually entering any set which has $\pi-$positive probability regardless of its initial state. A chain is aperiodic if there are no portions of the state space that the chain visits at regularly spaced time intervals. When two conditions are met, the equilibrium distribution of the chain can be achieved:
+There are two important conditions for the Markov Chain to converge, i.e., irreducible and aperiodic. First, a Markov chain is irreducible if it has a positive probability of eventually entering any set which has $\pi-$positive probability regardless of its initial state. Second, a chain is aperiodic if there are no portions of the state space that the chain visits at regularly spaced time intervals. When two conditions are met, the equilibrium distribution of the chain can be achieved:
 
 \[\lim_{g\rightarrow \infty} P[\theta^{(g)} \in A  \mid \theta^{(0)} ] = \pi(A)\]
 
-It can be seen from the equation that the chain will converge regardless the innital state. This study assume the convergence of estimated parameters after g-steps sampling. While the convergence condition is hard to verified, it is investigated through graphical illustration in this study by tracking the value of sampling each step.
+It can be seen from the equation that the chain will converge regardless of the initial state. This study assumes the convergence of estimated parameters after g-steps sampling. While the convergence condition is complex to verify, it is investigated through graphical illustration in this study by tracking the value of sampling at each step.
 
-After defining prior distribution and deriving posterior density of parameters set $\mu, \kappa, \theta, \rho$ and state space $V_t$, MCMC is employed to obtained draws from posterior distribution. MCMC approaches utilized for parameters and state space are different. In order to estimate parameters $\mu, \kappa, \theta, \rho$, Gibbs sampler is useful because the posterior distributions are normal distribution and inversed gamma distribution which are well-known and straightforward to sample conditioned on other parameters. Gibbs sampler is the simplest MCMC algorithm that was introduced in Geman and Geman (1984). 
+After defining the prior distribution and deriving the posterior density of parameters set $\mu, \kappa, \theta, \rho$ and state space $V_t$, MCMC is employed to obtain draws from the posterior distribution. MCMC approaches used for parameters and state space differ. In order to estimate parameters $\mu, \kappa, \theta, \rho$, the Gibbs sampler is helpful because the posterior distributions are normal distribution and inversed gamma distribution, which are well-known and straightforward to sample conditioned on other parameters. Gibbs sampler is the simplest MCMC algorithm that was introduced by Geman and Geman (1984).
 
-The procedure of Gibbs sampler for parameter set starts with initializing a set of values $\Theta = { \mu^{(0)}, \kappa^{(0)}, \theta^{(0)}, \psi^{(0)}, \Omega^{(0)}, V_0^{(0)}, V_1^{(0)}, ..., V_n^{(0)} }$. First, the distribution of $\mu$ is identified by density mentioned above and these initial values, then a sampling $\mu^{(1)}$ can be obtained from this posterior distribution of $\mu$. Parameter set now is updated to $\Theta = { \mu^{(1)},\psi^{(0)}, \Omega^{(0)}, \kappa^{(0)}, \theta^{(0)}, V_0^{(0)}, V_1^{(0)}, ..., V_n^{(0)} }$. The same process will be applied to obtain draws of $\psi^{(1)}$ and $\Omega^{(1)}$, and  $\Theta = { \mu^{(1)},\psi^{(1)}, \Omega^{(1)}, \kappa^{(0)}, \theta^{(0)}, V_0^{(0)}, V_1^{(0)}, ..., V_n^{(0)} }$. $\kappa^{(1)}$ and $\theta^{(1)}$ can be acquired by following steps mentioned above. 
+The procedure of Gibbs sampler for parameter set starts with initializing a set of values $\Theta = { \mu^{(0)}, \kappa^{(0)}, \theta^{(0)}, \psi^{(0)}, \Omega^{(0)}, V_0^{(0)}, V_1^{(0)}, ..., V_n^{(0)} }$. First, the distribution of $\mu$ is identified by the density mentioned above and these initial values, then a sampling $\mu^{(1)}$ can be obtained from this posterior distribution of $\mu$. Parameter set now is updated to $\Theta = { \mu^{(1)},\psi^{(0)}, \Omega^{(0)}, \kappa^{(0)}, \theta^{(0)}, V_0^{(0)}, V_1^{(0)}, ..., V_n^{(0)} }$. The same process will be applied to obtain draws of $\psi^{(1)}$ and $\Omega^{(1)}$, and  $\Theta = { \mu^{(1)},\psi^{(1)}, \Omega^{(1)}, \kappa^{(0)}, \theta^{(0)}, V_0^{(0)}, V_1^{(0)}, ..., V_n^{(0)} }$. $\kappa^{(1)}$ and $\theta^{(1)}$ can be acquired by following steps mentioned above.
 
-Unlike parameters sampling that can be obtained easily with Gibbs sampler, the distribution of state space $V = V_0, V_1, ..., V_n$ is not straightforward to simulate. In this case, a random walk Metropolis-Hastings approach is approriate Joshua Cape et al. (2014). Similarly, the algorithm starts with initializing values for 0th step:
+Unlike parameter sampling that can be obtained easily with the Gibbs sampler, the distribution of state space $V = V_0, V_1, ..., V_n$ is not straightforward to simulate. In this case, a random walk Metropolis-Hastings approach is appropriate Joshua Cape et al. (2014). Similarly, the algorithm starts with initializing values for the 0th step:
+
 \[V_0^{(0)}, V_1^{(0)}, ..., V_n^{(0)}\].
 
 For $g \in {1, 2, ... G}$, after drawing parameters using Gibbs sampler, the algorithm is run to obtain \[V_0^{(g)}, V_1^{(g)}, ..., V_n^{(g)}\]. Specifically, $V_t^{(g)}$ for $t \in {1, 2, ..., n}$ is generating as follows:
 
-\[V_t^{*(g)} = V_t^{(g-1)} + \epsilon_t^V, \text{ with } \epsilon_t^V \sim \mathcal{N}(0, \sigma_V^2)\]
-where $t \in {1, 2, ..., n}$ and $V_t^{*(g)}$ is new proposal for $V_t^{(g)}$. $\sigma_V^2$ is volatility of volatility. 
+\[V_t^{*(g)} = V_t^{(g-1)} + \epsilon_t, \text{ with } \epsilon_t \sim \mathcal{N}(0, \sigma_N^2)\]
+where $t \in {1, 2, ..., n}$ and $V_t^{*(g)}$ is new proposal for $V_t^{(g)}$. $\sigma_N^2$ is pre-defined rejection rate. 
 
 New proposal $V_t^{(g)}$ is rejected or accepted based on the comparison of likelihood of $V_t^{(g-1)}$ and new one. The computation of acceptance rate for new proposal is given by:
 
@@ -562,10 +561,10 @@ New proposal $V_t^{(g)}$ is rejected or accepted based on the comparison of like
 where $\pi(V_t^{*(g)})$ and $\pi(V_t^{(g-1)})$ are likelihood calculated as follows:
 
 \begin{align*}
-\pi(V_t^{*(g)}) &= \frac{1}{V_t^{*(g)} \Updelta t} \exp \left( -\frac{1}{2 \Omega} \frac{(\Omega + \psi^2)(\frac{1}{2} V_t^{*(g)} \Updelta t + Y_{t+1} - \mu \Updelta t)^2)}{V_t^{*(g)} \Updelta t} \right.\\[0.6em]
-& \left. -\frac{1}{2\Omega}\frac{-2\psi (\frac{1}{2}V_t^{*(g)} \Updelta t + Y_{t+1} - \mu \Updelta t)(-(1-\kappa\Updelta t) V_t^{*(g)} -\kappa \theta \Updelta t + V_{t+1}^{(g-1)})}{V_t^{*(g)} \Updelta t} \right.\\[0.6em]
-& \left. -\frac{1}{2\Omega}\frac{(-(1-\kappa \Updelta t) V_t^{*(g)} -\kappa \theta \Updelta t + V_{t+1}^{*(g-1)})^2}{V_t^{*(g)} \Updelta t} \right)\\[0.6em]
-& \cdot \exp \left( - \frac{1}{2 \Omega} \frac{-2 \psi (Y_t - \mu \Updelta t + \frac{1}{2}V_{t-1}^{(g)} \Updelta t)(V_t^{*(g)} - \kappa \theta \Updelta t - (1-\kappa \theta)V_{t-1})}{V_{t-1}^{(g)} \Updelta t} \right. \\[0.6em]
+\pi(V_t^{*(g)}) &= \frac{1}{V_t^{*(g)} \Updelta t} \exp \left( -\frac{1}{2 \Omega} \frac{(\Omega + \psi^2)(\frac{1}{2} V_t^{*(g)} \Updelta t + r_{t+1} - \mu \Updelta t)^2)}{V_t^{*(g)} \Updelta t} \right.\\[0.6em]
+& \left. -\frac{1}{2\Omega}\frac{-2\psi (\frac{1}{2}V_t^{*(g)} \Updelta t + r_{t+1} - \mu \Updelta t)(-(1-\kappa\Updelta t) V_t^{*(g)} -\kappa \theta \Updelta t + V_{t+1}^{(g-1)})}{V_t^{*(g)} \Updelta t} \right.\\[0.6em]
+& \left. -\frac{1}{2\Omega}\frac{(-(1-\kappa \Updelta t) V_t^{*(g)} -\kappa \theta \Updelta t + V_{t+1}^{(g-1)})^2}{V_t^{*(g)} \Updelta t} \right)\\[0.6em]
+& \cdot \exp \left( - \frac{1}{2 \Omega} \frac{-2 \psi (r_t - \mu \Updelta t + \frac{1}{2}V_{t-1}^{(g)} \Updelta t)(V_t^{*(g)} - \kappa \theta \Updelta t - (1-\kappa \theta)V_{t-1}^{(g)})}{V_{t-1}^{(g)} \Updelta t} \right. \\[0.6em]
 & \left. -\frac{1}{2 \Omega} \frac{(V_t^{*(g)} - \kappa \theta \Updelta t - (1-\kappa\Updelta t)V_{t-1}^{(g)})^2}{V_{t-1}^{(g)}\Updelta t}\right).
 \end{align*}
 
@@ -573,40 +572,54 @@ and
 
 \begin{align*}
 \pi(V_t^{(g-1)}) &= \frac{1}{V_t^{(g-1)} \Updelta t} \exp \left( -\frac{1}{2 \Omega} \frac{(\Omega + \psi^2)(\frac{1}{2} V_t^{(g-1)} \Updelta t + Y_{t+1} - \mu \Updelta t)^2)}{V_t^{(g-1)} \Updelta t} \right.\\[0.6em]
-& \left. -\frac{1}{2\Omega}\frac{-2\psi (\frac{1}{2}V_t^{(g-1)} \Updelta t + Y_{t+1} - \mu \Updelta t)(-(1-\kappa\Updelta t) V_t^{(g-1)} -\kappa \theta \Updelta t + V_{t+1}^{(g-1)})}{V_t^{(g-1)} \Updelta t} \right.\\[0.6em]
+& \left. -\frac{1}{2\Omega}\frac{-2\psi (\frac{1}{2}V_t^{(g-1)} \Updelta t + r_{t+1} - \mu \Updelta t)(-(1-\kappa\Updelta t) V_t^{(g-1)} -\kappa \theta \Updelta t + V_{t+1}^{(g-1)})}{V_t^{(g-1)} \Updelta t} \right.\\[0.6em]
 & \left. -\frac{1}{2\Omega}\frac{(-(1-\kappa \Updelta t) V_t^{(g-1)} -\kappa \theta \Updelta t + V_{t+1}^{(g-1)})^2}{V_t^{(g-1)} \Updelta t} \right)\\[0.6em]
-& \cdot \exp \left( - \frac{1}{2 \Omega} \frac{-2 \psi (Y_t - \mu \Updelta t + \frac{1}{2}V_{t-1}^{(g)} \Updelta t)(V_t^{(g-1)} - \kappa \theta \Updelta t - (1-\kappa \theta)V_{t-1})}{V_{t-1}^{(g)} \Updelta t} \right. \\[0.6em]
+& \cdot \exp \left( - \frac{1}{2 \Omega} \frac{-2 \psi (r_t - \mu \Updelta t + \frac{1}{2}V_{t-1}^{(g)} \Updelta t)(V_t^{(g-1)} - \kappa \theta \Updelta t - (1-\kappa \theta)V_{t-1}^{(g)})}{V_{t-1}^{(g)} \Updelta t} \right. \\[0.6em]
 & \left. -\frac{1}{2 \Omega} \frac{(V_t^{(g-1)} - \kappa \theta \Updelta t - (1-\kappa\Updelta t)V_{t-1}^{(g)})^2}{V_{t-1}^{(g)}\Updelta t}\right).
 \end{align*}
 
-$\mathcal{A}(V_t^{*(g)}, V_t^{(g-1)})$ then is compared with random sampling U from $\mathcal{U}[0, 1]$. Intuitively, the probability of acceptance equals $\mathcal{A}(V_t^{*(g)}, V_t^{(g-1)})$. The acceptane/rejection decision rule is described as
+$\mathcal{A}(V_t^{*(g)}, V_t^{(g-1)})$ then is compared with random sampling U from $\mathcal{U}[0, 1]$. Intuitively, the probability of acceptance equals $\mathcal{A}(V_t^{*(g)}, V_t^{(g-1)})$. The acceptance/rejection decision rule is described as
 
 \begin{align*}
 &\text{If } U< \mathcal{A}(V_t^{*(g)}, V_t^{(g-1)}), \text{ then } V_t^{(g)} = V_t^{*(g)},\\
 &\text{Otherwise, }  V_t^{(g)} = V_t^{(g-1)}
 \end{align*} 
 
-Metropolis-Hastings sampling is iterated for $t \in {1, 2, ..., n}$ in order to determine state space $V_1^{(g)}, V_2^{(g)}, ...V_n^{()}$. For $V_0^{(g)}$, the $\pi(V_0^{*(g)}$ and $\pi(V_0^{(g-1)}$ is computed considering only the first exponential part. 
+Metropolis-Hastings sampling is iterated for $t \in {1, 2, ..., n}$ in order to determine state space $V_1^{(g)}, V_2^{(g)}, ...V_n^{()}$. For $V_0^{(g)}$, the $\pi(V_0^{*(g)})$ and $\pi(V_0^{(g-1)})$ is computed considering only the first exponential part. 
 
 \begin{align*}
 \pi(V_0^{*(g)}) &= \frac{1}{V_0^{*(g)} \Updelta t} \exp \left( -\frac{1}{2 \Omega} \frac{(\Omega + \psi^2)(\frac{1}{2} V_0^{*(g)} \Updelta t + Y_{1} - \mu \Updelta t)^2)}{V_0{*(g)} \Updelta t} \right.\\[0.6em]
-& \left. -\frac{1}{2\Omega}\frac{-2\psi (\frac{1}{2}V_0^{*(g)} \Updelta t + Y_{1} - \mu \Updelta t)(-(1-\kappa\Updelta t) V_0^{*(g)} -\kappa \theta \Updelta t + V_{1}^{(g-1)})}{V_0^{*(g)} \Updelta t} \right.\\[0.6em]
+& \left. -\frac{1}{2\Omega}\frac{-2\psi (\frac{1}{2}V_0^{*(g)} \Updelta t + r_{1} - \mu \Updelta t)(-(1-\kappa\Updelta t) V_0^{*(g)} -\kappa \theta \Updelta t + V_{1}^{(g-1)})}{V_0^{*(g)} \Updelta t} \right.\\[0.6em]
 & \left. -\frac{1}{2\Omega}\frac{(-(1-\kappa \Updelta t) V_0^{*(g)} -\kappa \theta \Updelta t + V_{1}^{*(g-1)})^2}{V_0^{*(g)} \Updelta t} \right)
 \end{align*}
 
 and 
 
 \begin{align*}
-\pi(V_0^{(g-1)}) &= \frac{1}{V_0^{(g-1)} \Updelta t} \exp \left( -\frac{1}{2 \Omega} \frac{(\Omega + \psi^2)(\frac{1}{2} V_0^{(g-1)} \Updelta t + Y_{1} - \mu \Updelta t)^2)}{V_0^{(g-1)} \Updelta t} \right.\\[0.6em]
-& \left. -\frac{1}{2\Omega}\frac{-2\psi (\frac{1}{2}V_0^{(g-1)} \Updelta t + Y_{1} - \mu \Updelta t)(-(1-\kappa\Updelta t) V_0^{(g-1)} -\kappa \theta \Updelta t + V_{1}^{(g-1)})}{V_0^{(g-1)} \Updelta t} \right.\\[0.6em]
+\pi(V_0^{(g-1)}) &= \frac{1}{V_0^{(g-1)} \Updelta t} \exp \left( -\frac{1}{2 \Omega} \frac{(\Omega + \psi^2)(\frac{1}{2} V_0^{(g-1)} \Updelta t + r_{1} - \mu \Updelta t)^2)}{V_0^{(g-1)} \Updelta t} \right.\\[0.6em]
+& \left. -\frac{1}{2\Omega}\frac{-2\psi (\frac{1}{2}V_0^{(g-1)} \Updelta t + r_{1} - \mu \Updelta t)(-(1-\kappa\Updelta t) V_0^{(g-1)} -\kappa \theta \Updelta t + V_{1}^{(g-1)})}{V_0^{(g-1)} \Updelta t} \right.\\[0.6em]
 & \left. -\frac{1}{2\Omega}\frac{(-(1-\kappa \Updelta t) V_0^{(g-1)} -\kappa \theta \Updelta t + V_{1}^{(g-1)})^2}{V_0^{(g-1)} \Updelta t} \right)
 \end{align*}
 
+Similarly, $V_{T+1}$ can be obtained by considering the second exponential part which is given by
+
+\begin{align*}
+\pi(V_{T+1}^{*(g)}) &= \frac{1}{V_{T+1}^{*(g)} \Updelta t} \exp \left( - \frac{1}{2 \Omega} \frac{-2 \psi (r_T - \mu \Updelta t + \frac{1}{2}V_{T}^{(g)} \Updelta t)(V_T^{*(g)} - \kappa \theta \Updelta t - (1-\kappa \theta)V_{T}^{(g)})}{V_{T}^{(g)} \Updelta t} \right. \\[0.6em]
+& \left. -\frac{1}{2 \Omega} \frac{(V_{T+1}^{*(g)} - \kappa \theta \Updelta t - (1-\kappa\Updelta t)V_{T}^{(g)})^2}{V_{T}^{(g)}\Updelta t}\right).
+\end{align*}
+
+and 
+
+\begin{align*}
+\pi(V_{T+1}^{(g-1)}) &= \frac{1}{V_{T+1}^{(g-1)} \Updelta t} \exp \left( - \frac{1}{2 \Omega} \frac{-2 \psi (r_{T} - \mu \Updelta t + \frac{1}{2}V_{T}^{(g)} \Updelta t)(V_{T+1}^{(g-1)} - \kappa \theta \Updelta t - (1-\kappa \theta)V_{T}^{(g)})}{V_{T}^{(g)} \Updelta t} \right. \\[0.6em]
+& \left. -\frac{1}{2 \Omega} \frac{(V_{T+1}^{(g-1)} - \kappa \theta \Updelta t - (1-\kappa\Updelta t)V_{T}^{(g)})^2}{V_{T}^{(g)}\Updelta t}\right).
+\end{align*}
 
 \subsection{Evaluation Measurement}
 
 \subsubsection{Continuous ranked probabilistic score}
-While mean square error (MSE) or mean absolute error (MAE) is popular when it comes to evaluation of forecast accuracy, probabilistic forecast, which provides forecasts for future and suitable measures of the uncertainty associated with them, requires different criteria to assess the performance of forecasters. Scoring rules play an essential role in both forecast quality measure (Gneiting, T., and  Raftery, A. E., 2007). In some fields, researchers refer the evaluation task served by scoring rules as forecast verification. Specifically, scoring rules provide a single numerical score based on the forecast curve and the actual value. In this paper, continuous ranked probabilistic score (CRPS), which is derived based on predictive cumulative distribution functions, is an appropriate measure for prediction performance for several reasons. First, the forecast density is illustrated in terms of samples by monte carlo simulation. Second, CRPS takes the distance of forecasts and actual value into account by giving credit for assigning high probabilities to values close to the real value. 
+
+While mean square error (MSE) or mean absolute error (MAE) is popular when it comes to the evaluation of forecast accuracy, probabilistic forecast, which provides forecasts for the future and suitable measures of the uncertainty associated with them, requires different criteria to assess the performance of forecasters. Scoring rules play a crucial role in both forecast quality measures (Gneiting, T., and Raftery, A. E., 2007). In some fields, researchers refer to the evaluation task served by scoring rules as forecast verification. Specifically, scoring rules provide a single numerical score based on the forecast curve and the actual value. In this paper, continuous ranked probabilistic score (CRPS), which is derived based on predictive cumulative distribution functions, is an appropriate measure for prediction performance.
 
 Introduced in Gneiting and  Raftery (2007), Let X be a random variable, F be the cumulative distribution function (CDF) of X, such as $F(y) = P [X \leq y]$, x be the observation and F be the CDF associated with an empirical probabilistic prediction, CPRS is defined as follows
 
@@ -624,7 +637,7 @@ $\mathbb{I}$ is the indicator function that attains:
 CRPS can be equivalently written as 
 
 \[CRPS(F, x) =  \frac{1}{2} E_F [|X-X'|] - E_F [|X-x|],\]
- where $X$ and $X'$ are independent samples of random variable with distribution function $F$, $x$ is the observed value.
+ where $X$ and $X'$ are independent samples of random variable with distribution function $F$ and $x$ is the observed value.
  
  Moreover, CRPS can usually computed in a closed form. For example, the CPRS of predictive density which is Gaussian distributed $\mathcal{N}(\mu, \sigma^2)$
  
@@ -637,7 +650,7 @@ In addition, CRPS is usually utilized with negative orientation as follows
 
 \[CRPS^*(F, x) = - CRPS(F, x) = E_F |X-x| - \frac{1}{2} E_F |X-X'|\]
 
-The lower the $CRPS^*$ is, the better the forecast is. Negative orientation version is more popular in practice because it not only provide the computation in the same unit as observation that make the $CRPS^*$ easier to interpret. $CRPS^*$ is reduced to MAE if F is a deterministic forecast (point forecast with probability 1):
+The lower the $CRPS^*$ is, the better the forecast is. The negative orientation version is more popular in practice because it provides the computation in the same unit as the observation, which makes the $CRPS^*$ easier to interpret. $CRPS^*$ is reduced to MAE if F is a deterministic forecast (point forecast with probability 1):
 
 \[CRPS^*(\hat{X}, x) = E[ | \hat{X} - x | ]\] 
 
@@ -671,34 +684,35 @@ F(y) =
 \end{cases}
 \end{equation*}
  
-Put simply, it is shown in \colorAutoref{CRPS_graph} that CRPS represents the gray area between the forecast CDF and observed CDF.The smaller the area, the more accurate the probabilistic forecast. 
 
-In this thesis, forecast accuracy of Heston and EGARCH models are investigated using CRPS. A comparative analysis is conducted not only descriptively but also via hypothesis testing. In order to statistically compare the performance of 2 models, Wilcoxon signed-rank test, which is an alternative for t-test when the normal distribution assumption does not hold, is employed to analyze if one of the two models perform significantly better than the other one. The normal distributed assumption is replaced by a weaker assumption that the difference between the performances of 2 models is symmetric around its mean. Wilcoxon signed-rank test then investigates if the central value is significantly different from zero.
+Put simply, it is shown in \colorAutoref{CRPS_graph} that CRPS represents the gray area between the forecast CDF and observed CDF. The smaller the area, the more accurate the probabilistic forecast.
 
-Wilcoxon signed-rank test evaluates the median difference between CRPS of Heston and EGARCH models with the hypothesis as follows
+In this thesis, the forecast accuracy of Heston and EGARCH models is investigated using CRPS. A comparative analysis is conducted not only descriptively but also via hypothesis testing. To statistically compare the performance of the two models, the Wilcoxon signed-rank test, which is an alternative to the t-test when the normal distribution assumption does not hold, is employed to analyze whether one of the two models performs significantly better than the other. The normally distributed assumption is replaced by a weaker assumption that the difference between the performances of 2 models is symmetric around its mean. Wilcoxon signed-rank test then investigates if the central value is significantly different from zero.
+
+The Wilcoxon signed-rank test evaluates the median difference between the CRPS of the Heston and EGARCH models, with the hypothesis as follows.
 
 \begin{itemize}
-\item Null hypothesis (H0): The median difference between CRPSs of Heston and EGARCH is zero. None of the two models performs better than the other.
+\item Null hypothesis (H0): The median difference between CRPSs of Heston and EGARCH is zero. Neither model performs better than the other.
 
-\item Alternative hypothesis (H1): The median difference is not zero. There is significant difference in the models' performance.
+\item Alternative hypothesis (H1): The median difference is not zero. There is a significant difference in the models' performance.
 \end{itemize}
 
 \subsubsection{Delta-neutral replication performance}
 
-Natural gas price forecast is intermediate step which is required for different purposes, such as risk management, derivative pricing, ... According to Alexander et al., (2012), accurate option pricing and hedging is more important than forecasting prices alone. Moreover, performance of delta hedges, which helps to reduce risk associated with changes in price, is another way to represent the ability of model to capture the price dynamics. 
+A natural gas price forecast is an intermediate step required for various purposes, such as risk management, derivative pricing, and investment strategy; therefore, accurate option pricing and hedging are more important than forecasting prices alone. Moreover, the performance of delta hedges, which helps reduce the risk associated with price changes, is another way to represent the model's ability to capture price dynamics.
 
-The general idea of delta hedges is to adjust the replicating portfolio periodically, aiming to maintain the value of the portfolio as close to the value of derivative as possible. This thesis investigates only the delta hedge accuracy that is used to hedge the risk associated with price's volatility. In case of multiple risk sources for price and volatility, delta hedging is very likely insufficient to examine the hedging performance. For the sake of simplicity and to maintain a fair ground for comparison, although it is obvious that delta hedges is not perfect, imperfect hedging is conducted to evaluate the performance of EGARCH and Heston model. Further more, in order to keep it close to the real world practice, daily hedges accuracy is considered in the comparative performance analysis of EGARCH and Heston model.
+The general idea of delta hedges is to adjust the replicating portfolio periodically, aiming to maintain the value of the portfolio as closely as possible to the value of the derivative. This thesis investigates only the delta hedge accuracy used to hedge the risk associated with price volatility. In cases where multiple risk sources contribute to price and volatility, delta hedging is likely insufficient to assess the hedging performance. For the sake of simplicity and to maintain a fair ground for comparison, although it is evident that delta hedges are not perfect, imperfect hedging is conducted to evaluate the performance of EGARCH and Heston model. Furthermore, to maintain relevance to real-world practice, daily hedge accuracy is taken into account in the comparative performance analysis of EGARCH and the Heston model.
 
-For the purpose of evaluating the futures price forecast, a portfolio consisting of a call option and underlying asset is considered, where a call option is an financial contract that gives the holder the right, but not the obligation, to buy a specific amount of an underlying asset (such as stocks, commodities, or indices) at a predetermined price (known as the strike price) within a specified time period (until the expiration date). Value of call option is determined by the expected payoff at expiration as follows
+To evaluate the futures price forecast, a portfolio consisting of a call option and underlying asset is considered, where a call option is a financial contract that gives the holder the right, but not the obligation, to buy a specific amount of an underlying asset (such as stocks, commodities, or indices) at a predetermined price (known as the strike price) within a specified period (until the expiration date). The value of the call option is determined by the expected payoff at expiration as follows
 
 \[C(F, K) = e^{-rT} \mathbb{E} \left[(F_T - K)^+ \right] \]
 
 with $F_T$ is the price of the underlying asset at expiration and K is strike price of the option. The option's price is computed numerically given by
 
-\[C_t(F_t, K) = \frac{1}{n} \sum_{i=1}^n \hat{F}_i \mathbbm{1}_{(K, \infty)}(\hat{F}_i) \]
+\[C_t(F_t, K) = \frac{1}{n} \sum_{i=1}^n (\hat{F}_i  - K)\mathbbm{1}_{(K, \infty)}(\hat{F}_i) \]
 
-with $F_i$ is the price simulation by relevant model.
-In the context of this thesis, underlying asset is futures contract of natural gas and its $F_T$ is the curve generated by relevant models. Considering a portfolio $\Pi$ consisting of: 
+with $\hat{F}_i$ is the price simulation by relevant model.
+In the context of this thesis, underlying asset is futures contract of natural gas and its $\hat{F}_T$ is the curve generated by relevant models. Considering a portfolio $\Pi$ consisting of: 
 
 \begin{itemize}
 \item Short position in call option C
@@ -720,7 +734,7 @@ The non-arbitrage condition of the market is ensured by minimizing the value of 
 
 
 
-In simple words, the call option with specific strike price (i) is short at time t, while the replicating portfolio includes $\Delta _{i,t}$ units of the asset and cash position of $b_{i,t}$. The mean absolute hedging error at the maturity date of N options with different moneyness is measured as performance metric given as
+In simple words, the call option with specific strike price (i) is short at time t, while the replicating portfolio includes $\Delta _{i,t}$ units of the asset and cash position of $B_{i,t}$. The mean absolute hedging error at the maturity date of N options with different moneyness is measured as performance metric given as
 
 \begin{align*}
 PnL = \frac{1}{N} \sum_{i = 1}^{N} |\Pi_{i,T}|
@@ -737,9 +751,9 @@ The absolute error is investigated in order to evaluate the hedging accuracy rat
 
 \subsection{Forecasting design}
 
-The analysis including parameterization and forecasting performance of the models was conducted for each futures contract. Specifically, the analysis was performed 2 times for each contract: once 3 months before the expiry and 1 month before the expiry $T$. The estimation window is fixed to 3 months data, then CPRS was computed using the model forecasts and price at expiry.
+The analysis, including parameterization and forecasting performance of the models, was conducted for each futures contract. Specifically, the analysis was performed twice for each contract: once 3 months before the expiry and once 1 month before the expiry, denoted as $T$. The estimation window is fixed at 3 months of data; then, CPRS was computed using the model forecasts and the price at expiry.
 
-EGARCH is estimated by minimizing their negative log-likelihood while Markov Chain Monte Carlo was used to estimate Heston. I implemented them in Python and made used of some built-in packages like pandas, numpy, scipy, SST distribution (Berrisch, 2021). The procedure of parameter estimation and probabilistic forecast is as follows:
+EGARCH is estimated by minimizing its negative log-likelihood, while Markov Chain Monte Carlo is used to estimate Heston. I implemented them in Python and utilized some built-in packages, including Pandas, NumPy, SciPy, and the SST distribution (Berrisch, 2021). The procedure of parameter estimation and probabilistic forecast is as follows:
 
 \subsubsection{EGARCH}
 
@@ -750,16 +764,16 @@ For each futures contract:
 \item Initial volatility is computed as $\sigma_0 = (e^{\frac{\hat{\omega}}{1-\hat{\beta}}})^{0.5}$
 \end{itemize}
 
-Condition variance and price ($S_T$) are computed recursively by 
+Condition variance and price ($\hat{S}_T$) are computed recursively by 
 
 \begin{itemize}
 \item Sampling 1000 i.i.d random variable $z_t$ from skewed Student-t distribution SST(mean = 0, variance = 0, skew = $\hat{\delta}$, degree of freedom = $\hat{\nu}$).
-\item Computing $\hat{\sigma}_t$ where $ \ln\left(\hat{\sigma}_t^2\right) = \hat{\omega} + \hat{\alpha} \left( |\epsilon_{t-1}| - \mathbb{E}[|\epsilon_{t-1}|] \right) + \hat{\gamma} \epsilon_{t-1} +  \hat{\beta} \ln\left(\hat{\sigma}_{t-1}^2\right)$
+\item Computing $\hat{\sigma}_t$ where $ \ln\left(\hat{\sigma}_t^2\right) = \hat{\omega} + \hat{\alpha} \left( |z_{t-1}| - \mathbb{E}[|z_{t-1}|] \right) + \hat{\gamma} z_{t-1} +  \hat{\beta} \ln\left(\hat{\sigma}_{t-1}^2\right)$
 \item Computing $\hat{\epsilon}_t = \hat{\sigma}_t z_t $
 \item $\hat{S}_t = \hat{S}_{t-1} e^{\hat{\mu} + \hat{\epsilon}_t}$
 \end{itemize}
 
-Finally, CRPS is computed for $S_T$ following equation (CRPS*)
+Finally, $CRPS^*$ is computed for $\hat{S}_T$ and observed price at maturity $S_T$.
 
 \subsubsection{Heston}
 
@@ -779,9 +793,9 @@ MCMC algorithm is run to estimate the Heston's parameters as follows
 \begin{itemize}
 \item Randomly choose initial values of $\mu_0$, $\kappa_0$, $\theta_0$, $\Sigma_0$, $\Psi_0 \sim N(0, \Sigma_0/2)$
 \item Sampling $V_0, V_1, ..., V_T$ from chosen truncate normal distribution to ensure the non-negative value for variance 
-\item Computing mean and variance for $\mu$ according to equation ... Sampling new value of $\mu_0$ from the defined distribution of $\mu$
-\item Computing $\beta$ parameter for IG according to equation... Replacing $\Omega_0$ by random sample from $IG(2, \beta$
-\item Repeating same procedure for $\Psi$, $\theta$, $\kappa$
+\item Computing mean and variance for $\mu$ according to the posterior distribution of $\mu$. Sampling new value of $\mu_0$ from the defined distribution of $\mu$
+\item Computing $\beta$ parameter for IG according to posterior distribution of $\beta$. Replacing $\Omega_0$ by random sample from $IG(2, \beta)$
+\item Repeating same procedure for $\Psi$, $\theta$, $\kappa$.
 \item Propose new V = V + N(0, 0.001), then compute the likelihood of current V and proposed V
 \item Compute the acceptance rate and compare with random variable from Uniform distribution U(0,1).
 \end{itemize}
@@ -789,12 +803,12 @@ MCMC algorithm is run to estimate the Heston's parameters as follows
 In this study, MCMC is repeated 15000 times with 5000 sampling as burn-in period and only the last 10000 iterations is used to estimate parameters. After achieving the estimated parameters, forecast for returns and eventually price are computed following the procedure
 
 \begin{itemize}
-\item Sampling $Z_V \sim N(0,1)$ and $Z_{corr} \sim N(0,1)$ independently. Then $Z_S = \hat{\rho} Z_V + \sqrt{1-\rho^2} Z_{corr}$.
-\item Compute simulated volatility according to equation ().
-\item Compute simulated price according to equation().
+\item Sampling $Z_V \sim N(0,1)$ and $Z_{corr} \sim N(0,1)$ independently. Then $Z_S = \hat{\rho} Z_V + \sqrt{1-\hat{\rho}^2} Z_{corr}$.
+\item Compute simulated volatility according to equation (3.13).
+\item Compute simulated returns according to equation (3.12), then the forecast price is  $\hat{S}_t = \hat{S}_{t-1} e^{\hat{r}_t}$.
 \end{itemize}
 
-In case of CRPS, the probabilistic price forecast is sufficient to get the final metric. On the other hand, additional computation is required to derive the performance of EGARCH and Heston model in delta hedging. In order to avoid the computational cost, models's parameters are estimated once and used throughout the valuation period. Secondly, probabilistic price forecasts is achieved based on the estimated parameters, assuming different initial prices. Third, delta is calculated according to equation. Finally, the replicating portfolio is adjusted according to delta. The procedure is repeated until the expiry date for 3 moneyness: 0.95, 1, 1.05. The mean of absolute delta hedges error represents for the performance of models.
+When considering CRPS, the probabilistic price forecast is sufficient to get the final metric. On the other hand, additional computation is required to derive the performance of the EGARCH and the Heston model in delta hedging. To avoid computational cost, the model's parameters are estimated once and used throughout the valuation period. Secondly, probabilistic price forecasts are achieved based on the estimated parameters, assuming different initial prices. Third, the delta is calculated according to the equation. Finally, the replicating portfolio is adjusted according to delta. The procedure is repeated until the expiry date for three moneyness levels: 0.95, 1, and 1.05. The mean of absolute delta hedge error represents the performance of models.
 
 
 \section{Empirical Analysis}
@@ -803,33 +817,33 @@ In case of CRPS, the probabilistic price forecast is sufficient to get the final
 
 \subsubsection{Estimated parameters}
 
-Followed the estimation method outlined in methodology chapter, the parameters are estimated for both models for 3-month and 1-month-ahead forecast. This thesis focuses on comparing the forecast performance of Heston and EGARCH model; however, it is also essential to validate the parameters estimation and in-sample fitted values.
+Following the estimation method outlined in the methodology chapter, the parameters are estimated for both models for three-month and one-month-ahead forecasts. This thesis focuses on comparing the forecast performance of the Heston and EGARCH models; however, it is also essential to validate the parameters estimation and in-sample fitted values.
 
- \colorAutoref{3Mhestonparams} and  \colorAutoref{1Mhestonparams} shows the time series of Heston parameters for 3 month-ahead and 1 month-ahead forecast respectively. It is obvious that the range of parameters are similar for both cases, except for long-term volatility $\theta$, which can be explained by the liquidity of the futures contract when time to expiry becomes smaller. Specifically, when the contract expires in shorter time, there is higher demand for the commodity; Therefore, the volatility increases. 
+\colorAutoref{3Mhestonparams} and  \colorAutoref{1Mhestonparams} show the time series of Heston parameters for three month-ahead and one month-ahead forecast, respectively. The range of parameters is similar for both cases, except for long-term volatility $\theta$, which can be explained by the liquidity of the futures contract when the time to expiry becomes smaller. Specifically, when the contract expires in a shorter time frame, there is a higher demand for the commodity; therefore, volatility increases.
 
 
 \begin{figure}[h!] 
-\includegraphics[scale=1,width=1\linewidth,height=0.4\textheight]{heston_params_3m.png}
+\includegraphics[scale=1,width=1\linewidth,height=0.3\textheight]{heston_params_3m.png}
 \caption{Heston parameter estimates from price calibration for 3 month-ahead}
 \label{3Mhestonparams}
 \end{figure}
 
 \begin{figure}[h!] 
-\includegraphics[scale=1,width=1\linewidth,height=0.4\textheight]{heston_params_1m.png}
+\includegraphics[scale=1,width=1\linewidth,height=0.3\textheight]{heston_params_1m.png}
 \caption{Heston parameter estimates from price calibration for 1 month-ahead}
 \label{1Mhestonparams}
 \end{figure}
 
-EGARCH parameters are shown in \colorAutoref{3Megarchparams} and  \colorAutoref{1Megarchparams}. It is noteworthy from these graphs that both that parameters for 3 month-ahead and 1 month-ahead have the same pattern. Moreover, $\delta$ is 1 implying the symmetric t-distribution for return overtime. 
+The estimated parameters of the EGARCH model are presented in \colorAutoref{3Megarchparams} for the three-month-ahead forecasts and in \colorAutoref{1Megarchparams} for the one-month-ahead forecasts. These graphs demonstrate a remarkable similarity in the parameter patterns between the two forecasting horizons, suggesting a consistent underlying volatility structure across different time frames. One of the most notable findings is the value of the skewness, $\delta$, which is estimated to be 1 in both cases. This result holds significant implications for the distributional properties of returns over time. Specifically, a $\delta$ value of 1 indicates that the standardized innovations follow a symmetric Student’s t-distribution, meaning that extreme positive and negative returns are equally likely. This symmetry in the conditional distribution implies that the model does not detect asymmetric tail behavior—where large adverse shocks might have a different impact on volatility than large positive shocks of the same magnitude. Furthermore, the consistency in parameter patterns across the one-month and three-month horizons suggests that the volatility dynamics are stable and persistent over different forecasting windows.
 
 \begin{figure}[h!] 
-\includegraphics[scale=1,width=1\linewidth,height=0.4\textheight]{egarch_params_3m.png}
+\includegraphics[scale=1,width=1\linewidth,height=0.3\textheight]{egarch_params_3m.png}
 \caption{EGARCH parameter estimates from price calibration for 3 month-ahead}
 \label{3Megarchparams}
 \end{figure}
 
 \begin{figure}[h!] 
-\includegraphics[scale=1,width=1\linewidth,height=0.4\textheight]{egarch_params_1m.png}
+\includegraphics[scale=1,width=1\linewidth,height=0.3\textheight]{egarch_params_1m.png}
 \caption{EGARCH parameter estimates from price calibration for 1 month-ahead}
 \label{1Megarchparams}
 \end{figure}
@@ -837,25 +851,25 @@ EGARCH parameters are shown in \colorAutoref{3Megarchparams} and  \colorAutoref{
 \subsubsection{In-sample performance}
 
 
-In-sample CRPS of Heston and EGARCH can be seen from \colorAutoref{3M_in} and \colorAutoref{1M_in} . In general, the fitted distribution of EGARCH is more accurate than the one of Heston, except for the extreme case; e.g, Russian-Ukrainian war 2022. The finding is similar in case of 1 month-ahead forecast where the pattern is found at the beginning of Covid 19. 
+In-sample CRPS of Heston and EGARCH are illustrated in \colorAutoref{3M_in} and \colorAutoref{1M_in}, respectively. The results shown in this graph indicate that, in general, the EGARCH model provides a more accurate fitted distribution compared to the Heston model across most estimation periods. However, it is noticeable that the Heston model performs relatively better during extreme market events. To be specific, during the Russian-Ukrainian war in 2022, while there was a dramatic geopolitical uncertainty that caused a shock in natural gas supply, the Heston model performed better in forecasting price distribution for three-month-ahead predictions. A similar pattern is observed for the one-month-ahead forecast in early 2020, when COVID-19 caused COVID-19 caused market stress, and in 2022.
 
 \begin{figure}[h!] 
-\includegraphics[scale=1,width=1\linewidth,height=0.4\textheight]{insample_crps_3m.png}
+\includegraphics[scale=1,width=1\linewidth,height=0.3\textheight]{insample_crps_3m.png}
 \caption{In-sample CPRS of 3 month-ahead models}
 \label{3M_in}
 \end{figure}
 
 \begin{figure}[h!] 
-\includegraphics[scale=1,width=1\linewidth,height=0.4\textheight]{insample_crps_1m.png}
+\includegraphics[scale=1,width=1\linewidth,height=0.3\textheight]{insample_crps_1m.png}
 \caption{In-sample CPRS of 1 month-ahead models}
-\label{3M_in}
+\label{1M_in}
 \end{figure}
 
-Wilcoxon tests are applied to test the following hypothesis:
+In order to statistically assess the comparison of the performance of the in-sample forecast of the two models in terms of CRPS, Wilcoxon signed-rank tests were conducted for both the one-month-ahead and three-month-ahead forecast horizons. The tests evaluated the following hypothesis:
 
 H0: The performances of in-sample fitted distribution by Heston and EGARCH model are indifferent.
 
-H1:  In-sample CRPS of EGARCH is smaller than in-sample CRPS of Heston.
+H1:  EGARCH achieves lower (better) CRPS values than Heston.
 
 \begin{table}[h!]
 \centering
@@ -865,30 +879,40 @@ N month-ahead     & p-value & Conclusion                     \\ \midrule
 3 month-ahead     & 0.0002  & In-sample fitted distribution of EGARCH is more accurate \\
 1 month-ahead     & 0.025    & In-sample fitted distribution of EGARCH is more accurate \\ \bottomrule
 \end{tabular}
+\caption{Wilcoxon signed-rank tests for in-sample CRPS}
+\label{test_incrps}
 \end{table}
 
-In both forecast scenarios, EGARCH performance is better in terms of in-sample CRPS, which probably suggests the overfitting of EGARCH. The out-sample performance of two models are evaluated in next section in order to examine the forecast accuracy.
+It is shown in \colorAutoref{test_incrps} that the Wilcoxon tests rejected H0 at $p = 0.01$ for both forecast horizons, confirming that EGARCH’s in-sample CRPS is statistically superior to that of Heston. The result aligns with the graphical illustration from \colorAutoref{3M_in} and \colorAutoref{1M_in} that EGARCH's fitted distribution is close to the observed price in most periods. However, the consistent in-sample outperformance of EGARCH might be the result of overfitting, where EGARCH's parameters estimation captures noises rather than the actual process.
 
 \subsection{Predictive performance}
 
 \subsubsection{3 month-ahead forecast}
 
- In total, data for 96 contracts was used in this study. However, EGARCH model fails at parameterization step for some contracts. In this section, the comparative analysis focuses exclusively on those that both estimated parameters and CPRS are available for both Heston and EGARCH model.
+This study empirically evaluates the in-sample and out-of-sample forecasting performance of the EGARCH and Heston models for natural gas futures prices, using probabilistic metrics (CRPS) across 96 contracts from 2017 to 2024. The probabilistic forecast for three-month-ahead and one-month-ahead natural gas with the observed time series is shown in \colorAutoref{3mprice} and \colorAutoref{1mprice}, respectively. It is obvious from the graphs that the density of price forecast changes over the study period. From January 2017 to July 2021, the forecast density spreads less, which is the result of lower conditional variance. On the other hand, the volatility is larger in the volatile period from late 2021 to the end of 2022, which leads to a dramatically increasing wide range of price forecasts. The median of the probabilistic forecast is also illustrated in the graphs. Overall, both models can identify the volatile phases; however, the Heston model provides a probabilistic forecast with a smaller range and is closer to the observed values. Next, CRPS is presented, and the Wilcoxon test on CRPS is conducted to thoroughly compare the performance of the EGARCH and the Heston model.
+
  
+\begin{figure}[h!] 
+\includegraphics[scale=1,width=1\linewidth,height=0.3\textheight]{3mpriceprob.png}
+\caption{Three month-ahead price probabilistic price forecast by EGARCH and Heston}
+\label{3mprice}
+\end{figure}
+
+\begin{figure}[h!] 
+\includegraphics[scale=1,width=1\linewidth,height=0.3\textheight]{1mpriceprob.png}
+\caption{One month-ahead price probabilistic price forecast by EGARCH and Heston}
+\label{1mprice}
+\end{figure}
+
  \colorAutoref{3M} shows the forecasting performance of 3 month-ahead models. It can be seen from the \colorAutoref{3M}that in 2022, CRPS of both models are considerably higher than CRPS during the rest of the time. It is clear in \colorAutoref{3Mwithout22} that there is no obvious difference between the CRPS of Heston and EGARCH except for the period of the beginning of Russian-Ukrainian conflict. Moreover, Heston clearly outperform EGARCH during the 2022. In order to have statistical evidence for comparative analysis, non-parametric Wilcoxon tests are run for the whole period without 2022 and for the whole period from 2017 to 2024. 
  
 
 \begin{figure}[h!] 
-\includegraphics[scale=1,width=1\linewidth,height=0.4\textheight]{threemonthahead.png}
+\includegraphics[scale=1,width=1\linewidth,height=0.3\textheight]{threemonthahead.png}
 \caption{CPRS of 3 month-ahead models}
 \label{3M}
 \end{figure}
 
-\begin{figure}[h!] 
-\includegraphics[scale=1,width=1\linewidth,height=0.4\textheight]{m3_without22.png}
-\caption{CPRS of 3 month-ahead models excluding 2022}
-\label{3Mwithout22}
-\end{figure}
 
 Wilcoxon tests are employed to test the following hypothesis:
 
@@ -952,25 +976,36 @@ Investigation period     & p-value & Conclusion                     \\ \midrule
 \label{deltahegde}
 \end{figure}
 
+\begin{table}[h!]
+\centering
+\begin{tabular}{@{}lll@{}}
+\toprule
+Investigation period     & p-value & Conclusion                     \\ \midrule
+2017-2024                & 0.655    & Fail to reject null hypothesis \\ \bottomrule
+\end{tabular}
+\end{table}
+
+Although PnL based on Heston is noticeably better than one for EGARCH during 2022, the result of Wilcoxon test shows that there is no significant difference in the performance of the two model in terms of delta hedges errors.
 
 
 \newpage
 \section{Conclusion}
-This thesis studies the comparative analysis of EGARCH and Heston model in terms of their performance on probabilistic forecast for natural gas, considering futures prices from January 2017 to December 2024. In general, EGARCH and Heston model can be used to represent the volatility clustering of financial time series.  EGARCH is mainly used as econometrics model to derive value at risk (VAR) which is a well-known metric in risk management, while Heston is famous for its usage in derivative pricing. Probabilistic price forecast plays a key role in achieving VAR or derivative price. 
 
-In order to maintain the fair ground for comparison, I investigate the EGARCH assuming that error terms follow skewed student-t distribution. As a result, both models are able to capture heavy tails and skewness characteristic of empirical log-return. EGARCH(1,1) and Heston are employed to forecast three month-ahead and one month-ahead probabilistic prices at maturity date for 96 futures contract during the period from 2017 to 2024. The econometrics model EGARCH is estimated by maximizing log-likelihood assuming the skewed-student t distribution of residuals while Markov Chain Monte Carlo method is employed to estimate parameters for Heston. In-sample fitted values and out-of-sample forecast are used to analyze the representation of the models to natural gas price process. The focus of the study is to evaluate the forecast performance using various probabilistic metrics, including the CRPS and delta hedges absolute errors.
+This thesis conducts a comparative analysis of the EGARCH and Heston models in terms of their performance in probabilistic forecasting for natural gas, considering futures prices from January 2017 to December 2024. In general, EGARCH and Heston models can be used to represent the volatility clustering of financial time series. EGARCH is primarily used as an econometric model to derive value at risk (VaR), a well-known metric in risk management. At the same time, Heston is renowned for its application in derivative pricing. Probabilistic price forecasts play a key role in achieving VAR or derivative prices.
 
-I highlight three main findings. First, EGARCH's estimated skewness $\delta$ is one for most of the contracts. which implies the symmetric of residuals. Additionally, the parameters of EGARCH and Heston model fluctuate within the same range for both cases of one month-ahead and three month-ahead forecast, except for the long-term volatility of Heston model, which can be explained by the fact that there are more trades for futures contract when time to expiry is getting close, leading to high volatility.
+To maintain a fair ground for comparison, I investigate the EGARCH model, assuming that error terms follow a skewed Student-t distribution. As a result, both models can capture the heavy tails and skewness characteristics of empirical log returns. EGARCH(1,1) and Heston are employed to forecast three-month-ahead and one-month-ahead probabilistic prices at maturity date for 96 futures contracts during the period from 2017 to 2024. The econometric model EGARCH is estimated by maximizing the log-likelihood, assuming a skewed student t distribution of residuals. Meanwhile, the Markov Chain Monte Carlo method is employed to estimate parameters for the Heston model. In-sample fitted values and out-of-sample forecasts are used to assess the models' representation of the natural gas price process. The focus of the study is to evaluate the forecast performance using various probabilistic metrics, including the CRPS and absolute errors of delta hedges.
 
-Secondly, the in-sample performance of EGARCH model is better than the one of Heston in terms of CRPS by Wilcoxon test. The same relative result applies for both one-month ahead and three-month ahead. However, in case of extreme events such as Russian-Ukrainian war, the in-sample fitted distribution is not accurate, which can be seen from CRPS. 
+I highlight four main findings. First, EGARCH's estimated skewness parameter $\delta$ is typically one for most contracts, which implies the symmetric of residuals. Additionally, the parameters of EGARCH and the Heston model fluctuate within the same range for both cases of one-month-ahead and three-month-ahead forecast, except for the long-term volatility of the Heston model, which can be explained by the fact that there are more trades for futures contracts when the time to expiry is getting close, leading to high volatility.
 
-Third, I find limited evidence for the relative difference in probabilistic forecast performance of EGARCH and Heston model with respect to CRPS. Even though it is clear in graphical illustrations that Heston outperforms EGARCH for one-month and three month ahead forecast in period when important events leading to disruption in supply happened, there is not positive statistical testing result that supports the finding.  
+Secondly, the in-sample performance of the EGARCH model is better than that of Heston in terms of CRPS, as determined by the Wilcoxon test. The same relative result applies for both one month ahead and three months ahead. However, in the case of extreme events, such as the Russian-Ukrainian war, the in-sample fitted distribution is not accurate, as evidenced by the CRPS.
 
-Fourth, performance of delta hedges of EGARCH and Heston are investigated by applying replicating portfolio approach. Mean of absolute delta hedges errors of multiple options with different strike is utilized as metric to measure the accuracy of probabilistic forecast. The finding is similar to the result of comparing CRPS that the delta hedges error of Heston model is smaller during 2019 and 2022. On the other hand, it is not obvious about the comparative performance of EGARCH and Heston whether one is better than the other for the rest of the study period. 
+Third, I find limited evidence for the relative difference in probabilistic forecast performance of the EGARCH and Heston models with respect to CRPS. Even though it is clear from graphical illustrations that Heston outperforms EGARCH for one-month and three-month ahead forecasts in the period when important events leading to supply disruptions, there is no significant statistical testing result that supports this finding.
 
-Overall, it is more computationally expensive to estimate parameters of Heston model as many sampling iterations has to be run in order to get the parameters converge. Although there is no testing proof for the improvement in probabilistic forecast evaluating by CRPS and delta hedges errors when using Heston model, it is recommended to use Heston when it is uncertain what happens in the future affecting supply of natural gas.
+Fourth, the performance of delta hedges of EGARCH and Heston are investigated by applying a replicating portfolio approach. The mean of absolute delta hedge errors of multiple options with different strikes is utilized as a metric to measure the accuracy of probabilistic forecasts. The finding is similar to the result of comparing CRPS that the delta-hedge error of the Heston model is smaller during 2019 and 2022. On the other hand, it is not clear whether EGARCH or Heston performs better in the comparative analysis for the remainder of the study period.
 
-Finally, simple prior distribution is utilized when estimating Heston model that does not consider much industry knowledge in order to make a fair ground for comparison. One can consider to modify the prior distribution according to the real world to get better result. Furthermore, it is noteworthy that delta hedges is not perfect as it considers only the uncertainty in price process. For that reason, a more sophisticated hedging procedure including vega hedge $\frac{\Delta C}{\Delta \sigma}$ can be investigate to accurately measure the performance of models. 
+Overall, it is more computationally expensive to estimate the parameters of the Heston model, as many sampling iterations have to be run in order to get the parameters to converge. Although there is no testing proof for the improvement in probabilistic forecasts evaluated by CRPS and delta hedge errors when using the Heston model, it is recommended to use the Heston model when it is uncertain what will happen in the future, affecting the supply of natural gas.
+
+Finally, a simple prior distribution is utilized when estimating the Heston model, which does not consider much industry knowledge in order to create a fair ground for comparison. One can consider modifying the prior distribution to reflect the real world to achieve better results. Furthermore, it is noteworthy that delta hedges are not perfect as they consider only the uncertainty in the price process. For that reason, a more sophisticated hedging procedure, including vega hedge $\frac{\Delta C}{\Delta \sigma}$, can be investigated to measure the performance of models accurately.
 
 
 \newpage
@@ -1031,9 +1066,77 @@ Gruszka, Jarosław, \& Janusz Szwabinski. 2023. Parameter Estimation of the Hest
 \bibitem{}
 Cape, J., Dearden, W., Gamber, W., Liebner, J., Lu, Q., \& Nguyen, M. L. (2014). Estimating Heston’s and Bates’ models parameters using Markov chain Monte Carlo simulation. \emph{Journal of Statistical Computation and Simulation}, 85(11), 2295–2314. 
 
+\bibitem{}
+Gigerenzer, G., Hertwig, R., Van Den Broek, E., Fasolo, B., \& Katsikopoulos, K. V. (2005). “A 30\% chance of rain tomorrow”: How does the public understand probabilistic weather forecasts?. \emph{Risk Analysis: An International Journal}, 25(3), 623-629.
+
+\bibitem{}
+Hong, T., Pinson, P., Wang, Y., Weron, R., Yang, D., \& Zareipour, H. (2020). Energy forecasting: A review and outlook. \emph{IEEE Open Access Journal of Power and Energy}, 7, 376–388
+
+\bibitem{}
+Wan, C., Xu, Z., Pinson, P., Dong, Z. Y., \& Wong, K. P. (2013). Probabilistic forecasting of wind power generation using extreme learning machine. \emph{IEEE transactions on power systems}, 29(3), 1033-1044.
+
+\bibitem{}
+Zhu, X., \& Genton, M. G. (2012). Short‐term wind speed forecasting for power system operations. \emph{International Statistical Review}, 80(1), 2-23.
 
 
+\bibitem{}
+Pesaran, M. H., \& Timmermann, A. (2000). A recursive modelling approach to predicting UK stock returns. \emph{The Economic Journal}, 110(460), 159-191.
 
+\bibitem{}
+Heston, S. L. (1993). A closed-form solution for options with stochastic volatility with applications to bond and currency options. \emph{The review of financial studies}, 6(2), 327-343.
+
+\bibitem{}
+Cox, J. C., Ingersoll, J. E., \& Ross, S. A. (1985). A theory of the term structure of interest rates. \emph{Econometrica}, 53(2), 385-407.
+
+\bibitem{}
+Liu, J., Qiu, B., Du, P., Zhao, X., \& Zhu, J. (2025). A novel probabilistic connectivity network link prediction model for natural gas price based on an improved K-shell algorithm. \emph{Physica A: Statistical Mechanics and its Applications}, 130672.
+
+
+\bibitem{}
+Ambya, A., Gunarto, T., Hendrawaty, E., Kesumah, F. S. D., \& Wisnu, F. K. (2020). Future natural gas price forecasting model and its policy implication. \emph{International Journal of Energy Economics and Policy}, 10(5), 64-70.
+
+
+\bibitem{}
+Reichert, B., \& Souza, A. M. (2022). Can the Heston model forecast energy generation? A systematic literature review. \emph{International Journal of Energy Economics and Policy}, 12(1), 289-295.
+
+\bibitem{}
+Benth, F. E. (2011). The stochastic volatility model of Barndorff‐Nielsen and Shephard in commodity markets. \emph{Mathematical Finance: An International Journal of Mathematics, Statistics and Financial Economics}, 21(4), 595-625.
+
+\bibitem{}
+Dong,  Y.,  Wen,  S.H.,  Hu,  X.B. \&  Li,  J.C.  (2020),  Stochastic  resonance  of  drawdown  risk  in  energy  market  prices.  \emph{Physica  A:  Statistical  Mechanics and its Applications}, 540, 123098.
+
+\bibitem{}
+Hsu, C.C., Chen, A.S., Lin, S.K. \& Chen, T.F. (2017), The affine styled-facts price dynamics for the natural gas: Evidence from daily returns and option prices. \emph{Review of Quantitative Finance and Accounting}, 48(3), 819-848.
+
+\bibitem{}
+Fama, E. F. (1970). Efficient capital markets. \emph{Journal of finance, 25(2)}, 383-417.
+
+\bibitem{}
+Nelson, D. B., 1991. Conditional Heteroskedasticity in Asset Returns: A New Approach. \emph{Econometrica} 59: 347-370.
+
+\bibitem{}
+Fernández, C., \& Steel, M. F. (1998). On Bayesian modeling of fat tails and skewness. \emph{Journal of the American statistical association}, 93(441), 359-371.
+
+\bibitem{}
+Bollerslev, T. (1987). A conditionally heteroskedastic time series model for speculative prices and rates of return. \emph{The review of economics and statistics}, 542-547.
+
+\bibitem{}
+Francq, C., \& Zakoian, J. M. (2019). GARCH models: structure, statistical inference and financial applications. \emph{John Wiley \& Sons}.
+
+\bibitem{}
+Kloeden, P. E., Platen, E., Kloeden, P. E., \& Platen, E. (1992). Stochastic differential equations (pp. 103-160). \emph{Springer Berlin Heidelberg}.
+
+\bibitem{}
+Gruszka, J., \& Szwabiński, J. (2023). Parameter estimation of the Heston volatility model with jumps in the asset prices. \emph{Econometrics}, 11(2), 15.
+
+\bibitem{}
+Geman, S., \& Geman, D. (1984). Stochastic relaxation, Gibbs distributions, and the Bayesian restoration of images. \emph{IEEE Transactions on pattern analysis and machine intelligence}, (6), 721-741.
+
+\bibitem{}
+Gneiting, T., Raftery, A. E. (2007). Strictly proper scoring rules, prediction, and estimation. \emph{Journal of the American statistical Association}, 102(477), 359-378.
+
+\bibitem{}
+Berrisch, J. (2021). sstudentt 0.1.1: A python implementation of the skewed student-t distribution.
 
 \end{thebibliography}
 \newpage
